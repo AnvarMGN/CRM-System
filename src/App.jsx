@@ -1,7 +1,9 @@
-function App() {
+import { TaskList } from './components/task/TaskList'
 
+function App() {
   return (
     <>
+    <TaskList />
     </>
   )
 }
