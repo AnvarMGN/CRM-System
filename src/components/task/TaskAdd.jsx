@@ -8,7 +8,7 @@ export const TaskAdd = ({ addTask }) => {
   const isValid = inputText.length === 64;
 
   const onChange = (evt) => {
-    if (evt.target.value < 2) {
+    if ((evt.target.value).length < 2) {
       setButtonActiv(true);
     } else {
       setButtonActiv(false);
