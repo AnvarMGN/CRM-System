@@ -65,7 +65,7 @@ export const TaskList = () => {
 
   return (
     <>
-      <TaskAdd addTask={addTask} />
+      <TaskAdd  addTask={addTask} />
     </>
   )
 }
