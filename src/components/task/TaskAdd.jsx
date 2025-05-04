@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button } from '../Button'
+import { Button } from '../Button';
 
 export const TaskAdd = ({ addTask }) => {
   const [inputText, setInputText] = useState('');
@@ -7,13 +7,12 @@ export const TaskAdd = ({ addTask }) => {
 
   const isValid = inputText.length === 64;
 
-  const onChange = (evt) => {
+  const handleButtonActiv = (evt) => {
     if ((evt.target.value).length < 2) {
       setButtonActiv(true);
     } else {
       setButtonActiv(false);
     }
-
     setInputText(evt.target.value
       .slice(0, 64));
   };
@@ -21,7 +20,7 @@ export const TaskAdd = ({ addTask }) => {
   const handleAddTask = (evt) => {
     evt.preventDefault();
     addTask(evt.target.title.value);
-    evt.target.reset();
+    setInputText('');
   };
 
   return (
@@ -29,7 +28,7 @@ export const TaskAdd = ({ addTask }) => {
       <form style={{ display: 'flex' }} onSubmit={handleAddTask}>
         <input
           value={inputText}
-          onChange={onChange}
+          onChange={handleButtonActiv}
           placeholder='Task To Be Done...'
           name='title'
         // required
@@ -38,7 +37,7 @@ export const TaskAdd = ({ addTask }) => {
           Add
         </Button>
       </form>
-      {isValid && (<span>Ограничение на вввод - не более 64 символов</span>)}
+      {isValid && (<span>Лимит вввода: 64 символа.</span>)}
     </header>
   )
 }
