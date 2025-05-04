@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { List } from './List';
 import { TaskAdd } from './TaskAdd';
 import { NavMenu } from './navMenu';
+import { List } from './List';
 
 const constFilter = [
   { nameStatus: 'all', nameButton: 'Все' },
