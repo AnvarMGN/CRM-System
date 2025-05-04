@@ -1,71 +1,75 @@
 import { useEffect, useState } from 'react';
-import { TaskAdd } from './TaskAdd'
+import { List } from './List';
+import { TaskAdd } from './TaskAdd';
+import { NavMenu } from './navMenu';
 
-const getTaskList = async (filter) => {
+const constFilter = [
+  { nameStatus: 'all', nameButton: 'Все' },
+  { nameStatus: 'inWork', nameButton: 'в работе' },
+  { nameStatus: 'completed', nameButton: 'сделано' },
+];
+
+const fetchData = async (URL, options ={}) => {
   try {
-    const response = await fetch(`https://easydev.club/api/v1/todos?filter=${filter}`);
-
-    if (!response.ok) {
-      throw new Error(`Ошибка при получении списка задач: ${response.status}`)
-    }
-
-    const data = await response.json();
-    console.log('Список задач:', data);
-    return data;
+    const response = await fetch(URL, options);
+     if (!response.ok) {
+      throw new Error ('Ошибка: ', response.status)
+     }
+     return await response.json();
 
   } catch (error) {
-    console.error(error.message);
-  }
-};
-
-const addNewTask = async (newTask) => {
-  try {
-    const response = await fetch(`https://easydev.club/api/v1/todos`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8'
-      },
-      body: JSON.stringify(newTask)
-    });
-
-    if (!response.ok) {
-      throw new Error(`Ошибка при добавлении задачи: ${response.status}`)
-    }
-
-    const result = await response.json();
-    console.log('Задача успешно добавлена', result);
-
-  } catch (error) {
-    console.error(error.message);
+    console.log(error.message);
   }
 };
 
 export const TaskList = () => {
-  const [tasks, setTasks] = useState([]);
+  const [list, setList] = useState([]);
+  const [status, setStatus] = useState('all');
+  const [numOfTask, setNumOfTask] = useState(0);
 
   useEffect(() => {
-    console.log(tasks);
-  }, [tasks])
-
-  const addTask = (title) => {
-    // const createdDate = new Date();
-
-    const newTask = {
-      // id: Date.now(),
-      title,
-      // created: createdDate.toISOString(),
-      // isDone: false,
+    const loadTaskList = async () => {
+      try {
+        const data = await fetchData(`https://easydev.club/api/v1/todos?filter=${status}`);
+        // console.log('Список задач: ', data);
+        setList(data.data);
+        setNumOfTask(data.info);
+      } catch (error) {
+        console.error('Ошибкка загрузки списка задач: ', error.message);
+      };
     };
+    loadTaskList();
+  }, [status]);
 
-    setTasks((oldTasks) => [...oldTasks, newTask]);
-    addNewTask(newTask);
+  const handleChangeStatus = (newStatus) => {
+    setStatus(newStatus);
   };
 
-  getTaskList('all');// all | completed | inWork
+  const addTask = async (title) => {
+    const newTask = {title};
+    try {
+      const result = await fetchData("https://easydev.club/api/v1/todos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+        },
+        body: JSON.stringify(newTask),
+      });
+      console.log('Задача успешно добавлена: ', result);
+
+      const updateData = await fetchData(`https://easydev.club/api/v1/todos?filter=${status}`)
+      setList(updateData.data);
+      setNumOfTask(updateData.info);
+    } catch (error) {
+      console.log('Ошибка при добавлении задачи: ', error.message);
+    };
+  };
 
   return (
     <>
-      <TaskAdd  addTask={addTask} />
+      <TaskAdd addTask={addTask} />
+      <NavMenu constFilter={constFilter} countTask={numOfTask} handleChangeStatus={handleChangeStatus} />
+      <List fetchlist={list} />
     </>
   )
 }
