@@ -31,9 +31,10 @@ export const TaskAdd = ({ addTask }) => {
           onChange={handleButtonActiv}
           placeholder='Task To Be Done...'
           name='title'
-        // required
+          autoFocus
+          required
         />
-        <Button disabled={buttonActiv} icon='plus' label='add task'>
+        <Button disabled={buttonActiv} icon='plus' label='add task button'>
           Add
         </Button>
       </form>
