@@ -1,24 +1,23 @@
 
-export const NavMenu = ({ constFilter, countTask, changeStatus }) => {
+export const NavMenu = ({ constFilter, countTask, changeStatus, status }) => {
   return (
-    <nav style={{ display: "flex", flexDirection: "row", gap: "15px" }}>
-      <ul style={{ listStyleType: "none" }}>
-        {constFilter.map((filter) => (
-          <li key={filter.nameButton}>
-            <button
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                textDecorationLine: "underline",
-              }}
-              onClick={() => changeStatus(filter.nameStatus)}
-            >
-              {`${filter.nameButton} (${countTask[filter.nameStatus]})`}
-            </button>
-          </li>
-        ))}
-      </ul>
-    </nav>
+    <li>
+      <nav className='navmenu'>
+        <ul className='navmenu__list'>
+          {constFilter.map((filter) => (
+            <li className='navmenu__item' key={filter.nameButton}>
+              <button 
+                className={`navmenu__button ${
+                  filter.nameStatus === status ? 'navmenu__button--active' : ''
+                }`} 
+                onClick={() => changeStatus(filter.nameStatus)}
+              >
+                <h2>{`${filter.nameButton} (${countTask[filter.nameStatus]})`}</h2>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </li>
   );
 };

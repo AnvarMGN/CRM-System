@@ -4,7 +4,7 @@ import { Button } from '../Button';
 export const TaskAdd = ({ addTask }) => {
   const [inputText, setInputText] = useState('');
   const [buttonActiv, setButtonActiv] = useState(false);
-
+  
   const isValid = inputText.length === 64;
 
   const handleButtonActiv = (evt) => {
@@ -24,22 +24,26 @@ export const TaskAdd = ({ addTask }) => {
   };
 
   return (
-    <header>
-      <form style={{ display: 'flex' }} onSubmit={handleAddTask}>
-        <input
-          value={inputText}
-          onChange={handleButtonActiv}
-          placeholder='Task To Be Done...'
-          name='title'
-          autoFocus
-          required
-        />
-        <Button disabled={buttonActiv} icon='plus' label='add task button'>
-          Add
-        </Button>
-      </form>
-      {isValid && (<span>Лимит вввода: 64 символа.</span>)}
-    </header>
+    <>
+      <li>
+        <header>
+          <form className='header__addform' onSubmit={handleAddTask}>
+            <input className='header__addinput'
+              value={inputText}
+              onChange={handleButtonActiv}
+              placeholder='Task To Be Done...'
+              name='title'
+              autoFocus
+              required
+            />
+            <Button className='header__addbutton' disabled={buttonActiv} icon='plus' label='add task button'>
+              Add
+            </Button>
+          </form>
+        </header>
+      </li>
+      {isValid && (<span className='alertmessage'>Лимит вввода: 64 символа.</span>)}
+    </>
   )
 }
 

@@ -125,24 +125,23 @@ export const TaskList = () => {
 
   // console.log(list);
   return (
-    <>
+    <ol className='list'>
       <TaskAdd addTask={addTask} />
       <NavMenu
         constFilter={constFilter}
         countTask={numOfTask}
         changeStatus={changeStatus}
+        status={status}
       />
-      <ul>
-        {list.map((task) => (
-          <Task
-            task={task}
-            key={task.id}
-            editTask={editTask}
-            deleteTask={deleteTask}
-            editDone={editDone}
-          />
-        ))}
-      </ul>
-    </>
+      {list.map((task) => (
+        <Task
+          task={task}
+          key={task.id}
+          editTask={editTask}
+          deleteTask={deleteTask}
+          editDone={editDone}
+        />
+      ))}
+    </ol>
   );
 }

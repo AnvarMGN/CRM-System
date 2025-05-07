@@ -18,23 +18,23 @@ export const TaskTitle = ({ task, isEditable, setIsEditable, editTask, editDone 
   if (isEditable) {
     return (
       <header>
-        <form onSubmit={handleEditTask}>
-          <input defaultValue={title} name="title" />
-          <Button icon="check" label="edit task" />
+        <form className='task__editform' onSubmit={handleEditTask}>
+          <textarea className='task__textarea' defaultValue={title} name="title" />
+          <Button className='approval' icon="check" label="edit task" />
         </form>
       </header>
     );
   };
 
   return (
-    <header>
+    <header className='task__title'>
       <label>
-        <input type="checkbox" checked={isDone} onChange={handleCheck} />
-        {isDone ? (<s><p>{title}</p></s>
-        ) : (
-          <p>{title}</p>
-        )}
+        <input className='task__checkbox' type="checkbox" checked={isDone} onChange={handleCheck} />
       </label>
+      {isDone ? (<s><p className='task__text'>{title}</p></s>
+        ) : (
+          <p className='task__text'>{title}</p>
+        )}
     </header>
   );
 };

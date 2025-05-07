@@ -1,10 +1,11 @@
 import { TaskList } from './components/task/TaskList'
+import './style/style.css'
 
 function App() {
   return (
-    <>
-    <TaskList />
-    </>
+    <main>
+      <TaskList />
+    </main>
   )
 }
 
