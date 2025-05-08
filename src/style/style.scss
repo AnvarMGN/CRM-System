@@ -118,21 +118,44 @@ ul {
 .task{
     display: flex;
     gap: 10px;
-    .task__editform{
+    .editform{
         display: flex;
         gap: 10px;
-        .task__textarea{
+        .editform__textarea{
             width: 260px;
-            height: 46px;
+            height: 47px;
         }
-        .approval{
-            background: none;
-            border: none;
-            cursor: pointer;
-            .imagesvg{
-                filter: brightness(0) saturate(100%) invert(52%) sepia(18%) saturate(1956%) hue-rotate(80deg) brightness(94%) contrast(100%);
+        .editform__control{
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            .approval{
+                width: 100%;
+                height: 21px;
+                border: hidden;
+                border-radius: 5px;
+                background: rgb(101, 101, 243);
+                color: white;
+                cursor: pointer;
+            }
+            .cancellation{
+                width: 100%;
+                height: 21px;
+                border: hidden;
+                border-radius: 5px;
+                background:  rgb(236, 65, 65);
+                color: white;
+                cursor: pointer;
             }
         }
+        // .approval{
+        //     background: none;
+        //     border: none;
+        //     cursor: pointer;
+        //     .imagesvg{
+        //         filter: brightness(0) saturate(100%) invert(52%) sepia(18%) saturate(1956%) hue-rotate(80deg) brightness(94%) contrast(100%);
+        //     }
+        // }
     }
     .task__title{
         display: flex;

@@ -119,21 +119,36 @@ ul {
   display: flex;
   gap: 10px;
 }
-.task .task__editform {
+.task .editform {
   display: flex;
   gap: 10px;
 }
-.task .task__editform .task__textarea {
+.task .editform .editform__textarea {
   width: 260px;
-  height: 46px;
+  height: 47px;
 }
-.task .task__editform .approval {
-  background: none;
-  border: none;
+.task .editform .editform__control {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.task .editform .editform__control .approval {
+  width: 100%;
+  height: 21px;
+  border: hidden;
+  border-radius: 5px;
+  background: rgb(101, 101, 243);
+  color: white;
   cursor: pointer;
 }
-.task .task__editform .approval .imagesvg {
-  filter: brightness(0) saturate(100%) invert(52%) sepia(18%) saturate(1956%) hue-rotate(80deg) brightness(94%) contrast(100%);
+.task .editform .editform__control .cancellation {
+  width: 100%;
+  height: 21px;
+  border: hidden;
+  border-radius: 5px;
+  background: rgb(236, 65, 65);
+  color: white;
+  cursor: pointer;
 }
 .task .task__title {
   display: flex;

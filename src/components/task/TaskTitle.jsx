@@ -1,4 +1,4 @@
-import { Button } from '../Button';
+// import { Button } from '../Button';
 
 export const TaskTitle = ({ task, isEditable, setIsEditable, editTask, editDone }) => {
   // console.log(task.id);
@@ -15,12 +15,39 @@ export const TaskTitle = ({ task, isEditable, setIsEditable, editTask, editDone 
     editDone(id, !isDone);
   };
 
+  const handleCancel = (evt) => {
+    evt.preventDefault();
+    setIsEditable(false);
+  }
+
   if (isEditable) {
     return (
       <header>
-        <form className='task__editform' onSubmit={handleEditTask}>
-          <textarea className='task__textarea' defaultValue={title} name="title" />
-          <Button className='approval' icon="check" label="edit task" />
+        <form className='editform' onSubmit={handleEditTask}>
+          <textarea 
+            className='editform__textarea' 
+            defaultValue={title} 
+            name="title" />
+          <ul className='editform__control'>
+            <li>
+              <button className='approval'>
+                Save
+              </button>
+            </li>
+            <li>
+              <button 
+                className='cancellation' 
+                onClick={handleCancel} 
+              >
+                Cancel
+              </button>
+            </li>
+          </ul>
+          {/* <Button 
+            className='approval' 
+            icon='check' 
+            label='save task' 
+          /> */}
         </form>
       </header>
     );
