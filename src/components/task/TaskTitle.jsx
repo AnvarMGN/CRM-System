@@ -1,44 +1,59 @@
 // import { Button } from '../Button';
 
-export const TaskTitle = ({ task, isEditable, setIsEditable, editTask, editDone }) => {
+import { editDone, editTask } from "../../api/Api";
+
+export const TaskTitle = ({
+  task,
+  isEditable,
+  setIsEditable,
+  updateTaskList,
+}) => {
   // console.log(task.id);
+
   const { id, title, isDone } = task;
   // console.log(id, title, isDone);
 
-  const handleEditTask = (evt) => {
+  const handleEditTask = async (evt) => {
     evt.preventDefault();
-    editTask(task.id, evt.target.title.value);
-    setIsEditable(false);
-  };
 
-  const handleCheck = () => {
-    editDone(id, !isDone);
+    if (evt.target.title.value.length < 2) {
+      return;
+    } else if (evt.target.title.value.length > 64) {
+      return;
+    }
+
+    await editTask(id, evt.target.title.value);
+    await updateTaskList();
+    // editTask(task.id, evt.target.title.value);
+    setIsEditable(false);
   };
 
   const handleCancel = (evt) => {
     evt.preventDefault();
     setIsEditable(false);
-  }
+  };
+
+  const handleCheck = async () => {
+    await editDone(id, !isDone);
+    await updateTaskList();
+    // editDone(id, !isDone);
+  };
 
   if (isEditable) {
     return (
       <header>
-        <form className='editform' onSubmit={handleEditTask}>
-          <textarea 
-            className='editform__textarea' 
-            defaultValue={title} 
-            name="title" />
-          <ul className='editform__control'>
+        <form className="editform" onSubmit={handleEditTask}>
+          <textarea
+            className="editform__textarea"
+            defaultValue={title}
+            name="title"
+          />
+          <ul className="editform__control">
             <li>
-              <button className='approval'>
-                Save
-              </button>
+              <button className="approval">Save</button>
             </li>
             <li>
-              <button 
-                className='cancellation' 
-                onClick={handleCancel} 
-              >
+              <button className="cancellation" onClick={handleCancel}>
                 Cancel
               </button>
             </li>
@@ -51,17 +66,25 @@ export const TaskTitle = ({ task, isEditable, setIsEditable, editTask, editDone 
         </form>
       </header>
     );
-  };
+  }
 
   return (
-    <header className='task__title'>
+    <header className="task__title">
       <label>
-        <input className='task__checkbox' type="checkbox" checked={isDone} onChange={handleCheck} />
+        <input
+          className="task__checkbox"
+          type="checkbox"
+          checked={isDone}
+          onChange={handleCheck}
+        />
       </label>
-      {isDone ? (<s><p className='task__text'>{title}</p></s>
-        ) : (
-          <p className='task__text'>{title}</p>
-        )}
+      {isDone ? (
+        <s>
+          <p className="task__text">{title}</p>
+        </s>
+      ) : (
+        <p className="task__text">{title}</p>
+      )}
     </header>
   );
 };

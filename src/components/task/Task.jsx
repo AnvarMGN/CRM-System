@@ -1,10 +1,18 @@
-import { useState } from 'react'
-import { TaskTitle } from './TaskTitle';
-import { Button } from '../Button';
+import { useState } from "react";
+import { TaskTitle } from "./TaskTitle";
+import { Button } from "../Button";
+import { deleteTask } from "../../api/Api";
 
-export const Task = ({ task, editTask, deleteTask, editDone }) => {
+export const Task = ({ task, updateTaskList }) => {
+  const { id } = task;
   const [isEditable, setEditable] = useState(false);
   // console.log(task.id);
+
+  const handleDeleteTask = async (id) => {
+    await deleteTask(id);
+    await updateTaskList();
+  };
+
   return (
     <li className="card">
       <section className="task">
@@ -12,8 +20,7 @@ export const Task = ({ task, editTask, deleteTask, editDone }) => {
           task={task}
           isEditable={isEditable}
           setIsEditable={setEditable}
-          editTask={editTask}
-          editDone={editDone}
+          updateTaskList={updateTaskList}
         />
         <ul className="task__control">
           {!isEditable && (
@@ -33,7 +40,7 @@ export const Task = ({ task, editTask, deleteTask, editDone }) => {
                   className="removal"
                   icon="trash"
                   label="delete task button"
-                  onClick={() => deleteTask(task.id)}
+                  onClick={() => handleDeleteTask(id)}
                 >
                   {/* Delete */}
                 </Button>
