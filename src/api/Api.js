@@ -1,62 +1,12 @@
-/**
-Методы API:
-
-1. Добавление новой задачи
-
-Method: POST
-URL: /todos
-Request: TodoRequest
-Response: Todo
-
-2. Редактирование задачи
-Method: PUT
-URL: /todos/{id}
-Request: TodoRequest
-Response: Todo
-
-3. Удаление задачи
-Method: DELETE
-URL: /todos/{id}
-Request: N/A
-Response: Todo
-
-4. Получить задачу по id
-Method: GET
-URL: /todos/{id}
-Request: N/A
-Response: Todo
-
-5. Просмотр списка задач
-Method: GET
-URL: /todos?filter={status}
-Request Query Parameters: status?: all | completed | inWork
-Response: MetaResponse<Todo, TodoInfo>
- */
-
 const baseURL = "https://easydev.club/api/v1";
-
-const fetchData = async (URL, options = {}) => {
-  try {
-    const response = await fetch(URL, options);
-    if (!response.ok) {
-      throw new Error("Ошибка: ", response.status);
-    }
-
-    // Cодержит ли ответ JSON
-    const contentType = response.headers.get("content-type");
-    if (contentType && contentType.includes("application/json")) {
-      return await response.json();
-    } else {
-      throw new Error("Ответ не содержит JSON");
-    }
-  } catch (error) {
-    console.log(error.message);
-  }
-};
 
 export const loadTaskList = async (status) => {
   try {
-    const data = await fetchData(`${baseURL}/todos?filter=${status}`);
+    const response = await fetch(`${baseURL}/todos?filter=${status}`);
+    if (!response.ok) {
+      throw new Error("Ошибка: ", response.status);
+    }
+    const data = await response.json();
     // console.log('Список задач: ', data);
     return data;
   } catch (error) {
@@ -65,19 +15,21 @@ export const loadTaskList = async (status) => {
 };
 
 export const addTask = async (title) => {
-  const newTask = { title };
   try {
-    const addTask = await fetchData(`${baseURL}/todos`, {
+    const response = await fetch(`${baseURL}/todos`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json;charset=utf-8",
       },
-      body: JSON.stringify(newTask),
+      body: JSON.stringify({ title }),
     });
-    console.log("Задача успешно добавлена: ", addTask);
 
-    //   await updateTaskList();
-    return addTask;
+    if (!response.ok) {
+      throw new Error("Ошибка: ", response.status);
+    }
+
+    const data = await response.json();
+    console.log("Задача успешно добавлена: ", data);
   } catch (error) {
     console.log("Ошибка при добавлении задачи: ", error.message);
   }
@@ -85,55 +37,47 @@ export const addTask = async (title) => {
 
 export const deleteTask = async (id) => {
   try {
-    const deleteTask = await fetchData(`${baseURL}/todos/${id}`, {
+    const response = await fetch(`${baseURL}/todos/${id}`, {
       method: "DELETE",
     });
-    console.log("Задача успешно удалена: ", deleteTask);
 
-    //   await updateTaskList();
-    return deleteTask;
+    if (!response.ok) {
+      throw new Error("Ошибка: ", response.status);
+    }
+
+    console.log(`Задача с ID:${id} успешно удалена.`);
   } catch (error) {
     console.log("Ошибка при удалении задачи: ", error.message);
   }
 };
 
-export const editTask = async (id, title) => {
-  const newTask = { title };
+export const editTaskAndStatus = async (id, inputData) => {
   try {
-    const editTask = await fetchData(`${baseURL}/todos/${id}`, {
+    const obj = {};
+
+    if (typeof inputData === "string") {
+      obj.title = inputData;
+    } else if (typeof inputData === "boolean") {
+      obj.isDone = inputData;
+    } else {
+      throw new Error("Не верный тип данных ", inputData);
+    }
+
+    const response = await fetch(`${baseURL}/todos/${id}`, {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json;charset=utf-8",
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(newTask),
+      body: JSON.stringify(obj),
     });
-    console.log("Задача успешно отредактирована: ", editTask);
 
-    //   await updateTaskList();
-    return editTask;
+    if (!response.ok) {
+      throw new Error("Ошибка: ", response.status);
+    }
+
+    const data = await response.json();
+    console.log("Задача успешно отредактирована: ", data);
   } catch (error) {
     console.log("Ошибка при редактировании задачи: ", error.message);
-  }
-};
-
-export const editDone = async (id, isDone) => {
-  const status = { isDone };
-  try {
-    const editDone = await fetchData(`${baseURL}/todos/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8",
-      },
-      body: JSON.stringify(status),
-    });
-    console.log("Статус выполнения успешно отредактирован: ", editDone);
-
-    // await updateTaskList();
-    return editDone;
-  } catch (error) {
-    console.log(
-      "Ошибка при редактировании статуса выполнения: ",
-      error.message
-    );
   }
 };

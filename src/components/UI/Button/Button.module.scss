@@ -1,0 +1,38 @@
+.add_button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  width: 90px;
+  height: 30px;
+  border: hidden;
+  border-radius: 5px;
+  background-color: rgb(101, 101, 243);
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+  .img {
+    width: 16px;
+    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(7416%)
+      hue-rotate(9deg) brightness(121%) contrast(119%);
+    /* белый */
+  }
+}
+.add_button:hover {
+  transition: color 0.6s, background-color 0.6s;
+  color: rgb(101, 101, 243);
+  background-color: white;
+  .img {
+    transition: filter 0.6s;
+    filter: brightness(0) saturate(100%) invert(37%) sepia(70%) saturate(2728%)
+      hue-rotate(226deg) brightness(99%) contrast(92%);
+  }
+}
+.add_button:disabled {
+  background: #ccc;
+  pointer-events: none;
+  .img {
+    filter: brightness(0) saturate(100%) invert(90%) sepia(2%) saturate(32%)
+      hue-rotate(356deg) brightness(90%) contrast(97%);
+  }
+}

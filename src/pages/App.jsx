@@ -1,12 +1,12 @@
-import { TaskList } from '../components/task/TaskList'
-import '../style/style.css'
+import { TaskListPage } from "./TaskListPage";
+import styles from "./App.module.scss";
 
-function App() {// TodoListPage ?
+function App() {
   return (
-    <main>
-      <TaskList />
-    </main>
-  )
+    <div className={`${styles.container}`}>
+      <TaskListPage />
+    </div>
+  );
 }
 
-export default App
+export default App;

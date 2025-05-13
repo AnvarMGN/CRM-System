@@ -1,0 +1,20 @@
+.header__addform {
+  display: flex;
+  justify-content: space-between;
+  min-width: 320px;
+  max-width: 400px;
+  gap: 10px;
+  .header__addinput {
+    width: 80%;
+    border: none;
+    border-bottom: solid 1.5px rgb(187, 181, 181);
+    background: #eee;
+    font-size: 15px;
+  }
+}
+
+.alertmessage {
+  font-size: 18px;
+  font-weight: bold;
+  color: red;
+}

@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Button } from "../Button";
-import { addTask } from '../../api/Api';
+import { Button } from "../UI/Button/Button";
+import { addTask } from "../../api/Api";
+import styles from "./TaskAdd.module.scss";
 
-export const TaskAdd = ({updateTaskList}) => {
+export const TaskAdd = ({ updateTaskList }) => {
   const [inputText, setInputText] = useState("");
   const [buttonActiv, setButtonActiv] = useState(false);
 
@@ -27,31 +28,25 @@ export const TaskAdd = ({updateTaskList}) => {
 
   return (
     <>
-      <li>
-        <header>
-          <form className="header__addform" onSubmit={handleAddTask}>
-            <input
-              className="header__addinput"
-              value={inputText}
-              onChange={handleButtonActiv}
-              placeholder="Task To Be Done..."
-              name="title"
-              autoFocus
-              required
-            />
-            <Button
-              className="header__addbutton"
-              disabled={buttonActiv}
-              icon="plus"
-              label="add task button"
-            >
-              Add
-            </Button>
-          </form>
-        </header>
-      </li>
+      <form className={`${styles.header__addform}`} onSubmit={handleAddTask}>
+        <input
+          className={`${styles.header__addinput}`}
+          value={inputText}
+          onChange={handleButtonActiv}
+          placeholder="Task To Be Done..."
+          name="title"
+          autoFocus
+          required
+        />
+        <Button disabled={buttonActiv} icon="plus" label="add task button">
+          Add
+        </Button>
+      </form>
+
       {isValid && (
-        <span className="alertmessage">Лимит вввода: 64 символа.</span>
+        <span className={`${styles.alertmessage}`}>
+          Лимит вввода: 64 символа.
+        </span>
       )}
     </>
   );
