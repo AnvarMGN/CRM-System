@@ -1,23 +1,19 @@
-.navmenu__list {
+.menu {
   min-width: 320px;
   max-width: 400px;
   display: flex;
   justify-content: space-evenly;
   list-style-type: none;
   padding: 0;
-  .navmenu__button {
+  .button {
+    color: gray;
+    font-weight: bold;
+    font-size: 20px;
     background: none;
     border: none;
     cursor: pointer;
-    .navmenu__title {
-      font-weight: bold;
-      font-size: 20px;
-    }
   }
-  .navmenu__button {
-    color: gray;
-  }
-  .navmenu__button--active {
+  .button--active {
     text-decoration: underline;
     color: rgb(101, 101, 243);
   }

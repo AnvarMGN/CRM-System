@@ -1,4 +1,4 @@
-.add_button {
+.primary {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -18,7 +18,7 @@
     /* белый */
   }
 }
-.add_button:hover {
+.primary:hover {
   transition: color 0.6s, background-color 0.6s;
   color: rgb(101, 101, 243);
   background-color: white;
@@ -28,7 +28,7 @@
       hue-rotate(226deg) brightness(99%) contrast(92%);
   }
 }
-.add_button:disabled {
+.primary:disabled {
   background: #ccc;
   pointer-events: none;
   .img {

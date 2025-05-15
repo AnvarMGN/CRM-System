@@ -2,7 +2,7 @@ import styles from "./Button.module.scss";
 
 export const Button = ({ children, icon, label, ...rest }) => {
   return (
-    <button className={`${styles.add_button}`} {...rest}>
+    <button className={`${styles.primary}`} {...rest}>
       {children && <span>{children}</span>}
       {icon && (
         <img

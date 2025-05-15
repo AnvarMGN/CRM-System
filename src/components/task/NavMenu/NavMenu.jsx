@@ -8,14 +8,14 @@ export const NavMenu = ({ countTask, changeStatus, status }) => {
   ];
 
   return (
-    <ul className={`${styles.navmenu__list}`}>
+    <ul className={`${styles.menu}`}>
       {constFilter.map((filter) => (
         <li key={filter.label}>
           <button
-            className={`${styles.navmenu__button} ${filter.value === status && styles["navmenu__button--active"]}`}
+            className={`${styles.button} ${filter.value === status && styles["button--active"]}`}
             onClick={() => changeStatus(filter.value)}
           >
-            <span className={`${styles.navmenu__title}`}>{`${filter.label} (${countTask[filter.value]})`}</span>
+            <span>{`${filter.label} (${countTask[filter.value]})`}</span>
           </button>
         </li>
       ))}

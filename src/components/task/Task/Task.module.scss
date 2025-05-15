@@ -1,0 +1,81 @@
+.card {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  // align-items: stretch;
+  gap: 8px;
+  border-radius: 8px;
+  background: white;
+  box-shadow: 3px 3px 10px rgba(0 0 0 / 0.1);
+  padding: 8px 16px;
+  // overflow: hidden;
+  .task {
+    display: flex;
+    gap: 10px;
+    .form {
+      display: flex;
+      gap: 40px;
+      .form__control {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+      }
+    }
+    .title {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      .checkbox {
+        appearance: none;
+        position: relative;
+        width: 20px;
+        height: 20px;
+        background: #ccc;
+        box-shadow: inset 0 0 5px rgb(0 0 0 / 0.2);
+        border-radius: 50%;
+        border: 1px solid #ffffff;
+        transition: 0.3s;
+        cursor: pointer;
+      }
+      .checkbox:checked {
+        transition: 0.3s;
+        background: rgb(101, 101, 243);
+      }
+      .checkbox::after {
+        content: "\2714";
+        position: absolute;
+        top: -2px;
+        left: 4px;
+        width: 0px;
+        height: 0px;
+        font-size: 14px;
+        transition: 500ms;
+        overflow: hidden;
+        color: white;
+      }
+      .checkbox:checked::after {
+        width: 30px;
+        height: 30px;
+        transition: 0.3s;
+      }
+      .checkbox:disabled {
+        background: #ccc;
+        border-color: #ccc;
+      }
+      .checkbox:disabled::after {
+        filter: grayscale(100%);
+      }
+      .text {
+        margin: 0;
+        width: 248px;
+        white-space: normal; /* Разрешает перенос текста */
+        word-wrap: break-word; /* Переносит длинные слова, если они не помещаются */
+      }
+    }
+    .task__control {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Button } from "../UI/Button/Button";
-import { addTask } from "../../api/Api";
+import { Button } from "../../UI/Button/Button/Button";
+import { addTask } from "../../../api/Api";
 import styles from "./TaskAdd.module.scss";
 
 export const TaskAdd = ({ updateTaskList }) => {
@@ -28,9 +28,9 @@ export const TaskAdd = ({ updateTaskList }) => {
 
   return (
     <>
-      <form className={`${styles.header__addform}`} onSubmit={handleAddTask}>
+      <form className={`${styles.form}`} onSubmit={handleAddTask}>
         <input
-          className={`${styles.header__addinput}`}
+          className={`${styles.input}`}
           value={inputText}
           onChange={handleButtonActiv}
           placeholder="Task To Be Done..."
@@ -38,15 +38,13 @@ export const TaskAdd = ({ updateTaskList }) => {
           autoFocus
           required
         />
-        <Button disabled={buttonActiv} icon="plus" label="add task button">
+        <Button icon="plus" label="add task button" disabled={buttonActiv}>
           Add
         </Button>
       </form>
 
       {isValid && (
-        <span className={`${styles.alertmessage}`}>
-          Лимит вввода: 64 символа.
-        </span>
+        <span className={`${styles.alert}`}>Лимит вввода: 64 символа.</span>
       )}
     </>
   );

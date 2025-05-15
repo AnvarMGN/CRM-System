@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { TaskAdd } from "../components/task/TaskAdd";
-import { NavMenu } from "../components/task/navMenu";
-import { Task } from "../components/task/Task";
-import { loadTaskList } from "../api/Api";
+import { TaskAdd } from "../../components/task/TaskAdd/TaskAdd";
+import { NavMenu } from "../../components/task/NavMenu/NavMenu";
+import { Task } from "../../components/task/Task/Task";
+import { loadTaskList } from '../../api/Api';
 import styles from "./TaskListPage.module.scss";
 
 export const TaskListPage = () => {
@@ -44,11 +44,11 @@ export const TaskListPage = () => {
         />
       </nav>
       <main>
-        <ol className={`${styles.list}`}>
+        <ul className={`${styles.list}`}>
           {list.map((task) => (
             <Task task={task} key={task.id} updateTaskList={getTaskList} />
           ))}
-        </ol>
+        </ul>
       </main>
     </>
   );

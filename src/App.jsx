@@ -1,4 +1,4 @@
-import { TaskListPage } from "./TaskListPage";
+import { TaskListPage } from "./pages/TaskListPage/TaskListPage";
 import styles from "./App.module.scss";
 
 function App() {
