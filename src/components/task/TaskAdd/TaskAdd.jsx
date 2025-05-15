@@ -5,16 +5,17 @@ import styles from "./TaskAdd.module.scss";
 
 export const TaskAdd = ({ updateTaskList }) => {
   const [inputText, setInputText] = useState("");
-  const [buttonActiv, setButtonActiv] = useState(false);
+  const [buttonActiv, setButtonActiv] = useState(true);
 
   const isValid = inputText.length === 64;
 
   const handleButtonActiv = (evt) => {
-    if (evt.target.value.length < 2) {
-      setButtonActiv(true);
-    } else {
-      setButtonActiv(false);
-    }
+    // if (evt.target.value.length < 2) {
+    //   setButtonActiv(true);
+    // } else {
+    //   setButtonActiv(false);
+    // }
+    setButtonActiv(evt.target.value.length < 2);
     setInputText(evt.target.value.slice(0, 64));
   };
 
@@ -22,8 +23,8 @@ export const TaskAdd = ({ updateTaskList }) => {
     evt.preventDefault();
     await addTask(evt.target.title.value);
     await updateTaskList();
-    // addTask(evt.target.title.value);
     setInputText("");
+    setButtonActiv(true);
   };
 
   return (
@@ -36,7 +37,7 @@ export const TaskAdd = ({ updateTaskList }) => {
           placeholder="Task To Be Done..."
           name="title"
           autoFocus
-          required
+          // required
         />
         <Button icon="plus" label="add task button" disabled={buttonActiv}>
           Add
