@@ -2,7 +2,12 @@ import { useState } from "react";
 import { IconButton } from "../../UI/Button/IconButton/IconButton";
 import { deleteTask, editTaskAndStatus } from "../../../api/Api";
 import styles from "./Task.module.scss";
-import type { Todo } from "../../../types/todo";
+
+interface Todo {
+  id: number;
+  title: string;
+  isDone: boolean;
+}
 
 export const Task: React.FC<{
   task: Todo;

@@ -3,9 +3,9 @@ import { Button } from "../../UI/Button/Button/Button";
 import { addTask } from "../../../api/Api";
 import styles from "./TaskAdd.module.scss";
 
-export const TaskAdd: React.FC<{ updateTaskList: (newStatus: string) => void }> = ({
-  updateTaskList,
-}) => {
+export const TaskAdd: React.FC<{
+  updateTaskList: (newStatus: string) => void;
+}> = ({ updateTaskList }) => {
   const [inputText, setInputText] = useState("");
   const [buttonActiv, setButtonActiv] = useState(true);
 
@@ -25,7 +25,7 @@ export const TaskAdd: React.FC<{ updateTaskList: (newStatus: string) => void }> 
   const handleAddTask = async (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     await addTask(inputText);
-    await updateTaskList('all');
+    await updateTaskList("all");
     setInputText("");
     setButtonActiv(true);
   };
@@ -42,7 +42,12 @@ export const TaskAdd: React.FC<{ updateTaskList: (newStatus: string) => void }> 
           autoFocus
           // required
         />
-        <Button className="primary" icon="plus" label="add task button" disabled={buttonActiv}>
+        <Button
+          className="primary"
+          icon="plus"
+          label="add task button"
+          disabled={buttonActiv}
+        >
           Add
         </Button>
       </form>

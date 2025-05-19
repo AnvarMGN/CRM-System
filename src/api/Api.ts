@@ -1,4 +1,26 @@
-import type { PartTodo, Todo, TaskListResponse } from "../types/todo";
+interface Todo {
+  id: number;
+  title: string;
+  isDone: boolean;
+}
+
+interface TodoInfo {
+  all: number;
+  completed: number;
+  inWork: number;
+}
+
+type TaskList = Todo[];
+
+interface TaskListResponse {
+  data: TaskList;
+  info: TodoInfo;
+}
+
+type PartTodo = {
+  title?: string;
+  isDone?: boolean;
+};
 
 const baseURL = "https://easydev.club/api/v1".trim();
 

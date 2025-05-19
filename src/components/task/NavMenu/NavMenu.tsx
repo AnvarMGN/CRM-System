@@ -1,5 +1,15 @@
-import type { ConstFilterTypes, TodoInfo } from "../../../types/todo";
 import styles from "./NavMenu.module.scss";
+
+interface TodoInfo {
+  all: number;
+  completed: number;
+  inWork: number;
+}
+
+type ConstFilterTypes = {
+  value: "all" | "inWork" | "completed";
+  label: string;
+};
 
 export const NavMenu: React.FC<{
   countTask: TodoInfo;

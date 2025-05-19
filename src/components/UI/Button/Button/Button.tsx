@@ -1,5 +1,13 @@
-import type { ButtonProps } from "../../../../types/todo";
 import styles from "./Button.module.scss";
+
+interface ButtonProps {
+  className: string;
+  children?: React.ReactNode;
+  icon?: string;
+  label: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+}
 
 export const Button: React.FC<ButtonProps> = ({
   className,

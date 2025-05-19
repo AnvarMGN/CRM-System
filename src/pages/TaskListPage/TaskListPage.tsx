@@ -4,7 +4,25 @@ import { NavMenu } from "../../components/task/NavMenu/NavMenu";
 import { Task } from "../../components/task/Task/Task";
 import { loadTaskList } from "../../api/Api";
 import styles from "./TaskListPage.module.scss";
-import type { TaskList, TaskListResponse } from "../../types/todo";
+
+interface Todo {
+  id: number;
+  title: string;
+  isDone: boolean;
+}
+
+interface TodoInfo {
+  all: number;
+  completed: number;
+  inWork: number;
+}
+
+type TaskList = Todo[];
+
+interface TaskListResponse {
+  data: TaskList;
+  info: TodoInfo;
+}
 
 export const TaskListPage = () => {
   const [list, setList] = useState<TaskList>([]);
