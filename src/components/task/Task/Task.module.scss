@@ -12,7 +12,10 @@
   .task {
     display: flex;
     gap: 10px;
-    .form {
+    .edit_form{
+      display: flex;
+      flex-direction: column;
+      .form {
       display: flex;
       gap: 40px;
       .form__control {
@@ -20,6 +23,7 @@
         flex-direction: row;
         gap: 10px;
       }
+    }
     }
     .title {
       display: flex;
@@ -78,4 +82,10 @@
       align-items: center;
     }
   }
+}
+
+.alert {
+  font-size: 15px;
+  font-weight: bold;
+  color: red;
 }
