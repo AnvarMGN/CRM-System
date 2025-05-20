@@ -1,4 +1,4 @@
-import type { PartTodo, TaskListResponse, Todo } from "../types/types";
+import type { TaskListResponse, TodoList, TodoPart } from "../types/types";
 
 const baseURL = "https://easydev.club/api/v1".trim();
 
@@ -21,7 +21,7 @@ export const fetchTaskList = async (
   }
 };
 
-export const addTask = async (title: string): Promise<Todo> => {
+export const addTask = async (title: string): Promise<TodoList> => {
   try {
     const response = await fetch(`${baseURL}/todos`, {
       method: "POST",
@@ -35,7 +35,7 @@ export const addTask = async (title: string): Promise<Todo> => {
       throw new Error(`Ошибка при добавлении задачи: ${response.status}`);
     }
 
-    const data: Todo = await response.json();
+    const data: TodoList = await response.json();
     console.log("Задача успешно добавлена: ", data);
     return data;
   } catch (error) {
@@ -67,9 +67,9 @@ export const deleteTask = async (id: number): Promise<string> => {
 export const editTaskAndStatus = async (
   id: number,
   inputData: string | boolean
-): Promise<Todo> => {
+): Promise<TodoList> => {
   try {
-    const obj: PartTodo = {};
+    const obj: TodoPart = {};
 
     if (typeof inputData === "string") {
       obj.title = inputData;
@@ -77,7 +77,7 @@ export const editTaskAndStatus = async (
       obj.isDone = inputData;
     } else {
       throw new Error(`Не верынй тип данных: ${inputData}`);
-    }
+    };
 
     const response = await fetch(`${baseURL}/todos/${id}`, {
       method: "PUT",
@@ -91,7 +91,7 @@ export const editTaskAndStatus = async (
       throw new Error(`Ошибка при редактировании задачи: ${response.status}`);
     }
 
-    const data: Todo = await response.json();
+    const data: TodoList = await response.json();
     console.log("Задача успешно отредактирована: ", data);
     return data;
   } catch (error) {

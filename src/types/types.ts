@@ -1,4 +1,4 @@
-export interface Todo {
+export interface TodoList {
   id: number;
   title: string;
   isDone: boolean;
@@ -11,11 +11,11 @@ export interface TodoInfo {
 }
 
 export interface TaskListResponse {
-  data: Todo[];
+  data: TodoList[];
   info: TodoInfo;
 }
 
-export type PartTodo = {
+export type TodoPart = {
   title?: string;
   isDone?: boolean;
 };

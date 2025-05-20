@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { TaskAdd } from "../../components/task/TaskAdd/TaskAdd";
-import { NavMenu } from "../../components/task/NavMenu/NavMenu";
-import { Task } from "../../components/task/Task/Task";
+import { TaskFilter } from "../../components/task/TaskFilter/TaskFilter";
+import { TaskItem } from "../../components/task/TaskItem/TaskItem";
 import { fetchTaskList } from "../../api/Api";
 import styles from "./TaskListPage.module.scss";
-import type { TaskListResponse, Todo } from "../../types/types";
+import type { TaskListResponse, TodoList } from "../../types/types";
 
 export const TaskListPage = () => {
-  const [list, setList] = useState<Todo[]>([]);
+  const [list, setList] = useState<TodoList[]>([]);
   const [status, setStatus] = useState("all");
   const [countTask, setCountTask] = useState({
     all: 0,
@@ -41,7 +41,7 @@ export const TaskListPage = () => {
         <TaskAdd currentStatus={status} updateTaskList={getTaskList} />
       </header>
       <nav>
-        <NavMenu
+        <TaskFilter
           currentStatus={status}
           changeStatus={changeStatus}
           countTask={countTask}
@@ -50,7 +50,7 @@ export const TaskListPage = () => {
       <main>
         <ul className={`${styles.list}`}>
           {list.map((task) => (
-            <Task
+            <TaskItem
               currentStatus={status}
               updateTaskList={getTaskList}
               task={task}

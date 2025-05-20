@@ -1,39 +1,45 @@
 import { useState } from "react";
-import { IconButton } from "../../UI/Button/IconButton/IconButton";
+import { Button } from "../../UI/Button/Button/Button";
 import { deleteTask, editTaskAndStatus } from "../../../api/Api";
-import styles from "./Task.module.scss";
-import type { Todo } from "../../../types/types";
+import styles from "./TaskItem.module.scss";
+import type { TodoList } from "../../../types/types";
 
-interface TaskTypes {
+interface TaskItemTypes {
   currentStatus: string;
   updateTaskList: (status: string) => void;
-  task: Todo;
+  task: TodoList;
 }
 
-export const Task: React.FC<TaskTypes> = ({
+export const TaskItem: React.FC<TaskItemTypes> = ({
   currentStatus,
   updateTaskList,
   task,
 }) => {
   const { id, title, isDone } = task;
   const [isEditable, setEditable] = useState(false);
-  const [inputText, setInputText] = useState("");
+  const [inputValue, setInputValue] = useState("");
+  const [buttonActiv, setButtonActiv] = useState(false);
+  const [alert, setAlert] = useState<string | null>(null);
 
-  const isValid = inputText.length === 64;
-
-  const onChangeTextInput = (evt: React.ChangeEvent<HTMLInputElement>) => {
+  const changeInputValue = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const text = evt.target.value;
-    setInputText(text);
+    setInputValue(text);
+
+    if (text.length < 2) {
+      setAlert("Введите более 2 символов.");
+      setButtonActiv(true);
+    } else if (text.length > 64) {
+      setAlert("Лимит ввода 64 символа.");
+      setButtonActiv(true);
+    } else {
+      setAlert(null);
+      setButtonActiv(false);
+    };
   };
 
   const handleEditTask = async (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-    if (inputText.length < 2) {
-      return;
-    } else if (inputText.length > 64) {
-      return;
-    }
-    await editTaskAndStatus(id, inputText);
+    await editTaskAndStatus(id, inputValue);
     await updateTaskList(currentStatus);
     setEditable(false);
   };
@@ -62,25 +68,26 @@ export const Task: React.FC<TaskTypes> = ({
               <input
                 name="title"
                 defaultValue={title}
+                onChange={changeInputValue}
                 minLength={2}
-                maxLength={64}
-                onChange={onChangeTextInput}
+                maxLength={65}
               />
               <div className={`${styles.form__control}`}>
-                <IconButton className="primary" icon="save" label="save icon" />
-                <IconButton
-                  className="danger"
+                <Button
+                  className="primary_icon"
+                  icon="save"
+                  label="save icon"
+                  disabled={buttonActiv}
+                />
+                <Button
+                  className="danger_icon"
                   icon="cancel"
                   label="cancel icon"
                   onClick={handleCancel}
                 />
               </div>
             </form>
-            {isValid && (
-              <span className={`${styles.alert}`}>
-                Лимит вввода: 64 символа.
-              </span>
-            )}
+            {alert && <span className={`${styles.alert}`}>{alert}</span>}
           </div>
         ) : (
           <>
@@ -96,14 +103,14 @@ export const Task: React.FC<TaskTypes> = ({
               </p>
             </div>
             <div className={`${styles.task__control}`}>
-              <IconButton
-                className="primary"
+              <Button
+                className="primary_icon"
                 icon="pencil"
                 label="edit icon"
                 onClick={() => setEditable(true)}
               />
-              <IconButton
-                className="danger"
+              <Button
+                className="danger_icon"
                 icon="trash"
                 label="delete icon"
                 onClick={() => handleDeleteTask(id)}

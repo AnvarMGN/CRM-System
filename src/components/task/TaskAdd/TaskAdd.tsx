@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "../../UI/Button/Button/Button";
 import { addTask } from "../../../api/Api";
 import styles from "./TaskAdd.module.scss";
@@ -8,28 +8,37 @@ interface TaskAddTypes {
   updateTaskList: (status: string) => void;
 }
 
-export const TaskAdd: React.FC<TaskAddTypes> = ({ currentStatus, updateTaskList }) => {
-  const [inputText, setInputText] = useState("");
+export const TaskAdd: React.FC<TaskAddTypes> = ({
+  currentStatus,
+  updateTaskList,
+}) => {
+  const [inputValue, setInputValue] = useState("");
   const [buttonActiv, setButtonActiv] = useState(true);
+  const [alert, setAlert] = useState<string | null>(
+    "Введите более 2 символов."
+  );
 
-  const isValid = inputText.length === 64;
+  const changeInputValue = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    const text = evt.target.value;
+    setInputValue(text);
 
-  const handleButtonActiv = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    // if (evt.target.value.length < 2) {
-    //   setButtonActiv(true);
-    // } else {
-    //   setButtonActiv(false);
-    // }
-    const text = evt.target.value.slice(0, 64);
-    setButtonActiv(text.length < 2);
-    setInputText(text);
+    if (text.length < 2) {
+      setAlert("Введите более 2 символов.");
+      setButtonActiv(true);
+    } else if (text.length > 64) {
+      setAlert("Лимит ввода 64 символа.");
+      setButtonActiv(true);
+    } else {
+      setAlert(null);
+      setButtonActiv(false);
+    }
   };
 
   const handleAddTask = async (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-    await addTask(inputText);
+    await addTask(inputValue);
     await updateTaskList(currentStatus);
-    setInputText("");
+    setInputValue("");
     setButtonActiv(true);
   };
 
@@ -39,10 +48,12 @@ export const TaskAdd: React.FC<TaskAddTypes> = ({ currentStatus, updateTaskList 
         <input
           className={`${styles.input}`}
           name="title"
-          value={inputText}
-          onChange={handleButtonActiv}
+          value={inputValue}
+          onChange={changeInputValue}
           placeholder="Task To Be Done..."
           autoFocus
+          minLength={2}
+          maxLength={65}
           // required
         />
         <Button
@@ -54,10 +65,8 @@ export const TaskAdd: React.FC<TaskAddTypes> = ({ currentStatus, updateTaskList 
           Add
         </Button>
       </form>
-
-      {isValid && (
-        <span className={`${styles.alert}`}>Лимит вввода: 64 символа.</span>
-      )}
+      
+      {alert && <span className={`${styles.alert}`}>{alert}</span>}
     </>
   );
 };

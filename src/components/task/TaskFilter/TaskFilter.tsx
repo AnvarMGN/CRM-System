@@ -1,7 +1,7 @@
 import type { TodoInfo } from "../../../types/types";
-import styles from "./NavMenu.module.scss";
+import styles from "./TaskFilter.module.scss";
 
-interface NavMenuTypes {
+interface TaskFilterTypes {
   currentStatus: string;
   changeStatus: (status: string) => void;
   countTask: TodoInfo;
@@ -12,7 +12,7 @@ type ConstFilterTypes = {
   label: string;
 };
 
-export const NavMenu: React.FC<NavMenuTypes> = ({
+export const TaskFilter: React.FC<TaskFilterTypes> = ({
   currentStatus,
   changeStatus,
   countTask,
