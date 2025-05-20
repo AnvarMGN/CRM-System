@@ -14,9 +14,7 @@ export const TaskAdd: React.FC<TaskAddTypes> = ({
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [buttonActiv, setButtonActiv] = useState(true);
-  const [alert, setAlert] = useState<string | null>(
-    "Введите более 2 символов."
-  );
+  const [alert, setAlert] = useState<string | null>(null);
 
   const changeInputValue = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const text = evt.target.value;
@@ -39,6 +37,7 @@ export const TaskAdd: React.FC<TaskAddTypes> = ({
     await addTask(inputValue);
     await updateTaskList(currentStatus);
     setInputValue("");
+    setAlert(null);
     setButtonActiv(true);
   };
 
@@ -65,7 +64,7 @@ export const TaskAdd: React.FC<TaskAddTypes> = ({
           Add
         </Button>
       </form>
-      
+
       {alert && <span className={`${styles.alert}`}>{alert}</span>}
     </>
   );
