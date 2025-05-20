@@ -2,17 +2,19 @@ import { useState } from "react";
 import { IconButton } from "../../UI/Button/IconButton/IconButton";
 import { deleteTask, editTaskAndStatus } from "../../../api/Api";
 import styles from "./Task.module.scss";
+import type { Todo } from "../../../types/types";
 
-interface Todo {
-  id: number;
-  title: string;
-  isDone: boolean;
+interface TaskTypes {
+  currentStatus: string;
+  updateTaskList: (status: string) => void;
+  task: Todo;
 }
 
-export const Task: React.FC<{
-  task: Todo;
-  updateTaskList: (newStatus: string) => void;
-}> = ({ task, updateTaskList }) => {
+export const Task: React.FC<TaskTypes> = ({
+  currentStatus,
+  updateTaskList,
+  task,
+}) => {
   const { id, title, isDone } = task;
   const [isEditable, setEditable] = useState(false);
   const [inputText, setInputText] = useState("");
@@ -32,7 +34,7 @@ export const Task: React.FC<{
       return;
     }
     await editTaskAndStatus(id, inputText);
-    await updateTaskList("all");
+    await updateTaskList(currentStatus);
     setEditable(false);
   };
 
@@ -43,12 +45,12 @@ export const Task: React.FC<{
 
   const handleCheckBox = async () => {
     await editTaskAndStatus(id, !isDone);
-    await updateTaskList("all");
+    await updateTaskList(currentStatus);
   };
 
   const handleDeleteTask = async (id: number) => {
     await deleteTask(id);
-    await updateTaskList("all");
+    await updateTaskList(currentStatus);
   };
 
   return (

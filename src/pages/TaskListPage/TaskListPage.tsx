@@ -2,30 +2,12 @@ import { useEffect, useState } from "react";
 import { TaskAdd } from "../../components/task/TaskAdd/TaskAdd";
 import { NavMenu } from "../../components/task/NavMenu/NavMenu";
 import { Task } from "../../components/task/Task/Task";
-import { loadTaskList } from "../../api/Api";
+import { fetchTaskList } from "../../api/Api";
 import styles from "./TaskListPage.module.scss";
-
-interface Todo {
-  id: number;
-  title: string;
-  isDone: boolean;
-}
-
-interface TodoInfo {
-  all: number;
-  completed: number;
-  inWork: number;
-}
-
-type TaskList = Todo[];
-
-interface TaskListResponse {
-  data: TaskList;
-  info: TodoInfo;
-}
+import type { TaskListResponse, Todo } from "../../types/types";
 
 export const TaskListPage = () => {
-  const [list, setList] = useState<TaskList>([]);
+  const [list, setList] = useState<Todo[]>([]);
   const [status, setStatus] = useState("all");
   const [countTask, setCountTask] = useState({
     all: 0,
@@ -40,15 +22,12 @@ export const TaskListPage = () => {
 
   const getTaskList = async (newStatus: string) => {
     try {
-      const data: TaskListResponse = await loadTaskList(newStatus);
+      const data: TaskListResponse = await fetchTaskList(newStatus);
       // console.log(data);
       setList(data.data);
       setCountTask(data.info);
     } catch (error) {
-      console.log(
-        "Ошибка при загрузке списка задач: ",
-        (error as Error).message
-      );
+      alert(`Ошибка при загрузке списка задача: ${(error as Error).message}`);
     }
   };
 
@@ -59,19 +38,24 @@ export const TaskListPage = () => {
   return (
     <>
       <header>
-        <TaskAdd updateTaskList={getTaskList} />
+        <TaskAdd currentStatus={status} updateTaskList={getTaskList} />
       </header>
       <nav>
         <NavMenu
-          countTask={countTask}
+          currentStatus={status}
           changeStatus={changeStatus}
-          status={status}
+          countTask={countTask}
         />
       </nav>
       <main>
         <ul className={`${styles.list}`}>
           {list.map((task) => (
-            <Task task={task} key={task.id} updateTaskList={getTaskList} />
+            <Task
+              currentStatus={status}
+              updateTaskList={getTaskList}
+              task={task}
+              key={task.id}
+            />
           ))}
         </ul>
       </main>

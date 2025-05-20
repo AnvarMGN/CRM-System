@@ -1,54 +1,27 @@
-interface Todo {
-  id: number;
-  title: string;
-  isDone: boolean;
-}
-
-interface TodoInfo {
-  all: number;
-  completed: number;
-  inWork: number;
-}
-
-type TaskList = Todo[];
-
-interface TaskListResponse {
-  data: TaskList;
-  info: TodoInfo;
-}
-
-type PartTodo = {
-  title?: string;
-  isDone?: boolean;
-};
+import type { PartTodo, TaskListResponse, Todo } from "../types/types";
 
 const baseURL = "https://easydev.club/api/v1".trim();
 
-export const loadTaskList = async (
+export const fetchTaskList = async (
   status: string
 ): Promise<TaskListResponse> => {
   try {
     const response = await fetch(`${baseURL}/todos?filter=${status}`);
+
     if (!response.ok) {
-      throw new Error(`Ошибка: ${response.status}`);
+      throw new Error(`Ошибка загрузки списка задач: ${response.status}`);
     }
+
     const data: TaskListResponse = await response.json();
     // console.log('Список задач: ', data);
     return data;
   } catch (error) {
-    console.error("Ошибка загрузки списка задач: ", (error as Error).message);
-    return {
-      data: [],
-      info: {
-        all: 0,
-        completed: 0,
-        inWork: 0,
-      },
-    };
+    console.error("Ошибка", (error as Error).message);
+    throw error;
   }
 };
 
-export const addTask = async (title: string) => {
+export const addTask = async (title: string): Promise<Todo> => {
   try {
     const response = await fetch(`${baseURL}/todos`, {
       method: "POST",
@@ -59,36 +32,42 @@ export const addTask = async (title: string) => {
     });
 
     if (!response.ok) {
-      throw new Error(`Ошибка: ${response.status}`);
+      throw new Error(`Ошибка при добавлении задачи: ${response.status}`);
     }
 
     const data: Todo = await response.json();
     console.log("Задача успешно добавлена: ", data);
+    return data;
   } catch (error) {
-    console.log("Ошибка при добавлении задачи: ", (error as Error).message);
+    console.error("Ошибка: ", (error as Error).message);
+    throw error;
   }
 };
 
-export const deleteTask = async (id: number) => {
+export const deleteTask = async (id: number): Promise<string> => {
   try {
     const response = await fetch(`${baseURL}/todos/${id}`, {
       method: "DELETE",
     });
 
     if (!response.ok) {
-      throw new Error(`Ошибка: ${response.status}`);
+      throw new Error(`Ошибка при удалении задачи: ${response.status}`);
     }
 
     console.log(`Задача с ID:${id} успешно удалена.`);
+
+    const data = await response.text();
+    return data;
   } catch (error) {
-    console.log("Ошибка при удалении задачи: ", (error as Error).message);
+    console.log("Ошибка: ", (error as Error).message);
+    throw error;
   }
 };
 
 export const editTaskAndStatus = async (
   id: number,
   inputData: string | boolean
-) => {
+): Promise<Todo> => {
   try {
     const obj: PartTodo = {};
 
@@ -109,12 +88,14 @@ export const editTaskAndStatus = async (
     });
 
     if (!response.ok) {
-      throw new Error(`Ошибка: ${response.status}`);
+      throw new Error(`Ошибка при редактировании задачи: ${response.status}`);
     }
 
     const data: Todo = await response.json();
     console.log("Задача успешно отредактирована: ", data);
+    return data;
   } catch (error) {
-    console.log("Ошибка при редактировании задачи: ", (error as Error).message);
+    console.log("Ошибка: ", (error as Error).message);
+    throw error;
   }
 };

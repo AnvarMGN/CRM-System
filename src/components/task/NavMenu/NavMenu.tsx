@@ -1,9 +1,10 @@
+import type { TodoInfo } from "../../../types/types";
 import styles from "./NavMenu.module.scss";
 
-interface TodoInfo {
-  all: number;
-  completed: number;
-  inWork: number;
+interface NavMenuTypes {
+  currentStatus: string;
+  changeStatus: (status: string) => void;
+  countTask: TodoInfo;
 }
 
 type ConstFilterTypes = {
@@ -11,11 +12,11 @@ type ConstFilterTypes = {
   label: string;
 };
 
-export const NavMenu: React.FC<{
-  countTask: TodoInfo;
-  changeStatus: (newStatus: string) => void;
-  status: string;
-}> = ({ countTask, changeStatus, status }) => {
+export const NavMenu: React.FC<NavMenuTypes> = ({
+  currentStatus,
+  changeStatus,
+  countTask,
+}) => {
   const constFilter: ConstFilterTypes[] = [
     { value: "all", label: "Все" },
     { value: "inWork", label: "в работе" },
@@ -28,7 +29,7 @@ export const NavMenu: React.FC<{
         <li key={filter.label}>
           <button
             className={`${styles.button} ${
-              filter.value === status && styles["button--active"]
+              filter.value === currentStatus && styles["button--active"]
             }`}
             onClick={() => changeStatus(filter.value)}
           >

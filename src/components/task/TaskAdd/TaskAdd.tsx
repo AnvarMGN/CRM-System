@@ -3,9 +3,12 @@ import { Button } from "../../UI/Button/Button/Button";
 import { addTask } from "../../../api/Api";
 import styles from "./TaskAdd.module.scss";
 
-export const TaskAdd: React.FC<{
-  updateTaskList: (newStatus: string) => void;
-}> = ({ updateTaskList }) => {
+interface TaskAddTypes {
+  currentStatus: string;
+  updateTaskList: (status: string) => void;
+}
+
+export const TaskAdd: React.FC<TaskAddTypes> = ({ currentStatus, updateTaskList }) => {
   const [inputText, setInputText] = useState("");
   const [buttonActiv, setButtonActiv] = useState(true);
 
@@ -25,7 +28,7 @@ export const TaskAdd: React.FC<{
   const handleAddTask = async (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     await addTask(inputText);
-    await updateTaskList("all");
+    await updateTaskList(currentStatus);
     setInputText("");
     setButtonActiv(true);
   };
