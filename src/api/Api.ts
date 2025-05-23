@@ -66,25 +66,15 @@ export const deleteTask = async (id: number): Promise<string> => {
 
 export const editTaskAndStatus = async (
   id: number,
-  inputData: string | boolean
+  inputData: TodoPart
 ): Promise<TodoList> => {
   try {
-    const obj: TodoPart = {};
-
-    if (typeof inputData === "string") {
-      obj.title = inputData;
-    } else if (typeof inputData === "boolean") {
-      obj.isDone = inputData;
-    } else {
-      throw new Error(`Не верынй тип данных: ${inputData}`);
-    };
-
     const response = await fetch(`${baseURL}/todos/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(obj),
+      body: JSON.stringify(inputData),
     });
 
     if (!response.ok) {

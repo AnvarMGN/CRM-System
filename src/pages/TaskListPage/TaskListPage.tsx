@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import { TaskAdd } from "../../components/task/TaskAdd/TaskAdd";
-import { TaskFilter } from "../../components/task/TaskFilter/TaskFilter";
-import { TaskItem } from "../../components/task/TaskItem/TaskItem";
 import { fetchTaskList } from "../../api/Api";
+// import { TaskAdd } from "../../components/task/TaskAdd/TaskAdd";
+// import { TaskFilter } from "../../components/task/TaskFilter/TaskFilter";
+// import { TaskItem } from "../../components/task/TaskItem/TaskItem";
 import styles from "./TaskListPage.module.scss";
 import type { TaskListResponse, TodoList } from "../../types/types";
+import { TaskAddAntd } from "../../components/task/TaskAddAntd/TaskAddAntd";
+import { TaskFilterAntd } from "../../components/task/TaskFilterAntd/TaskFilterAntd";
+import { TaskItemAntd } from "../../components/task/TaskItemAntd/TaskItemAntd";
 
 export const TaskListPage = () => {
   const [list, setList] = useState<TodoList[]>([]);
@@ -38,17 +41,23 @@ export const TaskListPage = () => {
   return (
     <>
       <header>
-        <TaskAdd currentStatus={status} updateTaskList={getTaskList} />
+        <TaskAddAntd currentStatus={status} updateTaskList={getTaskList} />
+        {/* <TaskAdd currentStatus={status} updateTaskList={getTaskList} /> */}
       </header>
       <nav>
-        <TaskFilter
+        <TaskFilterAntd
           currentStatus={status}
           changeStatus={changeStatus}
           countTask={countTask}
         />
+        {/* <TaskFilter
+          currentStatus={status}
+          changeStatus={changeStatus}
+          countTask={countTask}
+        /> */}
       </nav>
-      <main>
-        <ul className={`${styles.list}`}>
+      <main className={`${styles.list}`}>
+        {/* <ul className={`${styles.list}`}>
           {list.map((task) => (
             <TaskItem
               currentStatus={status}
@@ -57,7 +66,15 @@ export const TaskListPage = () => {
               key={task.id}
             />
           ))}
-        </ul>
+        </ul> */}
+        {list.map((task) => (
+          <TaskItemAntd
+            currentStatus={status}
+            updateTaskList={getTaskList}
+            task={task}
+            key={task.id}
+          />
+        ))}
       </main>
     </>
   );

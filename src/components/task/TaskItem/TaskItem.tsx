@@ -34,12 +34,16 @@ export const TaskItem: React.FC<TaskItemTypes> = ({
     } else {
       setAlert(null);
       setButtonActiv(false);
-    };
+    }
   };
 
   const handleEditTask = async (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-    await editTaskAndStatus(id, inputValue);
+    const editData = {
+      isDone: isDone,
+      title: inputValue,
+    };
+    await editTaskAndStatus(id, editData);
     await updateTaskList(currentStatus);
     setEditable(false);
   };
@@ -50,7 +54,11 @@ export const TaskItem: React.FC<TaskItemTypes> = ({
   };
 
   const handleCheckBox = async () => {
-    await editTaskAndStatus(id, !isDone);
+    const editData = {
+      isDone: !isDone,
+      title: inputValue,
+    };
+    await editTaskAndStatus(id, editData);
     await updateTaskList(currentStatus);
   };
 

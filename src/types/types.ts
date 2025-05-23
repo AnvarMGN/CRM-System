@@ -16,6 +16,6 @@ export interface TaskListResponse {
 }
 
 export type TodoPart = {
-  title?: string;
   isDone?: boolean;
+  title?: string;
 };
