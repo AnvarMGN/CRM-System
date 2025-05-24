@@ -1,0 +1,26 @@
+.form_control {
+  display: flex;
+  margin: 0px;
+  padding: 0px;
+  gap: 5px;
+}
+
+.card {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  .title {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    .text {
+      width: 248px;
+      word-wrap: break-word;
+    }
+  }
+  .control {
+    display: flex;
+    gap: 10px;
+  }
+}
