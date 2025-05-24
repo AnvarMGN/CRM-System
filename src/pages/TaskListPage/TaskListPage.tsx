@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
-import { fetchTaskList } from "../../api/Api";
-// import { TaskAdd } from "../../components/task/TaskAdd/TaskAdd";
-// import { TaskFilter } from "../../components/task/TaskFilter/TaskFilter";
-// import { TaskItem } from "../../components/task/TaskItem/TaskItem";
 import styles from "./TaskListPage.module.scss";
-import type { TaskListResponse, TodoList } from "../../types/types";
+import type { TodoList } from "../../types/types";
 import { TaskAddAntd } from "../../components/task/TaskAddAntd/TaskAddAntd";
 import { TaskFilterAntd } from "../../components/task/TaskFilterAntd/TaskFilterAntd";
 import { TaskItemAntd } from "../../components/task/TaskItemAntd/TaskItemAntd";
+import { fetchTodoList } from "../../api/apiAxios";
 
 export const TaskListPage = () => {
   const [list, setList] = useState<TodoList[]>([]);
@@ -25,11 +22,14 @@ export const TaskListPage = () => {
 
   const getTaskList = async (newStatus: string) => {
     try {
-      const data: TaskListResponse = await fetchTaskList(newStatus);
+      const data = await fetchTodoList(newStatus);
       // console.log(data);
       setList(data.data);
       setCountTask(data.info);
     } catch (error) {
+      console.log(
+        `Ошибка при загрузке списка задача: ${(error as Error).message}`
+      );
       alert(`Ошибка при загрузке списка задача: ${(error as Error).message}`);
     }
   };

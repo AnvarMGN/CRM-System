@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "../../UI/Button/Button/Button";
-import { deleteTask, editTaskAndStatus } from "../../../api/Api";
+import { deleteTask, editTaskAndStatus } from "../../../api/api";
 import styles from "./TaskItem.module.scss";
 import type { TodoList } from "../../../types/types";
 

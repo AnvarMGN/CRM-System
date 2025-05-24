@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "../../UI/Button/Button/Button";
-import { addTask } from "../../../api/Api";
+import { addTask } from "../../../api/api";
 import styles from "./TaskAdd.module.scss";
 
 interface TaskAddTypes {

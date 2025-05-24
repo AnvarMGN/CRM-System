@@ -6,9 +6,9 @@ import {
   CloseOutlined,
 } from "@ant-design/icons";
 import type { TodoList } from "../../../types/types";
-import { deleteTask, editTaskAndStatus } from "../../../api/Api";
 import { useState } from "react";
 import styles from "./TaskItemAntd.module.scss";
+import { deleteTodoTask, editTodoTitleOrStatus } from "../../../api/apiAxios";
 
 interface TaskItemAntdTypes {
   currentStatus: string;
@@ -30,7 +30,7 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({
       isDone: isDone,
       title: value.title,
     };
-    await editTaskAndStatus(id, editData);
+    await editTodoTitleOrStatus(id, editData);
     await updateTaskList(currentStatus);
     setEditable(false);
   };
@@ -40,12 +40,12 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({
       isDone: !isDone,
       title: title,
     };
-    await editTaskAndStatus(id, editData);
+    await editTodoTitleOrStatus(id, editData);
     await updateTaskList(currentStatus);
   };
 
   const handleDeleteTask = async (id: number) => {
-    await deleteTask(id);
+    await deleteTodoTask(id);
     await updateTaskList(currentStatus);
   };
 

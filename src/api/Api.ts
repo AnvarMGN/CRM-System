@@ -2,6 +2,8 @@ import type { TaskListResponse, TodoList, TodoPart } from "../types/types";
 
 const baseURL = "https://easydev.club/api/v1".trim();
 
+
+
 export const fetchTaskList = async (
   status: string
 ): Promise<TaskListResponse> => {
@@ -9,7 +11,7 @@ export const fetchTaskList = async (
     const response = await fetch(`${baseURL}/todos?filter=${status}`);
 
     if (!response.ok) {
-      throw new Error(`Ошибка загрузки списка задач: ${response.status}`);
+      throw new Error(`Ошибка при загрузки списка задач: ${response.status}`);
     }
 
     const data: TaskListResponse = await response.json();
@@ -21,14 +23,16 @@ export const fetchTaskList = async (
   }
 };
 
+
+
 export const addTask = async (title: string): Promise<TodoList> => {
   try {
     const response = await fetch(`${baseURL}/todos`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json;charset=utf-8",
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ title }),
+      body: JSON.stringify( title ),
     });
 
     if (!response.ok) {
@@ -43,6 +47,8 @@ export const addTask = async (title: string): Promise<TodoList> => {
     throw error;
   }
 };
+
+
 
 export const deleteTask = async (id: number): Promise<string> => {
   try {
@@ -63,6 +69,8 @@ export const deleteTask = async (id: number): Promise<string> => {
     throw error;
   }
 };
+
+
 
 export const editTaskAndStatus = async (
   id: number,
