@@ -1,11 +1,11 @@
 import { Tabs } from "antd";
-import type { TodoInfo } from "../../../types/types";
+import type { FilterStatus, TodoInfo } from "../../../types/types";
 import "@ant-design/v5-patch-for-react-19";
-import styles from './TaskFilterAntd.module.scss'
+import styles from "./TaskFilterAntd.module.scss";
 
 interface TaskFilterAntd {
-  currentStatus: string;
-  changeStatus: (status: string) => void;
+  currentStatus: FilterStatus;
+  changeStatus: (status: FilterStatus) => void;
   countTask: TodoInfo;
 }
 
@@ -36,7 +36,7 @@ export const TaskFilterAntd: React.FC<TaskFilterAntd> = ({
         className={`${styles.tabs}`}
         items={items}
         activeKey={currentStatus}
-        onChange={changeStatus}
+        onChange={(activeKey) => changeStatus(activeKey as FilterStatus)}
         centered
         size="large"
       />

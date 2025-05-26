@@ -19,3 +19,5 @@ export type TodoPart = {
   isDone?: boolean;
   title?: string;
 };
+
+export type FilterStatus = "all" | 'inWork' | 'completed';

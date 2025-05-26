@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { TaskListResponse, TodoList, TodoPart } from "../types/types";
+import type { FilterStatus, TaskListResponse, TodoList, TodoPart } from "../types/types";
 
 const baseURL = "https://easydev.club/api/v1";
 // axios.defaults.baseURL = baseURL;
@@ -9,7 +9,7 @@ const todoApi = axios.create({
 });
 
 export const fetchTodoList = async (
-  status: string
+  status: FilterStatus
 ): Promise<TaskListResponse> => {
   try {
     const response = await todoApi.get(`/todos?filter=${status}`);
@@ -20,7 +20,7 @@ export const fetchTodoList = async (
   }
 };
 
-export const addTodoTask = async (title: string): Promise<TodoList> => {
+export const addTodoTask = async (title: FilterStatus): Promise<TodoList> => {
   try {
     const response = await todoApi.post(`/todos`, { title });
     console.log("Задача успешно добавлена: ", response.data);

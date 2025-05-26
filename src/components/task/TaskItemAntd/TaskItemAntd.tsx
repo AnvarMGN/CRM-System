@@ -5,14 +5,14 @@ import {
   SaveOutlined,
   CloseOutlined,
 } from "@ant-design/icons";
-import type { TodoList } from "../../../types/types";
+import type { FilterStatus, TodoList } from "../../../types/types";
 import { useState } from "react";
 import styles from "./TaskItemAntd.module.scss";
 import { deleteTodoTask, editTodoTitleOrStatus } from "../../../api/apiAxios";
 
 interface TaskItemAntdTypes {
-  currentStatus: string;
-  updateTaskList: (status: string) => void;
+  currentStatus: FilterStatus;
+  updateTaskList: (status: FilterStatus) => void;
   task: TodoList;
 }
 
@@ -24,29 +24,51 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({
   const { id, title, isDone } = task;
   const [isEditable, setEditable] = useState(false);
   const [form] = Form.useForm();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleEditTask = async (value: { title: string }) => {
-    const editData = {
-      isDone: isDone,
-      title: value.title,
-    };
-    await editTodoTitleOrStatus(id, editData);
-    await updateTaskList(currentStatus);
-    setEditable(false);
+    try {
+      setIsLoading(true);
+      const editData = {
+        isDone: isDone,
+        title: value.title,
+      };
+      await editTodoTitleOrStatus(id, editData);
+      await updateTaskList(currentStatus);
+      setEditable(false);
+    } catch (error) {
+      console.error("Ошибка при редактировании задачи: ", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCheckBox = async () => {
-    const editData = {
-      isDone: !isDone,
-      title: title,
-    };
-    await editTodoTitleOrStatus(id, editData);
-    await updateTaskList(currentStatus);
+    try {
+      setIsLoading(true);
+      const editData = {
+        isDone: !isDone,
+        title: title,
+      };
+      await editTodoTitleOrStatus(id, editData);
+      await updateTaskList(currentStatus);
+    } catch (error) {
+      console.error("Ошибка при изменении статуса задачи: ", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleDeleteTask = async (id: number) => {
-    await deleteTodoTask(id);
-    await updateTaskList(currentStatus);
+    try {
+      setIsLoading(true);
+      await deleteTodoTask(id);
+      await updateTaskList(currentStatus);
+    } catch (error) {
+      console.error("Ошибка при удалении задачи: ", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -73,6 +95,7 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({
                     type="primary"
                     htmlType="submit"
                     icon={<SaveOutlined />}
+                    disabled={isLoading}
                   />
                 </Form.Item>
 
@@ -82,6 +105,7 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({
                     danger
                     icon={<CloseOutlined />}
                     onClick={() => setEditable(false)}
+                    disabled={isLoading}
                   />
                 </Form.Item>
               </div>
@@ -92,7 +116,11 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({
         <Card size="small">
           <div className={`${styles.card}`}>
             <div className={`${styles.title}`}>
-              <Checkbox checked={isDone} onChange={handleCheckBox}></Checkbox>
+              <Checkbox
+                checked={isDone}
+                onChange={handleCheckBox}
+                disabled={isLoading}
+              ></Checkbox>
               <p className={`${styles.text}`}>
                 {isDone ? <s>{title}</s> : title}
               </p>
@@ -102,12 +130,14 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({
                 type="primary"
                 icon={<EditOutlined />}
                 onClick={() => setEditable(true)}
+                disabled={isLoading}
               />
               <Button
                 type="primary"
                 danger
                 icon={<DeleteOutlined />}
                 onClick={() => handleDeleteTask(id)}
+                disabled={isLoading}
               />
             </div>
           </div>

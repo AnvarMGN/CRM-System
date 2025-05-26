@@ -1,9 +1,11 @@
 import { Button, Form, Input } from "antd";
 import { addTodoTask } from "../../../api/apiAxios";
+import type { FilterStatus } from "../../../types/types";
+import { useState } from 'react';
 
 interface TaskAddAntdTypes {
-  currentStatus: string;
-  updateTaskList: (status: string) => void;
+  currentStatus: FilterStatus;
+  updateTaskList: (status: FilterStatus) => void;
 }
 
 export const TaskAddAntd: React.FC<TaskAddAntdTypes> = ({
@@ -11,11 +13,19 @@ export const TaskAddAntd: React.FC<TaskAddAntdTypes> = ({
   updateTaskList,
 }) => {
   const [form] = Form.useForm();
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleAddTask = async (value: { title: string }) => {
-    await addTodoTask(value.title);
-    await updateTaskList(currentStatus);
-    form.resetFields();
+  const handleAddTask = async (value: { title: FilterStatus }) => {
+    try {
+      setIsLoading(true)
+      await addTodoTask(value.title);
+      await updateTaskList(currentStatus);
+      form.resetFields();
+    } catch (error) {
+      console.error("Ошибка при добавлении задачи: ", error);
+    } finally{
+      setIsLoading(false)
+    }
   };
 
   return (
@@ -40,7 +50,7 @@ export const TaskAddAntd: React.FC<TaskAddAntdTypes> = ({
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" disabled={isLoading}>
             Add
           </Button>
         </Form.Item>

@@ -1,30 +1,30 @@
 import { useEffect, useState } from "react";
 import styles from "./TaskListPage.module.scss";
-import type { TodoList } from "../../types/types";
+import type { FilterStatus, TodoInfo, TodoList } from "../../types/types";
 import { TaskAddAntd } from "../../components/task/TaskAddAntd/TaskAddAntd";
 import { TaskFilterAntd } from "../../components/task/TaskFilterAntd/TaskFilterAntd";
 import { TaskItemAntd } from "../../components/task/TaskItemAntd/TaskItemAntd";
 import { fetchTodoList } from "../../api/apiAxios";
 
 export const TaskListPage = () => {
-  const [list, setList] = useState<TodoList[]>([]);
-  const [status, setStatus] = useState("all");
-  const [countTask, setCountTask] = useState({
+  const [todos, setTodos] = useState<TodoList[]>([]);
+  const [status, setStatus] = useState<FilterStatus>("all");
+  const [countTask, setCountTask] = useState<TodoInfo>({
     all: 0,
     completed: 0,
     inWork: 0,
   });
-  // console.log(list);
+  // console.log(todos);
 
   useEffect(() => {
     getTaskList(status);
   }, [status]);
 
-  const getTaskList = async (newStatus: string) => {
+  const getTaskList = async (newStatus: FilterStatus): Promise<void> => {
     try {
       const data = await fetchTodoList(newStatus);
       // console.log(data);
-      setList(data.data);
+      setTodos(data.data);
       setCountTask(data.info);
     } catch (error) {
       console.log(
@@ -34,7 +34,7 @@ export const TaskListPage = () => {
     }
   };
 
-  const changeStatus = (newStatus: string) => {
+  const changeStatus = (newStatus: FilterStatus): void => {
     setStatus(newStatus);
   };
 
@@ -42,7 +42,6 @@ export const TaskListPage = () => {
     <>
       <header>
         <TaskAddAntd currentStatus={status} updateTaskList={getTaskList} />
-        {/* <TaskAdd currentStatus={status} updateTaskList={getTaskList} /> */}
       </header>
       <nav>
         <TaskFilterAntd
@@ -50,24 +49,9 @@ export const TaskListPage = () => {
           changeStatus={changeStatus}
           countTask={countTask}
         />
-        {/* <TaskFilter
-          currentStatus={status}
-          changeStatus={changeStatus}
-          countTask={countTask}
-        /> */}
       </nav>
       <main className={`${styles.list}`}>
-        {/* <ul className={`${styles.list}`}>
-          {list.map((task) => (
-            <TaskItem
-              currentStatus={status}
-              updateTaskList={getTaskList}
-              task={task}
-              key={task.id}
-            />
-          ))}
-        </ul> */}
-        {list.map((task) => (
+        {todos.map((task) => (
           <TaskItemAntd
             currentStatus={status}
             updateTaskList={getTaskList}
