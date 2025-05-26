@@ -2,19 +2,21 @@ import { useState } from "react";
 import { Button } from "../../UI/Button/Button/Button";
 import { addTask } from "../../../api/Api";
 import styles from "./TaskAdd.module.scss";
+import type { FilterStatus } from "../../../types/types";
 
 interface TaskAddTypes {
-  currentStatus: string;
-  updateTaskList: (status: string) => void;
+  currentStatus: FilterStatus;
+  updateTaskList: (status: FilterStatus) => void;
 }
 
 export const TaskAdd: React.FC<TaskAddTypes> = ({
   currentStatus,
   updateTaskList,
 }) => {
-  const [inputValue, setInputValue] = useState("");
-  const [buttonActiv, setButtonActiv] = useState(true);
+  const [inputValue, setInputValue] = useState<string>("");
+  const [buttonActiv, setButtonActiv] = useState<boolean>(true);
   const [alert, setAlert] = useState<string | null>(null);
+  const [isLoading, setLoading] = useState<boolean>(false);
 
   const changeInputValue = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const text = evt.target.value;
@@ -33,12 +35,19 @@ export const TaskAdd: React.FC<TaskAddTypes> = ({
   };
 
   const handleAddTask = async (evt: React.FormEvent<HTMLFormElement>) => {
-    evt.preventDefault();
-    await addTask(inputValue);
-    await updateTaskList(currentStatus);
-    setInputValue("");
-    setAlert(null);
-    setButtonActiv(true);
+    try {
+      setLoading(true);
+      evt.preventDefault();
+      await addTask(inputValue);
+      await updateTaskList(currentStatus);
+      setInputValue("");
+      setAlert(null);
+      setButtonActiv(true);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -59,7 +68,7 @@ export const TaskAdd: React.FC<TaskAddTypes> = ({
           className="primary"
           icon="plus"
           label="add task button"
-          disabled={buttonActiv}
+          disabled={buttonActiv || isLoading}
         >
           Add
         </Button>

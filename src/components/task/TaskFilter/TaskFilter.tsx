@@ -1,9 +1,9 @@
-import type { TodoInfo } from "../../../types/types";
+import type { FilterStatus, TodoInfo } from "../../../types/types";
 import styles from "./TaskFilter.module.scss";
 
 interface TaskFilterTypes {
-  currentStatus: string;
-  changeStatus: (status: string) => void;
+  currentStatus: FilterStatus;
+  changeStatus: (status: FilterStatus) => void;
   countTask: TodoInfo;
 }
 

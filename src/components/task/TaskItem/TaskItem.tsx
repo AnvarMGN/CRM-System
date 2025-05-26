@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Button } from "../../UI/Button/Button/Button";
 import { deleteTask, editTaskAndStatus } from "../../../api/Api";
 import styles from "./TaskItem.module.scss";
-import type { TodoList } from "../../../types/types";
+import type { FilterStatus, TodoList } from "../../../types/types";
 
 interface TaskItemTypes {
-  currentStatus: string;
-  updateTaskList: (status: string) => void;
+  currentStatus: FilterStatus;
+  updateTaskList: (status: FilterStatus) => void;
   task: TodoList;
 }
 
@@ -16,10 +16,11 @@ export const TaskItem: React.FC<TaskItemTypes> = ({
   task,
 }) => {
   const { id, title, isDone } = task;
-  const [isEditable, setEditable] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const [buttonActiv, setButtonActiv] = useState(false);
+  const [isEditable, setEditable] = useState<boolean>(false);
+  const [inputValue, setInputValue] = useState<string>("");
+  const [buttonActiv, setButtonActiv] = useState<boolean>(false);
   const [alert, setAlert] = useState<string | null>(null);
+  const [isLoading, setLoading] = useState(false);
 
   const changeInputValue = (evt: React.ChangeEvent<HTMLInputElement>) => {
     const text = evt.target.value;
@@ -34,29 +35,65 @@ export const TaskItem: React.FC<TaskItemTypes> = ({
     } else {
       setAlert(null);
       setButtonActiv(false);
-    };
+    }
   };
 
   const handleEditTask = async (evt: React.FormEvent<HTMLFormElement>) => {
-    evt.preventDefault();
-    await editTaskAndStatus(id, inputValue);
-    await updateTaskList(currentStatus);
-    setEditable(false);
+    try {
+      setLoading(true);
+      const editData = {
+        isDone: isDone,
+        title: inputValue,
+      };
+      evt.preventDefault();
+      await editTaskAndStatus(id, editData);
+      await updateTaskList(currentStatus);
+      setEditable(false);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCancel = (evt: React.MouseEvent<HTMLButtonElement>) => {
-    evt.preventDefault();
-    setEditable(false);
+    try {
+      setLoading(true);
+      evt.preventDefault();
+      setEditable(false);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCheckBox = async () => {
-    await editTaskAndStatus(id, !isDone);
-    await updateTaskList(currentStatus);
+    try {
+      setLoading(true);
+      const editData = {
+        isDone: !isDone,
+        title: inputValue,
+      };
+      await editTaskAndStatus(id, editData);
+      await updateTaskList(currentStatus);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDeleteTask = async (id: number) => {
-    await deleteTask(id);
-    await updateTaskList(currentStatus);
+    try {
+      setLoading(true);
+      await deleteTask(id);
+      await updateTaskList(currentStatus);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -77,13 +114,14 @@ export const TaskItem: React.FC<TaskItemTypes> = ({
                   className="primary_icon"
                   icon="save"
                   label="save icon"
-                  disabled={buttonActiv}
+                  disabled={buttonActiv || isLoading}
                 />
                 <Button
                   className="danger_icon"
                   icon="cancel"
                   label="cancel icon"
                   onClick={handleCancel}
+                  disabled={isLoading}
                 />
               </div>
             </form>
@@ -97,6 +135,7 @@ export const TaskItem: React.FC<TaskItemTypes> = ({
                 type="checkbox"
                 checked={isDone}
                 onChange={handleCheckBox}
+                disabled={isLoading}
               />
               <p className={`${styles.text}`}>
                 {isDone ? <s>{title}</s> : title}
@@ -108,12 +147,14 @@ export const TaskItem: React.FC<TaskItemTypes> = ({
                 icon="pencil"
                 label="edit icon"
                 onClick={() => setEditable(true)}
+                disabled={isLoading}
               />
               <Button
                 className="danger_icon"
                 icon="trash"
                 label="delete icon"
                 onClick={() => handleDeleteTask(id)}
+                disabled={isLoading}
               />
             </div>
           </>

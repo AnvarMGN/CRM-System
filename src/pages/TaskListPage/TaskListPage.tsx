@@ -4,12 +4,17 @@ import { TaskFilter } from "../../components/task/TaskFilter/TaskFilter";
 import { TaskItem } from "../../components/task/TaskItem/TaskItem";
 import { fetchTaskList } from "../../api/Api";
 import styles from "./TaskListPage.module.scss";
-import type { TaskListResponse, TodoList } from "../../types/types";
+import type {
+  FilterStatus,
+  TaskListResponse,
+  TodoInfo,
+  TodoList,
+} from "../../types/types";
 
 export const TaskListPage = () => {
-  const [list, setList] = useState<TodoList[]>([]);
-  const [status, setStatus] = useState("all");
-  const [countTask, setCountTask] = useState({
+  const [todos, setTodos] = useState<TodoList[]>([]);
+  const [status, setStatus] = useState<FilterStatus>("all");
+  const [countTask, setCountTask] = useState<TodoInfo>({
     all: 0,
     completed: 0,
     inWork: 0,
@@ -20,18 +25,18 @@ export const TaskListPage = () => {
     getTaskList(status);
   }, [status]);
 
-  const getTaskList = async (newStatus: string) => {
+  const getTaskList = async (newStatus: FilterStatus) => {
     try {
       const data: TaskListResponse = await fetchTaskList(newStatus);
       // console.log(data);
-      setList(data.data);
+      setTodos(data.data);
       setCountTask(data.info);
     } catch (error) {
       alert(`Ошибка при загрузке списка задача: ${(error as Error).message}`);
     }
   };
 
-  const changeStatus = (newStatus: string) => {
+  const changeStatus = (newStatus: FilterStatus) => {
     setStatus(newStatus);
   };
 
@@ -49,7 +54,7 @@ export const TaskListPage = () => {
       </nav>
       <main>
         <ul className={`${styles.list}`}>
-          {list.map((task) => (
+          {todos.map((task) => (
             <TaskItem
               currentStatus={status}
               updateTaskList={getTaskList}
