@@ -14,11 +14,40 @@ export const TaskListPage = () => {
     completed: 0,
     inWork: 0,
   });
+  const [isHidden, setHidden] = useState<boolean>(document.hidden);
   // console.log(todos);
 
   useEffect(() => {
+    const handleVisibility = () => {
+      setHidden(document.hidden);
+    };
+    document.addEventListener("visibilitychange", () => {
+      handleVisibility();
+    });
+    return () => {
+      document.addEventListener("visibilitychange", () => {
+        handleVisibility();
+      });
+    };
+  }, []);
+
+  useEffect(() => {
     getTaskList(status);
-  }, [status]);
+
+    if (isHidden) {
+      console.log("Вкладка не активна");
+      return;
+    }
+    
+    const updateInterval = setInterval(() => {
+      getTaskList(status);
+      console.log("Вкладка активна, список задач обновлён.");
+    }, 5000);
+
+    return () => {
+      clearInterval(updateInterval);
+    };
+  }, [status, isHidden]);
 
   const getTaskList = async (newStatus: FilterStatus): Promise<void> => {
     try {
@@ -40,7 +69,7 @@ export const TaskListPage = () => {
 
   return (
     <>
-      <header>
+      <header className={`${styles.header}`}>
         <TaskAddAntd currentStatus={status} updateTaskList={getTaskList} />
       </header>
       <nav>

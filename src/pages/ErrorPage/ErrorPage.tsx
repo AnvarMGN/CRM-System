@@ -1,4 +1,4 @@
-import { MenuNavigation } from "../../components/MenuNavigation";
+import { MenuNavigation } from "../../components/MenuNavigation/MenuNavigation";
 
 export const ErrorPage = () => {
   return (

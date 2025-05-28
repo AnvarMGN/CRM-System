@@ -1,9 +1,10 @@
 import { NavLink } from "react-router-dom";
-// импорт styles
+import styles from "./MenuNavigation.module.scss";
 
 export const MenuNavigation = () => {
   return (
-    <header>
+    <div className={`${styles.side_menu}`}>
+      <h1>CRM-SYSTEM</h1>
       <nav>
         <ul>
           <li>
@@ -14,14 +15,14 @@ export const MenuNavigation = () => {
               // }
               // end
             >
-              Список задач.
+              Список задач
             </NavLink>
           </li>
           <li>
-            <NavLink to="/user">Профиль.</NavLink>
+            <NavLink to="/user">Профиль</NavLink>
           </li>
         </ul>
       </nav>
-    </header>
+    </div>
   );
 };

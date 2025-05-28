@@ -1,21 +1,20 @@
 .form_control {
   display: flex;
-  margin: 0px;
-  padding: 0px;
-  gap: 5px;
+  flex-direction: row;
 }
 
 .card {
+  padding: 0px 15px 0px 15px;
   display: flex;
-  flex-wrap: nowrap;
-  justify-content: center;
+  flex-direction: row;
   align-items: center;
+  gap: 10px;
   .title {
     display: flex;
     flex-direction: row;
     gap: 10px;
     .text {
-      width: 248px;
+      width: 250px;
       word-wrap: break-word;
     }
   }
