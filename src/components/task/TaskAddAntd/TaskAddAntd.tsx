@@ -1,7 +1,8 @@
 import { Button, Form, Input } from "antd";
 import { addTodoTask } from "../../../api/apiAxios";
 import type { FilterStatus } from "../../../types/types";
-import { useState } from 'react';
+import { useState } from "react";
+// import { useEffect } from "react";
 
 interface TaskAddAntdTypes {
   currentStatus: FilterStatus;
@@ -13,18 +14,22 @@ export const TaskAddAntd: React.FC<TaskAddAntdTypes> = ({
   updateTaskList,
 }) => {
   const [form] = Form.useForm();
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+
+  // useEffect(() => {
+  //   console.log("Компонент формы добавления.");
+  // }, []);
 
   const handleAddTask = async (value: { title: FilterStatus }) => {
     try {
-      setIsLoading(true)
+      setIsLoading(true);
       await addTodoTask(value.title);
       await updateTaskList(currentStatus);
       form.resetFields();
     } catch (error) {
       console.error("Ошибка при добавлении задачи: ", error);
-    } finally{
-      setIsLoading(false)
+    } finally {
+      setIsLoading(false);
     }
   };
 

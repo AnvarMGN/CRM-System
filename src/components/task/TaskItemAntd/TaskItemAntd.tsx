@@ -9,6 +9,7 @@ import type { FilterStatus, TodoList } from "../../../types/types";
 import { useState } from "react";
 import styles from "./TaskItemAntd.module.scss";
 import { deleteTodoTask, editTodoTitleOrStatus } from "../../../api/apiAxios";
+// import { useEffect } from "react";
 
 interface TaskItemAntdTypes {
   currentStatus: FilterStatus;
@@ -26,7 +27,12 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState(false);
 
+  // useEffect(() => {
+  //   console.log("Компонент списка задач.");
+  // }, []);
+
   const handleEditTask = async (value: { title: string }) => {
+    // console.log("Редактирование");
     try {
       setIsLoading(true);
       const editData = {
@@ -71,6 +77,11 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({
     }
   };
 
+  const handleCancel = () => {
+    setEditable(false);
+    form.resetFields();
+  };
+
   return (
     <>
       {isEditable ? (
@@ -104,7 +115,7 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({
                     type="primary"
                     danger
                     icon={<CloseOutlined />}
-                    onClick={() => setEditable(false)}
+                    onClick={handleCancel}
                     disabled={isLoading}
                   />
                 </Form.Item>

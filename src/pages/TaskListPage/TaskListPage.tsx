@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styles from "./TaskListPage.module.scss";
 import type { FilterStatus, TodoInfo, TodoList } from "../../types/types";
 import { TaskAddAntd } from "../../components/task/TaskAddAntd/TaskAddAntd";
@@ -17,28 +17,41 @@ export const TaskListPage = () => {
   const [isHidden, setHidden] = useState<boolean>(document.hidden);
   // console.log(todos);
 
+  const getTaskList = useCallback(
+    async (newStatus: FilterStatus): Promise<void> => {
+      try {
+        const data = await fetchTodoList(newStatus);
+        // console.log(data);
+        setTodos(data.data);
+        setCountTask(data.info);
+      } catch (error) {
+        console.log(
+          `Ошибка при загрузке списка задача: ${(error as Error).message}`
+        );
+        alert(`Ошибка при загрузке списка задача: ${(error as Error).message}`);
+      }
+    },
+    []
+  );
+
   useEffect(() => {
     const handleVisibility = () => {
       setHidden(document.hidden);
     };
-    document.addEventListener("visibilitychange", () => {
-      handleVisibility();
-    });
+    document.addEventListener("visibilitychange", handleVisibility);
     return () => {
-      document.addEventListener("visibilitychange", () => {
-        handleVisibility();
-      });
+      document.addEventListener("visibilitychange", handleVisibility);
     };
   }, []);
 
   useEffect(() => {
-    getTaskList(status);
-
     if (isHidden) {
       console.log("Вкладка не активна");
       return;
     }
-    
+
+    getTaskList(status);
+
     const updateInterval = setInterval(() => {
       getTaskList(status);
       console.log("Вкладка активна, список задач обновлён.");
@@ -47,25 +60,11 @@ export const TaskListPage = () => {
     return () => {
       clearInterval(updateInterval);
     };
-  }, [status, isHidden]);
+  }, [getTaskList, isHidden, status]);
 
-  const getTaskList = async (newStatus: FilterStatus): Promise<void> => {
-    try {
-      const data = await fetchTodoList(newStatus);
-      // console.log(data);
-      setTodos(data.data);
-      setCountTask(data.info);
-    } catch (error) {
-      console.log(
-        `Ошибка при загрузке списка задача: ${(error as Error).message}`
-      );
-      alert(`Ошибка при загрузке списка задача: ${(error as Error).message}`);
-    }
-  };
-
-  const changeStatus = (newStatus: FilterStatus): void => {
+  const changeStatus = useCallback((newStatus: FilterStatus): void => {
     setStatus(newStatus);
-  };
+  }, []);
 
   return (
     <>
