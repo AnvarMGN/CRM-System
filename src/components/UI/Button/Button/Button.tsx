@@ -13,14 +13,10 @@ export const Button: React.FC<ButtonProps> = ({
   ...rest
 }) => {
   return (
-    <button className={`${styles[className]}`} {...rest}>
+    <button className={styles[className]} {...rest}>
       {children && <span>{children}</span>}
       {icon && (
-        <img
-          className={`${styles.img}`}
-          src={`icons/${icon}.svg`}
-          alt={label}
-        />
+        <img className={styles.img} src={`icons/${icon}.svg`} alt={label} />
       )}
     </button>
   );

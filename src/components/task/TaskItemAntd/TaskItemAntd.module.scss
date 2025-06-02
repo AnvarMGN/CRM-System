@@ -1,25 +1,21 @@
-.form_control {
-  display: flex;
-  flex-direction: row;
+.card {
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 5% 70% 5% 5%;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+
+  .text {
+    word-wrap: break-word;
+  }
 }
 
-.card {
-  padding: 0px 15px 0px 15px;
-  display: flex;
-  flex-direction: row;
+.edit_card {
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 77% 5% 5%;
+  justify-content: center;
   align-items: center;
-  gap: 10px;
-  .title {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    .text {
-      width: 250px;
-      word-wrap: break-word;
-    }
-  }
-  .control {
-    display: flex;
-    gap: 10px;
-  }
+  gap: 16px;
 }

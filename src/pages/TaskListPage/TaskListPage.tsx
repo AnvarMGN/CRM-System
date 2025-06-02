@@ -5,6 +5,7 @@ import { TaskAddAntd } from "../../components/task/TaskAddAntd/TaskAddAntd";
 import { TaskFilterAntd } from "../../components/task/TaskFilterAntd/TaskFilterAntd";
 import { TaskItemAntd } from "../../components/task/TaskItemAntd/TaskItemAntd";
 import { fetchTodoList } from "../../api/apiAxios";
+import { notification } from "antd";
 
 export const TaskListPage = () => {
   const [todos, setTodos] = useState<TodoList[]>([]);
@@ -15,7 +16,16 @@ export const TaskListPage = () => {
     inWork: 0,
   });
   const [isHidden, setHidden] = useState<boolean>(document.hidden);
-  // console.log(todos);
+
+  const openNotification = (message: string) => {
+    notification.error({
+      message: "Ошибка",
+      description: `Ошибка при загрузке списка задач: ${message}`,
+      duration: 3,
+      placement: "bottomRight",
+      showProgress: true,
+    });
+  };
 
   const getTaskList = useCallback(
     async (newStatus: FilterStatus): Promise<void> => {
@@ -28,7 +38,8 @@ export const TaskListPage = () => {
         console.log(
           `Ошибка при загрузке списка задача: ${(error as Error).message}`
         );
-        alert(`Ошибка при загрузке списка задача: ${(error as Error).message}`);
+        // alert(`Ошибка при загрузке списка задача: ${(error as Error).message}`);
+        openNotification((error as Error).message);
       }
     },
     []
@@ -68,7 +79,7 @@ export const TaskListPage = () => {
 
   return (
     <>
-      <header className={`${styles.header}`}>
+      <header className={styles.header}>
         <TaskAddAntd currentStatus={status} updateTaskList={getTaskList} />
       </header>
       <nav>
@@ -78,7 +89,7 @@ export const TaskListPage = () => {
           countTask={countTask}
         />
       </nav>
-      <main className={`${styles.list}`}>
+      <main className={styles.list}>
         {todos.map((task) => (
           <TaskItemAntd
             currentStatus={status}

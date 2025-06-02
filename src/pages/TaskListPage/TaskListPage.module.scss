@@ -1,10 +1,10 @@
 .header {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr;
 }
 
 .list {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 16px;
 }

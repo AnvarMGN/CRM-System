@@ -38,7 +38,7 @@ export const TaskFilterAntd: React.FC<TaskFilterAntd> = ({
   return (
     <>
       <Tabs
-        className={`${styles.tabs}`}
+        className={styles.tabs}
         items={items}
         activeKey={currentStatus}
         onChange={(activeKey) => changeStatus(activeKey as FilterStatus)}

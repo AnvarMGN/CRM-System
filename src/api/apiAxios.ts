@@ -1,5 +1,10 @@
 import axios from "axios";
-import type { FilterStatus, TaskListResponse, TodoList, TodoPart } from "../types/types";
+import type {
+  FilterStatus,
+  TaskListResponse,
+  TodoList,
+  TodoPart,
+} from "../types/types";
 
 const baseURL = "https://easydev.club/api/v1";
 // axios.defaults.baseURL = baseURL;
@@ -12,7 +17,11 @@ export const fetchTodoList = async (
   status: FilterStatus
 ): Promise<TaskListResponse> => {
   try {
-    const response = await todoApi.get(`/todos?filter=${status}`);
+    const response = await todoApi.get(`/todos`, {
+      params: {
+        filter: status,
+      },
+    });
     return response.data;
   } catch (error) {
     console.error(error);
@@ -20,7 +29,7 @@ export const fetchTodoList = async (
   }
 };
 
-export const addTodoTask = async (title: FilterStatus): Promise<TodoList> => {
+export const addTask = async (title: FilterStatus): Promise<TodoList> => {
   try {
     const response = await todoApi.post(`/todos`, { title });
     console.log("Задача успешно добавлена: ", response.data);
@@ -31,17 +40,19 @@ export const addTodoTask = async (title: FilterStatus): Promise<TodoList> => {
   }
 };
 
-export const deleteTodoTask = async (id: number): Promise<void> => {
+export const deleteTask = async (id: number): Promise<TodoList> => {
   try {
-    await todoApi.delete(`/todos/${id}`);
+    const response = await todoApi.delete(`/todos/${id}`);
     console.log(`Задача с ID:${id} успешно удалена.`);
+    // console.log("Задача успешно удалена: ", response.data);
+    return response.data;
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
 
-export const editTodoTitleOrStatus = async (
+export const editTitleOrStatus = async (
   id: number,
   inputData: TodoPart
 ): Promise<TodoList> => {
