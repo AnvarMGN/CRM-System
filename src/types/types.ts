@@ -16,8 +16,8 @@ export interface TaskListResponse {
 }
 
 export type TodoPart = {
-  title?: string;
   isDone?: boolean;
+  title?: string;
 };
 
 export type FilterStatus = "all" | "inWork" | "completed";

@@ -1,0 +1,21 @@
+.card {
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 5% 70% 5% 5%;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+
+  .text {
+    word-wrap: break-word;
+  }
+}
+
+.edit_card {
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 77% 5% 5%;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
