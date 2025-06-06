@@ -22,12 +22,12 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({
   updateTaskList,
   task,
 }) => {
-  const { id, title, isDone } = task;
-  const [isEditable, setEditable] = useState(false);
-  const [form] = Form.useForm();
-  const [isLoading, setIsLoading] = useState(false);
   const minTextlength = 2;
   const maxTextlength = 64;
+  const { id, title, isDone } = task;
+  const [isEditable, setEditable] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [form] = Form.useForm();
 
   // useEffect(() => {
   //   console.log("Компонент списка задач.");
@@ -98,9 +98,18 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({
               name="title"
               initialValue={title}
               rules={[
-                { required: true, message: "Введите более 2 символов." },
-                { min: minTextlength, message: "Введите более 2 символов." },
-                { max: maxTextlength, message: "Лимит ввода 64 символа." },
+                {
+                  required: true,
+                  message: `Введите более ${minTextlength} символов.`,
+                },
+                {
+                  min: minTextlength,
+                  message: `Введите более ${minTextlength} символов.`,
+                },
+                {
+                  max: maxTextlength,
+                  message: `Лимит ввода ${maxTextlength} символа.`,
+                },
               ]}
             >
               <Input autoFocus showCount={true} style={{ minWidth: 250 }} />

@@ -53,9 +53,18 @@ export const TaskAddAntd: React.FC<TaskAddAntdTypes> = ({
         <Form.Item
           name="title"
           rules={[
-            { required: true, message: "Введите более 2 символов." },
-            { min: minTextlength, message: "Введите более 2 символов." },
-            { max: maxTextlength, message: "Лимит ввода 64 символа." },
+            {
+              required: true,
+              message: `Введите более ${minTextlength} символов.`,
+            },
+            {
+              min: minTextlength,
+              message: `Введите более ${minTextlength} символов.`,
+            },
+            {
+              max: maxTextlength,
+              message: `Лимит ввода ${maxTextlength} символа.`,
+            },
           ]}
         >
           <Input placeholder="Task To Be Done..." autoFocus showCount={true} />

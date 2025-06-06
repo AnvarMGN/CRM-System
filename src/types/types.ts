@@ -10,6 +10,8 @@ export interface TodoInfo {
   inWork: number;
 }
 
+export type FilterStatus = "all" | "inWork" | "completed";
+
 export interface TaskListResponse {
   data: TodoList[];
   info: TodoInfo;
@@ -20,4 +22,16 @@ export type TodoPart = {
   title?: string;
 };
 
-export type FilterStatus = "all" | "inWork" | "completed";
+export interface initialTodoStateType {
+  todos: TodoList[];
+  status: FilterStatus;
+  countTask: TodoInfo;
+}
+
+// interface MetaResponse<T, N> {
+//   data:T[],
+//   info: N,
+//   meta: {
+//     totalAmount: number
+//   }
+// }

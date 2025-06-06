@@ -1,20 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
 import styles from "./TaskListPage.module.scss";
-import type { FilterStatus, TodoInfo, TodoList } from "../../types/types";
+import type { FilterStatus } from "../../types/types";
 import { TaskAddAntd } from "../../components/task/TaskAddAntd/TaskAddAntd";
 import { TaskFilterAntd } from "../../components/task/TaskFilterAntd/TaskFilterAntd";
 import { TaskItemAntd } from "../../components/task/TaskItemAntd/TaskItemAntd";
 import { fetchTodoList } from "../../api/apiAxios";
 import { notification } from "antd";
+import { todoActions } from "../../store/todo-slice";
+import { useAppDispatch, useAppSelector } from "../../store/hook";
 
 export const TaskListPage = () => {
-  const [todos, setTodos] = useState<TodoList[]>([]);
-  const [status, setStatus] = useState<FilterStatus>("all");
-  const [countTask, setCountTask] = useState<TodoInfo>({
-    all: 0,
-    completed: 0,
-    inWork: 0,
-  });
+  const dispatch = useAppDispatch();
+  const { status, todos, countTask } = useAppSelector((state) => state.todo);
   const [isHidden, setHidden] = useState<boolean>(document.hidden);
 
   const openNotification = (message: string) => {
@@ -31,18 +28,20 @@ export const TaskListPage = () => {
     async (newStatus: FilterStatus): Promise<void> => {
       try {
         const data = await fetchTodoList(newStatus);
-        // console.log(data);
-        setTodos(data.data);
-        setCountTask(data.info);
+        dispatch(
+          todoActions.getTaskList({
+            todos: data.data,
+            countTask: data.info,
+          })
+        );
       } catch (error) {
         console.log(
           `Ошибка при загрузке списка задача: ${(error as Error).message}`
         );
-        // alert(`Ошибка при загрузке списка задача: ${(error as Error).message}`);
         openNotification((error as Error).message);
       }
     },
-    []
+    [dispatch]
   );
 
   useEffect(() => {
@@ -51,7 +50,7 @@ export const TaskListPage = () => {
     };
     document.addEventListener("visibilitychange", handleVisibility);
     return () => {
-      document.addEventListener("visibilitychange", handleVisibility);
+      document.removeEventListener("visibilitychange", handleVisibility);
     };
   }, []);
 
@@ -73,9 +72,12 @@ export const TaskListPage = () => {
     };
   }, [getTaskList, isHidden, status]);
 
-  const changeStatus = useCallback((newStatus: FilterStatus): void => {
-    setStatus(newStatus);
-  }, []);
+  const changeStatus = useCallback(
+    (newStatus: FilterStatus): void => {
+      dispatch(todoActions.changeStatus(newStatus));
+    },
+    [dispatch]
+  );
 
   return (
     <>
