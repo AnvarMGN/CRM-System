@@ -1,3 +1,4 @@
+import "@ant-design/v5-patch-for-react-19";
 import { Card, Button, Checkbox, Form, Input, Popconfirm } from "antd";
 import {
   EditOutlined,
@@ -6,35 +7,28 @@ import {
   CloseOutlined,
 } from "@ant-design/icons";
 import styles from "./TaskItemAntd.module.scss";
-import type { FilterStatus, TodoList } from "../../../types/types";
+import type { TodoList } from "../../../types/types";
 import { useState } from "react";
 import { deleteTask, editTitleOrStatus } from "../../../api/apiAxios";
-// import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../../store/hook";
+import { getTaskListAction } from "../../../store/todo-actions";
+import { openNotification } from "../../../notifications/notifications";
 
 interface TaskItemAntdTypes {
-  currentStatus: FilterStatus;
-  updateTaskList: (status: FilterStatus) => void;
   task: TodoList;
 }
 
-export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({
-  currentStatus,
-  updateTaskList,
-  task,
-}) => {
+export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({ task }) => {
   const minTextlength = 2;
   const maxTextlength = 64;
-  const { id, title, isDone } = task;
+  const [form] = Form.useForm();
   const [isEditable, setEditable] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [form] = Form.useForm();
-
-  // useEffect(() => {
-  //   console.log("Компонент списка задач.");
-  // }, []);
+  const { id, title, isDone } = task;
+  const dispatch = useAppDispatch();
+  const { status } = useAppSelector((state) => state.todo);
 
   const handleEditTask = async (value: { title: string }) => {
-    // console.log("Редактирование");
     try {
       setIsLoading(true);
       const editData = {
@@ -42,10 +36,11 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({
         title: value.title,
       };
       await editTitleOrStatus(id, editData);
-      await updateTaskList(currentStatus);
+      dispatch(getTaskListAction(status));
       setEditable(false);
     } catch (error) {
       console.error("Ошибка при редактировании задачи: ", error);
+      openNotification((error as Error).message);
     } finally {
       setIsLoading(false);
     }
@@ -59,9 +54,10 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({
         title: title,
       };
       await editTitleOrStatus(id, editData);
-      await updateTaskList(currentStatus);
+      dispatch(getTaskListAction(status));
     } catch (error) {
       console.error("Ошибка при изменении статуса задачи: ", error);
+      openNotification((error as Error).message);
     } finally {
       setIsLoading(false);
     }
@@ -71,9 +67,10 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({
     try {
       setIsLoading(true);
       await deleteTask(id);
-      await updateTaskList(currentStatus);
+      dispatch(getTaskListAction(status));
     } catch (error) {
       console.error("Ошибка при удалении задачи: ", error);
+      openNotification((error as Error).message);
     } finally {
       setIsLoading(false);
     }

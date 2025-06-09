@@ -1,47 +1,40 @@
 import { Tabs } from "antd";
-import type { FilterStatus, TodoInfo } from "../../../types/types";
-import "@ant-design/v5-patch-for-react-19";
 import styles from "./TaskFilterAntd.module.scss";
-// import { useEffect } from "react";
-
-interface TaskFilterAntd {
-  currentStatus: FilterStatus;
-  changeStatus: (status: FilterStatus) => void;
-  countTask: TodoInfo;
-}
+import type { FilterStatus } from "../../../types/types";
+import { useAppDispatch, useAppSelector } from "../../../store/hook";
+import { todoActions } from "../../../store/todo-slice";
 
 type ConstFilterTypes = {
   value: "all" | "inWork" | "completed";
   label: string;
 };
 
-export const TaskFilterAntd: React.FC<TaskFilterAntd> = ({
-  currentStatus,
-  changeStatus,
-  countTask,
-}) => {
+export const TaskFilterAntd = () => {
   const constFilter: ConstFilterTypes[] = [
     { value: "all", label: "Все" },
     { value: "inWork", label: "в работе" },
     { value: "completed", label: "сделано" },
   ];
 
-  // useEffect(() => {
-  //   console.log("Компонент фильров.");
-  // }, []);
+  const { status, countTask } = useAppSelector((state) => state.todo);
+  const dispatch = useAppDispatch();
 
   const items = constFilter.map((filter) => ({
     label: `${filter.label} (${countTask[filter.value]})`,
     key: filter.value,
   }));
 
+  const handleChangeStatus = (activekey: FilterStatus) => {
+    dispatch(todoActions.changeStatus(activekey));
+  };
+
   return (
     <>
       <Tabs
         className={styles.tabs}
         items={items}
-        activeKey={currentStatus}
-        onChange={(activeKey) => changeStatus(activeKey as FilterStatus)}
+        activeKey={status}
+        onChange={(activeKey) => handleChangeStatus(activeKey as FilterStatus)}
         centered
         size="large"
       />
