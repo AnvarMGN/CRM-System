@@ -23,8 +23,8 @@ export const TaskAddAntd = () => {
       dispatch(getTaskListAction(status));
       form.resetFields();
     } catch (error) {
-      console.error("Ошибка при добавлении задачи: ", error);
-      openNotification((error as Error).message);
+      console.error(`Ошибка при добавлении задачи: ${(error as Error).message}`);
+      openNotification('Ошибка!', 'Ошибка при добавлении задачи.');
     } finally {
       setIsLoading(false);
     }

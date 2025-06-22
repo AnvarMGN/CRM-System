@@ -39,8 +39,10 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({ task }) => {
       dispatch(getTaskListAction(status));
       setEditable(false);
     } catch (error) {
-      console.error("Ошибка при редактировании задачи: ", error);
-      openNotification((error as Error).message);
+      console.error(
+        `Ошибка при редактировании задачи: ${(error as Error).message}`
+      );
+      openNotification("Ошибка!", "Ошибка при редактировании задачи.");
     } finally {
       setIsLoading(false);
     }
@@ -56,8 +58,10 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({ task }) => {
       await editTitleOrStatus(id, editData);
       dispatch(getTaskListAction(status));
     } catch (error) {
-      console.error("Ошибка при изменении статуса задачи: ", error);
-      openNotification((error as Error).message);
+      console.error(
+        `Ошибка при изменении статуса задачи: ${(error as Error).message}`
+      );
+      openNotification("Ошибка!", "Ошибка при изменении статуса задачи.");
     } finally {
       setIsLoading(false);
     }
@@ -69,8 +73,8 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({ task }) => {
       await deleteTask(id);
       dispatch(getTaskListAction(status));
     } catch (error) {
-      console.error("Ошибка при удалении задачи: ", error);
-      openNotification((error as Error).message);
+      console.error(`Ошибка при удалении задачи ${(error as Error).message}`);
+      openNotification("Ошибка", "Ошибка при удалении задачи.");
     } finally {
       setIsLoading(false);
     }

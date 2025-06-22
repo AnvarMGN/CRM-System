@@ -1,0 +1,69 @@
+.header {
+  position: relative;
+
+  margin-top: 200px;
+
+  .icon_login {
+    width: 72px;
+
+    position: absolute;
+    top: -100px;
+    left: 0px;
+  }
+  .title_header {
+    margin-bottom: 3px;
+
+    color: rgb(82, 82, 82);
+    font-size: 36px;
+    font-weight: 700;
+  }
+}
+
+.input_label {
+  margin-top: 14px;
+  margin-bottom: 4px;
+  color: rgb(130, 130, 130);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.input_field {
+  width: 420px;
+  height: 45px;
+}
+
+.button_login {
+  width: 420px;
+  height: 50px;
+
+  color: rgb(255, 255, 255);
+  font-size: 18px;
+  font-weight: 800;
+  background: rgb(127, 38, 91);
+}
+
+.footer_empty {
+  margin-top: 100px;
+  margin-bottom: 75px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.footer {
+  margin-top: 100px;
+  margin-bottom: 75px;
+
+  .footer_paragraph {
+    color: rgb(130, 130, 130);
+    font-size: 18px;
+    font-weight: 400;
+    text-align: center;
+  }
+  .footer_link {
+    color: rgb(127, 38, 91);
+    font-size: 18px;
+    font-weight: 600;
+  }
+}

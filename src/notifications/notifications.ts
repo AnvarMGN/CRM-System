@@ -1,9 +1,9 @@
 import { notification } from "antd";
 
-export const openNotification = (message: string) => {
-  notification.error({
-    message: "Ошибка",
-    description: `Что-то пошло не так: ${message}`,
+export const openNotification = (notificatonName: string, notificatonDescription: string) => {
+  notification.open({
+    message: notificatonName,
+    description: notificatonDescription,
     duration: 5,
     placement: "bottomRight",
     showProgress: true,

@@ -17,6 +17,14 @@ export interface TaskListResponse {
   info: TodoInfo;
 }
 
+// interface MetaResponse<T, N> {
+//   data:T[],
+//   info: N,
+//   meta: {
+//     totalAmount: number
+//   }
+// }
+
 export type TodoPart = {
   isDone?: boolean;
   title?: string;
@@ -28,10 +36,26 @@ export interface initialTodoStateType {
   countTask: TodoInfo;
 }
 
-// interface MetaResponse<T, N> {
-//   data:T[],
-//   info: N,
-//   meta: {
-//     totalAmount: number
-//   }
-// }
+export interface UserRegistration {
+  login: string;
+  username: string;
+  password: string;
+  email: string;
+  phoneNumber?: string;
+}
+
+export interface AuthData {
+  login: string;
+  password: string;
+}
+
+export interface Token {
+  accessToken: string;
+  refreshToken: string;
+}
+
+export interface ProfileRequest {
+  username: string;
+  email: string;
+  phoneNumber: string;
+}

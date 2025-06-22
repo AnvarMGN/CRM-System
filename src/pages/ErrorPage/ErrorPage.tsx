@@ -1,11 +1,10 @@
-import { MenuNavigation } from "../../components/MenuNavigation/MenuNavigation";
+import styles from './ErrorPage.module.scss'
 
 export const ErrorPage = () => {
   return (
-    <>
-      <MenuNavigation />
+    <div className={styles.errorPage}>
       <h1>An error occurred!</h1>
       <p>Could not find this page!</p>
-    </>
+    </div>
   );
 };

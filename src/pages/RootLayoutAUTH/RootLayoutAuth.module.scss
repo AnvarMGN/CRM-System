@@ -1,0 +1,21 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap");
+
+.container {
+  font-family: Nunito Sans;
+
+  height: 100%;
+
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  grid-template-rows: 1fr;
+  justify-items: center;
+
+  background-image: url(/login-page/img1-login.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: left;
+
+  .auth_pages {
+    height: 100%;
+  }
+}

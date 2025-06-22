@@ -1,30 +1,38 @@
 import { Link } from "react-router-dom";
-// import styles from "./MenuNavigation.module.scss";
-import { Menu, type MenuProps } from "antd";
+import styles from "./MenuNavigation.module.scss";
+import { Button, Menu, type MenuProps } from "antd";
 import { UserOutlined, UnorderedListOutlined } from "@ant-design/icons";
+import { useAppDispatch } from "../../store/hook";
+import { authActions } from "../../store/auth-slice";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
 export const MenuNavigation = () => {
+  const dispatch = useAppDispatch();
+
   const items: MenuItem[] = [
     {
       key: "1",
       icon: <UnorderedListOutlined />,
-      label: <Link to="/">Список задач</Link>,
+      label: <Link to="todo">Список задач</Link>,
     },
     {
       key: "2",
       icon: <UserOutlined />,
-      label: <Link to="/user">Профиль</Link>,
+      label: <Link to="user">Личный кабинет</Link>,
     },
   ];
 
+  const handleLogOut = () => {
+    dispatch(authActions.changeExpiredTrue());
+    dispatch(authActions.removeToken());
+  };
+
   return (
-    <div
-    // className={styles.side_menu}
-    >
-      <h1 style={{ textAlign: "center" }}>CRM-SYSTEM</h1>
+    <div className={styles.side_menu}>
+      <h1>CRM-SYSTEM</h1>
       <Menu mode="inline" theme="light" items={items} />
+      <Button onClick={handleLogOut}>Logout</Button>
     </div>
   );
 };

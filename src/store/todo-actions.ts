@@ -1,28 +1,24 @@
-import type { TodoList, TodoInfo, FilterStatus } from "../types/types";
+import type { FilterStatus } from "../types/types";
 import { fetchTodoList } from "../api/apiAxios";
 import { todoActions } from "./todo-slice";
 import { openNotification } from "../notifications/notifications";
+import type { AppDispatch } from "./index";
 
 export const getTaskListAction = (newStatus: FilterStatus) => {
-  return async (
-    dispatch: (arg0: {
-      payload: { todos: TodoList[]; countTask: TodoInfo };
-      type: "todo/getTaskList";
-    }) => void
-  ) => {
+  return async (dispatch: AppDispatch) => {
     try {
-      const data = await fetchTodoList(newStatus);
+      const response = await fetchTodoList(newStatus);
       dispatch(
         todoActions.getTaskList({
-          todos: data.data,
-          countTask: data.info,
+          todos: response.data,
+          countTask: response.info,
         })
       );
     } catch (error) {
       console.log(
-        `Ошибка при загрузке списка задача: ${(error as Error).message}`
+        `Ошибка при загрузке списка задач: ${(error as Error).message}`
       );
-      openNotification((error as Error).message);
+      openNotification("Ошибка!", (error as Error).message);
     }
   };
 };

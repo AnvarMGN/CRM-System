@@ -30,7 +30,7 @@ export const TaskListPage = () => {
     dispatch(getTaskListAction(status));
 
     const updateInterval = setInterval(() => {
-      getTaskListAction(status);
+      dispatch(getTaskListAction(status));
       console.log("Вкладка активна, список задач обновлён.");
     }, 5000);
 
