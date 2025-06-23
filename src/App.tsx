@@ -17,7 +17,7 @@ const router = createBrowserRouter([
     element: <RootLayoutAuth />,
     errorElement: <ErrorPage />,
     children: [
-      { index: true, element: <Navigate to="auth/signin" replace /> },
+      { index: true, element: <Navigate to="auth/signin"/> },
       //перенаправляет пользователя на /auth/signin.
       // -- index: true обозначает маршрут по умолчанию,
       // либо можно добавить относительный путь вместо index: true, path: "".
@@ -25,7 +25,7 @@ const router = createBrowserRouter([
       // в истории браузера (это важно для логики навигации).
       { path: "auth/signin", element: <AuthenticationPage /> },
       { path: "auth/signup", element: <RegistrationPage /> },
-      // { path: "*", element: <ErrorPage /> }, // Обрабатывает несуществующие пути
+      { path: "*", element: <ErrorPage /> }, // Обрабатывает несуществующие пути
     ],
   },
   {
@@ -35,7 +35,7 @@ const router = createBrowserRouter([
     children: [
       { path: "todo", element: <TaskListPage /> },
       { path: "user", element: <UserPage /> },
-      // { path: "*", element: <ErrorPage /> }, // Обрабатывает несуществующие пути
+      { path: "*", element: <ErrorPage /> },
     ],
   },
 ]);
