@@ -12,13 +12,13 @@ export const TaskAddAntd = () => {
   const maxTextlength = 64;
 
   const [form] = Form.useForm();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
   const { status } = useAppSelector((state) => state.todo);
 
   const handleAddTask = async (value: { title: FilterStatus }) => {
     try {
-      setIsLoading(true);
+      setLoading(true);
       await addTask(value.title);
       dispatch(getTaskListAction(status));
       form.resetFields();
@@ -26,7 +26,7 @@ export const TaskAddAntd = () => {
       console.error(`Ошибка при добавлении задачи: ${(error as Error).message}`);
       openNotification('Ошибка!', 'Ошибка при добавлении задачи.');
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 

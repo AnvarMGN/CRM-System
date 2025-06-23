@@ -27,7 +27,7 @@ export const AuthenticationPage = () => {
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (refreshTokenAuth) {
+    if (refreshTokenAuth && window.location.pathname === "/auth/signin") {
       console.log("AuthenticationPage: ", refreshTokenAuth);
       navigate("/crm/todo", { replace: true });
     }

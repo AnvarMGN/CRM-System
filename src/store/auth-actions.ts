@@ -143,7 +143,6 @@ export const updateTokenAction = () => {
 
     if (!refreshToken) {
       console.log("RefreshToken отсутствует.");
-      dispatch(authActions.removeToken());
       return;
     }
 

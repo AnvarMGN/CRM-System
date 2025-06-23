@@ -23,14 +23,14 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({ task }) => {
   const maxTextlength = 64;
   const [form] = Form.useForm();
   const [isEditable, setEditable] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const { id, title, isDone } = task;
   const dispatch = useAppDispatch();
   const { status } = useAppSelector((state) => state.todo);
 
   const handleEditTask = async (value: { title: string }) => {
     try {
-      setIsLoading(true);
+      setLoading(true);
       const editData = {
         isDone: isDone,
         title: value.title,
@@ -44,13 +44,13 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({ task }) => {
       );
       openNotification("Ошибка!", "Ошибка при редактировании задачи.");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   const handleCheckBox = async () => {
     try {
-      setIsLoading(true);
+      setLoading(true);
       const editData = {
         isDone: !isDone,
         title: title,
@@ -63,20 +63,20 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({ task }) => {
       );
       openNotification("Ошибка!", "Ошибка при изменении статуса задачи.");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   const handleDeleteTask = async () => {
     try {
-      setIsLoading(true);
+      setLoading(true);
       await deleteTask(id);
       dispatch(getTaskListAction(status));
     } catch (error) {
       console.error(`Ошибка при удалении задачи ${(error as Error).message}`);
       openNotification("Ошибка", "Ошибка при удалении задачи.");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
