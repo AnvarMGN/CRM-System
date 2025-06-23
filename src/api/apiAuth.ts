@@ -46,11 +46,11 @@ export const updateToken = async (refreshToken: string) => {
   }
 };
 
-export const getUserRequest = async () => {
+export const getUserRequest = async (accessToken: string | null) => {
   try {
     const response = await authApi.get(`/user/profile`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
     return response;

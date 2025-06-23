@@ -52,7 +52,7 @@ export const RegistrationPage = () => {
         email: values.email,
         login: values.login,
         password: values.password,
-        phoneNumber: "+7" + values.phoneNumber,
+        phoneNumber: values.phoneNumber,
         username: values.username,
       };
 
@@ -109,7 +109,7 @@ export const RegistrationPage = () => {
               },
             ]}
           >
-            <Input className={styles.input_field} />
+            <Input className={styles.input_field} placeholder="John" />
           </Form.Item>
 
           <p className={styles.input_label}>Login</p>
@@ -128,7 +128,7 @@ export const RegistrationPage = () => {
               },
             ]}
           >
-            <Input className={styles.input_field} />
+            <Input className={styles.input_field} placeholder="Johnson" />
           </Form.Item>
 
           <p className={styles.input_label}>Password</p>
@@ -147,7 +147,10 @@ export const RegistrationPage = () => {
               },
             ]}
           >
-            <Input.Password className={styles.input_field} />
+            <Input.Password
+              className={styles.input_field}
+              placeholder="**********"
+            />
           </Form.Item>
 
           <p className={styles.input_label}>Confirm password</p>
@@ -175,7 +178,10 @@ export const RegistrationPage = () => {
               }),
             ]}
           >
-            <Input.Password className={styles.input_field} />
+            <Input.Password
+              className={styles.input_field}
+              placeholder="**********"
+            />
           </Form.Item>
 
           <p className={styles.input_label}>Email</p>
@@ -190,7 +196,10 @@ export const RegistrationPage = () => {
               },
             ]}
           >
-            <Input className={styles.input_field} />
+            <Input
+              className={styles.input_field}
+              placeholder="email@google.com"
+            />
           </Form.Item>
 
           <p className={styles.input_label}>Telephone</p>
@@ -198,6 +207,7 @@ export const RegistrationPage = () => {
             // label="Telephone"
             name="phoneNumber"
             rules={[
+              { required: false },
               {
                 pattern: new RegExp(phoneRegex),
                 message: "Введите 10 цифр вашего номера телефона.",
@@ -208,7 +218,7 @@ export const RegistrationPage = () => {
             <Input
               className={styles.input_field}
               // addonBefore={prefixSelector}
-              placeholder="9998887766"
+              placeholder="+79998887766"
             />
           </Form.Item>
 
@@ -225,9 +235,9 @@ export const RegistrationPage = () => {
         </Form>
       </main>
 
-      {isRegistration ? (
-        <>
-          <footer className={styles.footer}>
+      <>
+        <footer className={styles.footer}>
+          {isRegistration ? (
             <p className={styles.footer_paragraph}>
               Пройдите по{" "}
               <Link className={styles.footer_link} to="/auth/signin">
@@ -235,15 +245,17 @@ export const RegistrationPage = () => {
               </Link>{" "}
               для перехода на страницу авторизации.
             </p>
-          </footer>
-        </>
-      ) : (
-        <footer className={styles.footer_empty}>
-          <p className={styles.footer_paragraph}>
-            See what is going on with your business
-          </p>
+          ) : (
+            <p className={styles.footer_paragraph}>
+              Go back to the{" "}
+              <Link className={styles.footer_link} to="/auth/signin">
+                authorization page
+              </Link>
+              .
+            </p>
+          )}
         </footer>
-      )}
+      </>
     </>
   );
 };

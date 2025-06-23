@@ -24,7 +24,6 @@ export const MenuNavigation = () => {
   ];
 
   const handleLogOut = () => {
-    dispatch(authActions.changeExpiredTrue());
     dispatch(authActions.removeToken());
   };
 

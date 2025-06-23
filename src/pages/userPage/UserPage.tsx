@@ -1,14 +1,15 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
-import { getUserRequestAction } from "../../store/auth-actions";
+import { getUserRequestAction, updateTokenAction } from "../../store/auth-actions";
 
 export const UserPage = () => {
   const dispatch = useAppDispatch();
-  const { user } = useAppSelector((state) => state.auth);
+  const { user, accessTokenAuth } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(getUserRequestAction());
-  }, [dispatch]);
+    dispatch(updateTokenAction());
+    dispatch(getUserRequestAction(accessTokenAuth));
+  }, [accessTokenAuth, dispatch]);
 
   return (
     <>

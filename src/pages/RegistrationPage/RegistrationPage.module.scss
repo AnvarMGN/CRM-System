@@ -43,14 +43,6 @@
   background: rgb(127, 38, 91);
 }
 
-.footer_empty {
-  margin-top: 100px;
-  margin-bottom: 75px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-
 .footer {
   margin-top: 100px;
   margin-bottom: 75px;
@@ -62,6 +54,7 @@
     text-align: center;
   }
   .footer_link {
+
     color: rgb(127, 38, 91);
     font-size: 18px;
     font-weight: 600;

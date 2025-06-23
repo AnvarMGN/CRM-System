@@ -27,7 +27,7 @@ const handleLogError = (
 ) => {
   console.log(notificatonDescription, error.message);
   openNotification("Ошибка", notificatonDescription);
-  dispatch(authActions.changeExpiredTrue());
+  dispatch(authActions.removeToken());
 };
 
 const handleUpdateError = (
@@ -36,7 +36,6 @@ const handleUpdateError = (
   dispatch: AppDispatch
 ) => {
   console.log(errorMessage, error.message);
-  dispatch(authActions.changeExpiredTrue());
   dispatch(authActions.removeToken());
 };
 
@@ -102,7 +101,6 @@ export const userAuthenticationAction = (userAuthData: AuthData) => {
             refreshToken: response.data.refreshToken,
           })
         );
-        dispatch(authActions.changeExpiredFalse());
         console.log("Пользователь успешно авторизовался.");
         openNotification("Уведомление", "Пользователь успешно авторизовался.");
       }
@@ -145,7 +143,6 @@ export const updateTokenAction = () => {
 
     if (!refreshToken) {
       console.log("RefreshToken отсутствует.");
-      dispatch(authActions.changeExpiredTrue());
       dispatch(authActions.removeToken());
       return;
     }
@@ -164,7 +161,6 @@ export const updateTokenAction = () => {
             refreshToken: response.data.refreshToken,
           })
         );
-        dispatch(authActions.changeExpiredFalse());
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -206,10 +202,10 @@ export const updateTokenAction = () => {
   };
 };
 
-export const getUserRequestAction = () => {
+export const getUserRequestAction = (accessToken: string | null) => {
   return async (dispatch: AppDispatch) => {
     try {
-      const response = await getUserRequest();
+      const response = await getUserRequest(accessToken);
       dispatch(
         authActions.getUser({
           username: response.data.username,

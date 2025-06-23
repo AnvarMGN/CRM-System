@@ -11,22 +11,22 @@ const { Sider, Content } = Layout;
 export const RootLayoutCRM = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { isExpired } = useAppSelector((state) => state.auth);
+  const { refreshTokenAuth } = useAppSelector((state) => state.auth);
 
-   useEffect(() => {
+  useEffect(() => {
     dispatch(updateTokenAction());
   }, [dispatch]);
 
   useEffect(() => {
-    console.log("RootLayoutCRM isExpired: ", isExpired);
-    if (isExpired) {
+    console.log("RootLayoutCRM: ", refreshTokenAuth);
+    if (!refreshTokenAuth) {
       navigate("/auth/signin", { replace: true });
     }
-  }, [isExpired, navigate]);
+  }, [navigate, refreshTokenAuth]);
 
   return (
     <>
-      {!isExpired && (
+      {refreshTokenAuth && (
         <Layout className={styles.root_container}>
           {/*Боковое меню */}
           <Sider className={styles.sider}>

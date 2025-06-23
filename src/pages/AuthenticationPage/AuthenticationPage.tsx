@@ -23,15 +23,15 @@ export const AuthenticationPage = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { isExpired } = useAppSelector((state) => state.auth);
+  const { refreshTokenAuth } = useAppSelector((state) => state.auth);
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!isExpired) {
-      console.log("AuthenticationPage isExpired: ", isExpired);
+    if (refreshTokenAuth) {
+      console.log("AuthenticationPage: ", refreshTokenAuth);
       navigate("/crm/todo", { replace: true });
     }
-  }, [isExpired, navigate]);
+  }, [navigate, refreshTokenAuth]);
 
   const onFinish: FormProps<AuthData>["onFinish"] = async (values) => {
     try {
@@ -136,7 +136,7 @@ export const AuthenticationPage = () => {
           >
             <Input.Password
               className={styles.input_field}
-              placeholder="*****************"
+              placeholder="**********"
             />
           </Form.Item>
 
