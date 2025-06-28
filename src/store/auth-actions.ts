@@ -9,6 +9,14 @@ import { openNotification } from "../notifications/notifications";
 import { authActions } from "./auth-slice";
 import axios from "axios";
 import type { AppDispatch } from "./index";
+import {
+  getAccessToken,
+  getRefreshToken,
+  removeAccessToken,
+  removeRefreshToken,
+  setAccessToken,
+  setRefreshToken,
+} from "../util/auth";
 
 const handleRegError = (
   notificatonDescription: string,
@@ -17,17 +25,17 @@ const handleRegError = (
 ) => {
   console.log(notificatonDescription, error.message);
   openNotification("Ошибка", notificatonDescription);
-  dispatch(authActions.changeRegStatusFalse());
+  dispatch(authActions.isRegistratedFalse());
 };
 
-const handleLogError = (
+const handleAuthError = (
   notificatonDescription: string,
   error: Error,
   dispatch: AppDispatch
 ) => {
   console.log(notificatonDescription, error.message);
   openNotification("Ошибка", notificatonDescription);
-  dispatch(authActions.removeToken());
+  dispatch(authActions.isAuthorizedFalse());
 };
 
 const handleUpdateError = (
@@ -36,7 +44,9 @@ const handleUpdateError = (
   dispatch: AppDispatch
 ) => {
   console.log(errorMessage, error.message);
-  dispatch(authActions.removeToken());
+  dispatch(authActions.isAuthorizedFalse());
+  removeAccessToken();
+  removeRefreshToken();
 };
 
 export const userRegistrationAction = (newUser: UserRegistration) => {
@@ -45,12 +55,12 @@ export const userRegistrationAction = (newUser: UserRegistration) => {
       const response = await userRegistration(newUser);
 
       if (response.status === 201) {
-        dispatch(authActions.changeRegStatusTrue());
-        console.log("Пользователь успешно зарегистрирован.");
+        dispatch(authActions.isRegistratedTrue());
         openNotification(
           "Уведомление",
           "Пользователь успешно зарегистрирован."
         );
+        console.log("Пользователь успешно зарегистрирован.");
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -95,34 +105,31 @@ export const userAuthenticationAction = (userAuthData: AuthData) => {
       const response = await userAuthentication(userAuthData);
 
       if (response.status === 200) {
-        dispatch(
-          authActions.saveToken({
-            accessToken: response.data.accessToken,
-            refreshToken: response.data.refreshToken,
-          })
-        );
-        console.log("Пользователь успешно авторизовался.");
+        setAccessToken(response.data.accessToken);
+        setRefreshToken(response.data.refreshToken);
+        dispatch(authActions.isAuthorizedTrue());
         openNotification("Уведомление", "Пользователь успешно авторизовался.");
+        console.log("Пользователь успешно авторизовался.");
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.response) {
           switch (error.response.status) {
             case 400:
-              handleLogError(
+              handleAuthError(
                 "Ошибка обработки данных, либо неправильный ввод данных пользователя.",
                 error,
                 dispatch
               );
               break;
             case 401:
-              handleLogError("Не верные учётные данные.", error, dispatch);
+              handleAuthError("Не верные учётные данные.", error, dispatch);
               break;
             case 500:
-              handleLogError("`Ошибка на стороне сервера.", error, dispatch);
+              handleAuthError("`Ошибка на стороне сервера.", error, dispatch);
               break;
             default:
-              handleLogError("Неизвестная ошибка.", error, dispatch);
+              handleAuthError("Неизвестная ошибка.", error, dispatch);
               break;
           }
         } else if (error.request) {
@@ -139,10 +146,11 @@ export const userAuthenticationAction = (userAuthData: AuthData) => {
 
 export const updateTokenAction = () => {
   return async (dispatch: AppDispatch) => {
-    const refreshToken = localStorage.getItem("refreshToken");
+    const refreshToken = getRefreshToken();
 
     if (!refreshToken) {
-      console.log("RefreshToken отсутствует.");
+      dispatch(authActions.isAuthorizedFalse());
+      console.error("RefreshToken отсутствует.");
       return;
     }
 
@@ -154,12 +162,9 @@ export const updateTokenAction = () => {
         response.data?.accessToken &&
         response.data?.refreshToken
       ) {
-        dispatch(
-          authActions.saveToken({
-            accessToken: response.data.accessToken,
-            refreshToken: response.data.refreshToken,
-          })
-        );
+        setAccessToken(response.data.accessToken);
+        setRefreshToken(response.data.refreshToken);
+        dispatch(authActions.isAuthorizedTrue());
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -201,22 +206,53 @@ export const updateTokenAction = () => {
   };
 };
 
-export const getUserRequestAction = (accessToken: string | null) => {
+export const getUserRequestAction = () => {
   return async (dispatch: AppDispatch) => {
+    const accessToken = getAccessToken();
+
     try {
       const response = await getUserRequest(accessToken);
-      dispatch(
-        authActions.getUser({
-          username: response.data.username,
-          email: response.data.email,
-          phoneNumber: response.data.phoneNumber,
-        })
-      );
+      if (response.status === 200) {
+        dispatch(
+          authActions.getUser({
+            username: response.data.username,
+            email: response.data.email,
+            phoneNumber: response.data.phoneNumber,
+          })
+        );
+      }
     } catch (error) {
-      console.log(
-        `Ошибка при загрузке данных пользователя: ${(error as Error).message}`
-      );
-      openNotification("Ошибка!", (error as Error).message);
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          switch (error.response.status) {
+            case 400:
+              console.log("Пользователь не найден.", error.message);
+              break;
+
+            case 401: {
+              console.log("Неверные учетные данные или токен истек..");
+              break;
+            }
+
+            case 500:
+              console.log("Внутренняя ошибка сервера.");
+              break;
+
+            default:
+              console.log("Неизвестная ошибка");
+              break;
+          }
+        } else if (error.request) {
+          console.log("Сервер не доступен.", error.message);
+        } else {
+          console.log(
+            "Ошибка при загрузке данных пользователя.",
+            error.message
+          );
+        }
+      } else {
+        console.log("Неизвестная ошибка.", (error as Error).message);
+      }
     }
   };
 };

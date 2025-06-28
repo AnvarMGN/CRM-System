@@ -1,17 +1,15 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { ProfileRequest, Token } from "../types/types";
+import { createSlice } from "@reduxjs/toolkit";
+import type { ProfileRequest } from "../types/types";
 
 type initialAuthStateType = {
-  isRegistration: boolean;
-  accessTokenAuth: string | null;
-  refreshTokenAuth: string | null;
+  isRegistrated: boolean;
+  isAuthorized: boolean;
   user: ProfileRequest;
 };
 
 const initialAuthState: initialAuthStateType = {
-  isRegistration: false,
-  accessTokenAuth: null,
-  refreshTokenAuth: null,
+  isRegistrated: false,
+  isAuthorized: false,
   user: {
     username: "",
     email: "",
@@ -23,25 +21,17 @@ const authSlice = createSlice({
   name: "auth",
   initialState: initialAuthState,
   reducers: {
-    changeRegStatusTrue(state) {
-      state.isRegistration = true;
+    isRegistratedTrue(state) {
+      state.isRegistrated = true;
     },
-    changeRegStatusFalse(state) {
-      state.isRegistration = false;
+    isRegistratedFalse(state) {
+      state.isRegistrated = false;
     },
-    saveToken(state, action: PayloadAction<Token>) {
-      state.accessTokenAuth = action.payload.accessToken;
-      state.refreshTokenAuth = action.payload.refreshToken;
-
-      // localStorage.setItem("accessToken", action.payload.accessToken);
-      localStorage.setItem("refreshToken", action.payload.refreshToken);
+    isAuthorizedTrue(state) {
+      state.isAuthorized = true;
     },
-    removeToken(state) {
-      state.accessTokenAuth = null;
-      state.refreshTokenAuth = null;
-
-      // localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
+    isAuthorizedFalse(state) {
+      state.isAuthorized = false;
     },
     getUser(state, action) {
       state.user = action.payload;

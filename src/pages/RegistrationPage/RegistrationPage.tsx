@@ -1,5 +1,4 @@
 import { Button, Form, Input } from "antd";
-// import { Select } from "antd";
 import { type FormProps } from "antd";
 import { type UserRegistration } from "../../types/types";
 import { Link } from "react-router-dom";
@@ -26,22 +25,12 @@ const maxLoginlength = 60;
 const minPasswordlength = 6;
 const maxPasswordlength = 60;
 
-// const { Option } = Select;
-
-// const prefixSelector = (
-//   <Form.Item  name="prefix" noStyle>
-//     <Select style={{ width: '50px', height: 45 }}>
-//       <Option value="+7">+7</Option>
-//     </Select>
-//   </Form.Item>
-// );
-
-const phoneRegex = "^[0-9]{10}$";
+const phoneRegex = "^\\+7[0-9]{10}$";
 
 export const RegistrationPage = () => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const { isRegistration } = useAppSelector((state) => state.auth);
+  const { isRegistrated, isAuthorized } = useAppSelector((state) => state.auth);
   const [isLoading, setLoading] = useState(false);
 
   const onFinish: FormProps<UserRegistration>["onFinish"] = async (values) => {
@@ -58,8 +47,9 @@ export const RegistrationPage = () => {
 
       await dispatch(userRegistrationAction(newUser));
       form.resetFields();
+      console.log("RegistrationPage isAuthorized: ", isAuthorized);
     } catch (error) {
-      console.log((error as Error).message);
+      console.log("RegistrationPage", (error as Error).message);
     } finally {
       setLoading(false);
     }
@@ -86,16 +76,12 @@ export const RegistrationPage = () => {
         <Form
           form={form}
           name="basic"
-          // labelCol={{ span: 10 }}
-          // wrapperCol={{ span: 14 }}
-          // style={{ maxWidth: 400 }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
           <p className={styles.input_label}>Username</p>
           <Form.Item<FieldType>
-            // label="Username"
             name="username"
             rules={[
               { required: true, message: "Пожалуйста, введите ваше имя." },
@@ -112,9 +98,10 @@ export const RegistrationPage = () => {
             <Input className={styles.input_field} placeholder="John" />
           </Form.Item>
 
+
+
           <p className={styles.input_label}>Login</p>
           <Form.Item<FieldType>
-            // label="Login"
             name="login"
             rules={[
               { required: true, message: "Пожалуйста, введите логин." },
@@ -131,9 +118,10 @@ export const RegistrationPage = () => {
             <Input className={styles.input_field} placeholder="Johnson" />
           </Form.Item>
 
+
+
           <p className={styles.input_label}>Password</p>
           <Form.Item<FieldType>
-            // label="Password"
             name="password"
             rules={[
               { required: true, message: " Пожалуйста, введите пароль." },
@@ -153,9 +141,10 @@ export const RegistrationPage = () => {
             />
           </Form.Item>
 
+
+
           <p className={styles.input_label}>Confirm password</p>
           <Form.Item<FieldType>
-            // label="Confirm password"
             name="password2"
             dependencies={["password2"]}
             rules={[
@@ -184,9 +173,10 @@ export const RegistrationPage = () => {
             />
           </Form.Item>
 
+
+
           <p className={styles.input_label}>Email</p>
           <Form.Item<FieldType>
-            // label="Email"
             name="email"
             rules={[
               { type: "email" },
@@ -202,25 +192,24 @@ export const RegistrationPage = () => {
             />
           </Form.Item>
 
+
+
           <p className={styles.input_label}>Telephone</p>
           <Form.Item<FieldType>
-            // label="Telephone"
             name="phoneNumber"
             rules={[
               { required: false },
               {
                 pattern: new RegExp(phoneRegex),
-                message: "Введите 10 цифр вашего номера телефона.",
+                message: "Введите в соответсвии шаблону: +79998887766",
               },
-              { max: 10 },
+              // { max: 10 },
             ]}
           >
-            <Input
-              className={styles.input_field}
-              // addonBefore={prefixSelector}
-              placeholder="+79998887766"
-            />
+            <Input className={styles.input_field} placeholder="+79998887766" />
           </Form.Item>
+
+          
 
           <Form.Item>
             <Button
@@ -237,7 +226,7 @@ export const RegistrationPage = () => {
 
       <>
         <footer className={styles.footer}>
-          {isRegistration ? (
+          {isRegistrated ? (
             <p className={styles.footer_paragraph}>
               Пройдите по{" "}
               <Link className={styles.footer_link} to="/auth/signin">

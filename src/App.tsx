@@ -4,33 +4,33 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
-import { UserPage } from "./pages/UserPage/UserPage";
-import { RootLayoutCRM } from "./pages/RootLayoutCRM/RootLayoutCRM";
-import { ErrorPage } from "./pages/ErrorPage/ErrorPage";
 import { RootLayoutAuth } from "./pages/RootLayoutAUTH/RootLayoutAuth";
-import { AuthenticationPage } from "./pages/AuthenticationPage/AuthenticationPage";
+import { ErrorPage } from "./pages/ErrorPage/ErrorPage";
 import { RegistrationPage } from "./pages/RegistrationPage/RegistrationPage";
+import { AuthenticationPage } from "./pages/AuthenticationPage/AuthenticationPage";
+import { UserPage } from "./pages/UserPage/UserPage";
+import { ProtectedRoute } from "./pages/ProtectedRoute/ProtectedRoute";
 
 const router = createBrowserRouter([
+  { path: "/", element: <Navigate to="auth/signin" replace /> },
+  // { index: true, element: <Navigate to="auth/signin" /> },
+  // -- перенаправляет пользователя на /auth/signin.
+  // -- index: true обозначает маршрут по умолчанию,
+  // либо можно добавить относительный путь вместо index: true, path: "".
+  // -- Атрибут replace гарантирует, что текущий маршрут не будет сохранен в истории браузера (это важно для логики навигации).
   {
-    path: "/",
+    path: "/auth",
     element: <RootLayoutAuth />,
     errorElement: <ErrorPage />,
     children: [
-      { index: true, element: <Navigate to="auth/signin" /> },
-      //перенаправляет пользователя на /auth/signin.
-      // -- index: true обозначает маршрут по умолчанию,
-      // либо можно добавить относительный путь вместо index: true, path: "".
-      // -- Атрибут replace гарантирует, что текущий маршрут не будет сохранен
-      // в истории браузера (это важно для логики навигации).
-      { path: "auth/signin", element: <AuthenticationPage /> },
-      { path: "auth/signup", element: <RegistrationPage /> },
-      // { path: "*", element: <ErrorPage /> }, // Обрабатывает несуществующие пути
+      { path: "signin", element: <AuthenticationPage /> },
+      { path: "signup", element: <RegistrationPage /> },
+      // { path: "*", element: <ErrorPage /> }, // Обрабатывает несуществующие пути(работает некорректно)
     ],
   },
   {
     path: "/crm",
-    element: <RootLayoutCRM />, // корневой маршрут(родительский)
+    element: <ProtectedRoute />, // корневой маршрут(родительский)
     errorElement: <ErrorPage />,
     children: [
       { path: "todo", element: <TaskListPage /> },

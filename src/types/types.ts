@@ -49,6 +49,10 @@ export interface AuthData {
   password: string;
 }
 
+export interface RefreshToken {
+  refreshToken: string;
+}
+
 export interface Token {
   accessToken: string;
   refreshToken: string;

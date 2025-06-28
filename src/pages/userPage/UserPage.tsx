@@ -4,23 +4,22 @@ import {
   getUserRequestAction,
   updateTokenAction,
 } from "../../store/auth-actions";
+// import { getAccessToken, getRefreshToken } from "../../util/auth";
 
 export const UserPage = () => {
   const dispatch = useAppDispatch();
-  const { user, accessTokenAuth } = useAppSelector((state) => state.auth);
+  const { user } = useAppSelector((state) => state.auth);
   const [isLoading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (!accessTokenAuth) {
-      console.log("AccessToken отсутсвует.");
-      return;
-    }
+  // console.log("at", getAccessToken());
+  // console.log("rt", getRefreshToken());
 
-    const getUserData = async () => {
+  useEffect(() => {
+    const thunkFunction = async () => {
       try {
         setLoading(true);
         await dispatch(updateTokenAction());
-        await dispatch(getUserRequestAction(accessTokenAuth));
+        await dispatch(getUserRequestAction());
       } catch (error) {
         console.log(error);
       } finally {
@@ -28,8 +27,8 @@ export const UserPage = () => {
       }
     };
 
-    getUserData();
-  }, [accessTokenAuth, dispatch]);
+    thunkFunction();
+  }, [dispatch]);
 
   if (isLoading) {
     return <div>Loading...</div>;

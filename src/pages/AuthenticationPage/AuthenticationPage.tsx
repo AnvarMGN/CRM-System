@@ -1,3 +1,4 @@
+import styles from "./AuthenticationPage.module.scss";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Checkbox, Form, Input } from "antd";
 import { type FormProps } from "antd";
@@ -5,7 +6,6 @@ import type { AuthData } from "../../types/types";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { userAuthenticationAction } from "../../store/auth-actions";
-import styles from "./AuthenticationPage.module.scss";
 
 const minLoginlength = 2;
 const maxLoginlength = 60;
@@ -23,15 +23,16 @@ export const AuthenticationPage = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { refreshTokenAuth } = useAppSelector((state) => state.auth);
+  const { isAuthorized } = useAppSelector((state) => state.auth);
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (refreshTokenAuth && window.location.pathname === "/auth/signin") {
-      console.log("AuthenticationPage: ", refreshTokenAuth);
+    if (isAuthorized) {
       navigate("/crm/todo", { replace: true });
     }
-  }, [navigate, refreshTokenAuth]);
+  }, [isAuthorized, navigate]);
+
+
 
   const onFinish: FormProps<AuthData>["onFinish"] = async (values) => {
     try {
@@ -40,21 +41,24 @@ export const AuthenticationPage = () => {
         login: values.login,
         password: values.password,
       };
-
       await dispatch(userAuthenticationAction(userAuthData));
       form.resetFields();
     } catch (error) {
-      console.log((error as Error).message);
+      console.log("AuthenticationPage: ", (error as Error).message);
     } finally {
       setLoading(false);
     }
   };
+
+
 
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
     errorInfo
   ) => {
     console.log("Failed:", errorInfo);
   };
+
+  
 
   return (
     <>
@@ -90,9 +94,6 @@ export const AuthenticationPage = () => {
         <Form
           form={form}
           name="basic"
-          // labelCol={{ span: 8 }}
-          // wrapperCol={{ span: 16 }}
-          // style={{ maxWidth: 600 }}
           initialValues={{ remember: false }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
@@ -100,7 +101,6 @@ export const AuthenticationPage = () => {
         >
           <p className={styles.input_label}>Login</p>
           <Form.Item<FieldType>
-            // label="Login"
             name="login"
             rules={[
               { required: true, message: "Пожалуйста, введите логин." },
@@ -120,7 +120,6 @@ export const AuthenticationPage = () => {
           <p className={styles.input_label}>Password</p>
           <Form.Item<FieldType>
             style={{ marginBottom: "0px" }}
-            // label="Password"
             name="password"
             rules={[
               { required: true, message: " Пожалуйста, введите пароль." },
@@ -140,11 +139,7 @@ export const AuthenticationPage = () => {
             />
           </Form.Item>
 
-          <Form.Item<FieldType>
-            name="remember"
-            valuePropName="checked"
-            // label={null}
-          >
+          <Form.Item<FieldType> name="remember" valuePropName="checked">
             <div className={styles.checkbox_block}>
               <Checkbox className={styles.checkbox_text}>Remember me</Checkbox>
               <a className={styles.forgot_link} href="#">
