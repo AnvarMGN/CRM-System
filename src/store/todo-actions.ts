@@ -1,8 +1,8 @@
-import type { FilterStatus } from "../types/types";
-import { fetchTodoList } from "../api/apiAxios";
-import { todoActions } from "./todo-slice";
 import { openNotification } from "../notifications/notifications";
+import { fetchTodoList } from "../api/apiAxios";
+import type { FilterStatus } from "../types/todos";
 import type { AppDispatch } from "./index";
+import { todoActions } from "./todo-slice";
 
 export const getTaskListAction = (newStatus: FilterStatus) => {
   return async (dispatch: AppDispatch) => {

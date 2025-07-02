@@ -1,10 +1,12 @@
-import styles from './ErrorPage.module.scss'
+import styles from "./ErrorPage.module.scss";
+import { Typography } from "antd";
+const { Title, Text } = Typography;
 
 export const ErrorPage = () => {
   return (
     <div className={styles.errorPage}>
-      <h1>An error occurred!</h1>
-      <p>Could not find this page!</p>
+      <Title>An error occurred!</Title>
+      <Text>Could not find this page!</Text>
     </div>
   );
 };

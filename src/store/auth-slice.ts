@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { ProfileRequest } from "../types/types";
+import type { ProfileRequest } from "../types/auth";
 
 type initialAuthStateType = {
   isRegistrated: boolean;

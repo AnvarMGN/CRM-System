@@ -7,7 +7,7 @@ import {
   CloseOutlined,
 } from "@ant-design/icons";
 import styles from "./TaskItemAntd.module.scss";
-import type { TodoList } from "../../../types/types";
+import type { TodoList } from "../../../types/todos";
 import { useState } from "react";
 import { deleteTask, editTitleOrStatus } from "../../../api/apiAxios";
 import { useAppDispatch, useAppSelector } from "../../../store/hook";

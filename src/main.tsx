@@ -7,18 +7,18 @@ import { updateTokenAction } from "./store/auth-actions.ts";
 import { useEffect, useState } from "react";
 
 export const Root = () => {
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
     const initialApp = async () => {
       await store.dispatch(updateTokenAction());
-      setLoading(true);
+      setLoading(false);
     };
 
     initialApp();
   }, []);
 
-  if (!isLoading) {
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 

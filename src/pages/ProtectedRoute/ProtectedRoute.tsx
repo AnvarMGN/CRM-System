@@ -1,7 +1,7 @@
-import { useAppSelector } from "../../store/hook";
 import { Navigate } from "react-router-dom";
-import { RootLayoutCRM } from "../RootLayoutCRM/RootLayoutCRM";
 import { useEffect } from "react";
+import { useAppSelector } from "../../store/hook";
+import { RootLayoutCRM } from "../RootLayoutCRM/RootLayoutCRM";
 
 export const ProtectedRoute = () => {
   const { isAuthorized } = useAppSelector((state) => state.auth);

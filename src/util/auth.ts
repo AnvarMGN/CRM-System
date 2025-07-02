@@ -1,25 +1,37 @@
-let accessToken: string | null = null;
+class Token {
+  private accessToken: string | null = null;
 
-export const setAccessToken = (token: string) => {
-  accessToken = token;
-};
+  // constructor(value?: string | null) {
+  //   if (value) {
+  //     this.accessToken = value;
+  //   } else {
+  //     this.accessToken = null;
+  //   }
+  // }
 
-export const getAccessToken = () => {
-  return accessToken;
-}; 
+  setAccessToken = (token: string): void => {
+    this.accessToken = token;
+  };
 
-export const removeAccessToken = () => {
-  accessToken = null;
-};
+  getAccessToken = (): string | null => {
+    return this.accessToken;
+  };
 
-export const setRefreshToken = (token: string) => {
-  localStorage.setItem("refreshToken", token);
-};
+  removeAccessToken = (): void => {
+    this.accessToken = null;
+  };
 
-export const getRefreshToken = () => {
-  return localStorage.getItem("refreshToken");
-};
+  setRefreshToken = (token: string): void => {
+    localStorage.setItem("refreshToken", token);
+  };
 
-export const removeRefreshToken = () => {
-  localStorage.removeItem("refreshToken");
-};
+  getRefreshToken = (): string | null => {
+    return localStorage.getItem("refreshToken");
+  };
+
+  removeRefreshToken = (): void => {
+    localStorage.removeItem("refreshToken");
+  };
+}
+
+export const tokens = new Token();

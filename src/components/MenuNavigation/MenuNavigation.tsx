@@ -3,8 +3,8 @@ import styles from "./MenuNavigation.module.scss";
 import { Button, Menu, type MenuProps } from "antd";
 import { UserOutlined, UnorderedListOutlined } from "@ant-design/icons";
 import { useAppDispatch } from "../../store/hook";
-import { removeAccessToken, removeRefreshToken } from "../../util/auth";
 import { authActions } from "../../store/auth-slice";
+import { tokens } from "../../util/auth";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -26,8 +26,8 @@ export const MenuNavigation = () => {
 
   const handleLogOut = () => {
     dispatch(authActions.isAuthorizedFalse());
-    removeAccessToken();
-    removeRefreshToken();
+    tokens.removeAccessToken();
+    tokens.removeRefreshToken();
   };
 
   return (

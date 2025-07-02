@@ -6,9 +6,9 @@ import {
 } from "react-router-dom";
 import { RootLayoutAuth } from "./pages/RootLayoutAUTH/RootLayoutAuth";
 import { ErrorPage } from "./pages/ErrorPage/ErrorPage";
-import { RegistrationPage } from "./pages/RegistrationPage/RegistrationPage";
-import { AuthenticationPage } from "./pages/AuthenticationPage/AuthenticationPage";
-import { UserPage } from "./pages/UserPage/UserPage";
+import { RegistrationPage } from "./pages/AuthPages/RegistrationPage/RegistrationPage";
+import { AuthenticationPage } from "./pages/AuthPages/AuthenticationPage/AuthenticationPage";
+import { ProfilePage } from "./pages/ProfilePage/ProfilePage";
 import { ProtectedRoute } from "./pages/ProtectedRoute/ProtectedRoute";
 
 const router = createBrowserRouter([
@@ -25,7 +25,7 @@ const router = createBrowserRouter([
     children: [
       { path: "signin", element: <AuthenticationPage /> },
       { path: "signup", element: <RegistrationPage /> },
-      // { path: "*", element: <ErrorPage /> }, // Обрабатывает несуществующие пути(работает некорректно)
+      { path: "*", element: <ErrorPage /> }, // Обрабатывает несуществующие пути
     ],
   },
   {
@@ -34,8 +34,8 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { path: "todo", element: <TaskListPage /> },
-      { path: "user", element: <UserPage /> },
-      // { path: "*", element: <ErrorPage /> },
+      { path: "user", element: <ProfilePage /> },
+      { path: "*", element: <ErrorPage /> },
     ],
   },
 ]);

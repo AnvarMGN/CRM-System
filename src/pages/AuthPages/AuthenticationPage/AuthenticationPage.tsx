@@ -1,11 +1,15 @@
 import styles from "./AuthenticationPage.module.scss";
-import { Link, useNavigate } from "react-router-dom";
-import { Button, Checkbox, Form, Input } from "antd";
+import axios from "axios";
+import { openNotification } from "../../../notifications/notifications";
 import { type FormProps } from "antd";
-import type { AuthData } from "../../types/types";
+import { Button, Form, Input, Typography } from "antd";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../store/hook";
-import { userAuthenticationAction } from "../../store/auth-actions";
+import type { AuthData } from "../../../types/auth";
+import type { AppDispatch } from "../../../store";
+import { useAppDispatch, useAppSelector } from "../../../store/hook";
+import { authActions } from "../../../store/auth-slice";
+import { userAuthenticationAction } from "../../../store/auth-actions";
 
 const minLoginlength = 2;
 const maxLoginlength = 60;
@@ -19,6 +23,8 @@ interface FieldType {
   remember?: string;
 }
 
+const { Link, Title, Text } = Typography;
+
 export const AuthenticationPage = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
@@ -26,13 +32,22 @@ export const AuthenticationPage = () => {
   const { isAuthorized } = useAppSelector((state) => state.auth);
   const [isLoading, setLoading] = useState(false);
 
+  const handleAuthError = (
+    notificatonDescription: string,
+    error: Error,
+    dispatch: AppDispatch
+  ) => {
+    console.log(notificatonDescription, error.message);
+    openNotification("Ошибка", notificatonDescription);
+    dispatch(authActions.isAuthorizedFalse());
+  };
+
   useEffect(() => {
     if (isAuthorized) {
+      openNotification("Уведомление", "Пользователь успешно авторизовался.");
       navigate("/crm/todo", { replace: true });
     }
   }, [isAuthorized, navigate]);
-
-
 
   const onFinish: FormProps<AuthData>["onFinish"] = async (values) => {
     try {
@@ -44,13 +59,39 @@ export const AuthenticationPage = () => {
       await dispatch(userAuthenticationAction(userAuthData));
       form.resetFields();
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          switch (error.response.status) {
+            case 400:
+              handleAuthError(
+                "Ошибка обработки данных, либо неправильный ввод данных пользователя.",
+                error,
+                dispatch
+              );
+              break;
+            case 401:
+              handleAuthError("Не верные учётные данные.", error, dispatch);
+              break;
+            case 500:
+              handleAuthError("`Ошибка на стороне сервера.", error, dispatch);
+              break;
+            default:
+              handleAuthError("Неизвестная ошибка.", error, dispatch);
+              break;
+          }
+        } else if (error.request) {
+          console.log("Сервер не доступен.", error.message);
+        } else {
+          console.log("Неизвестная ошибка.", error.message);
+        }
+      } else {
+        console.log("Неизвестная ошибка.", (error as Error).message);
+      }
       console.log("AuthenticationPage: ", (error as Error).message);
     } finally {
       setLoading(false);
     }
   };
-
-
 
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
     errorInfo
@@ -58,37 +99,14 @@ export const AuthenticationPage = () => {
     console.log("Failed:", errorInfo);
   };
 
-  
-
   return (
     <>
       <header className={styles.header}>
-        <img
-          className={styles.icon_login}
-          src="/login-page/img2-login.png"
-          alt="icon-login"
-        />
-        <h1 className={styles.title_header}>Login to your Account</h1>
-        <p className={styles.paragraph_header}>
+        <Title className={styles.title_header}>Login to your Account</Title>
+        <Text className={styles.paragraph_header}>
           See what is going on with your business
-        </p>
+        </Text>
       </header>
-
-      <Button className={styles.button_google}>
-        <img
-          className={styles.icon_google}
-          src="/login-page/icon-google.png"
-          alt="icon-google"
-        />
-        Continue with Google
-      </Button>
-
-      <div className={styles.link_block}>
-        <a className={styles.link_google} href="#">
-          <span className={styles.dash_dash}>-------------</span> or Sign in
-          withEmail <span className={styles.dash_dash}>-------------</span>
-        </a>
-      </div>
 
       <main>
         <Form
@@ -99,7 +117,7 @@ export const AuthenticationPage = () => {
           onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
-          <p className={styles.input_label}>Login</p>
+          <Text className={styles.input_label}>Login</Text>
           <Form.Item<FieldType>
             name="login"
             rules={[
@@ -117,7 +135,7 @@ export const AuthenticationPage = () => {
             <Input className={styles.input_field} placeholder="Alex" />
           </Form.Item>
 
-          <p className={styles.input_label}>Password</p>
+          <Text className={styles.input_label}>Password</Text>
           <Form.Item<FieldType>
             style={{ marginBottom: "0px" }}
             name="password"
@@ -139,15 +157,6 @@ export const AuthenticationPage = () => {
             />
           </Form.Item>
 
-          <Form.Item<FieldType> name="remember" valuePropName="checked">
-            <div className={styles.checkbox_block}>
-              <Checkbox className={styles.checkbox_text}>Remember me</Checkbox>
-              <a className={styles.forgot_link} href="#">
-                Forgot Password?
-              </a>
-            </div>
-          </Form.Item>
-
           <Form.Item>
             <Button
               className={styles.button_login}
@@ -162,8 +171,12 @@ export const AuthenticationPage = () => {
       </main>
 
       <footer className={styles.footer}>
-        <p className={styles.footer_paragraph}>Not Registered Yet?</p>
-        <Link className={styles.footer_link} to="/auth/signup">
+        <Text className={styles.footer_paragraph}>Not Registered Yet?</Text>
+        <Link
+          className={styles.footer_link}
+          href="/auth/signup"
+          // target="_blank"
+        >
           Create an account
         </Link>
       </footer>

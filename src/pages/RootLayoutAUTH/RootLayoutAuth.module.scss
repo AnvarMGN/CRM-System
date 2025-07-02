@@ -3,19 +3,33 @@
 .container {
   font-family: Nunito Sans;
 
-  height: 100%;
-
   display: grid;
   grid-template-columns: 1.5fr 1fr;
   grid-template-rows: 1fr;
   justify-items: center;
+  gap: 50px;
 
   background-image: url(/login-page/img1-login.png);
   background-size: contain;
   background-repeat: no-repeat;
   background-position: left;
 
+  .image_block {
+    height: 100vh;
+  }
+
   .auth_pages {
-    height: 100%;
+    align-items: center;
+    .header {
+      position: relative;
+      margin-top: 278px;
+
+      .icon_login {
+        width: 72px;
+        position: absolute;
+        top: -100px;
+        left: 0px;
+      }
+    }
   }
 }

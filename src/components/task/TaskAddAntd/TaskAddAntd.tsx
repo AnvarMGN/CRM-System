@@ -1,7 +1,7 @@
 import { Button, Form, Input } from "antd";
 import styles from "./TaskAddAntd.module.scss";
 import { addTask } from "../../../api/apiAxios";
-import type { FilterStatus } from "../../../types/types";
+import type { FilterStatus } from "../../../types/todos";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store/hook";
 import { getTaskListAction } from "../../../store/todo-actions";

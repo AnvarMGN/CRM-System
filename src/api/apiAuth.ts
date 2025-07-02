@@ -3,13 +3,30 @@ import {
   type AuthData,
   type Token,
   type UserRegistration,
-} from "../types/types";
+} from "../types/auth";
+import { tokens } from "../util/auth";
 
 const baseURL = "https://easydev.club/api/v1";
 
 const authApi = axios.create({
   baseURL: baseURL,
 });
+
+authApi.interceptors.request.use(
+  function (config) {
+    const accessToken = tokens.getAccessToken();
+    // console.log("at", accessToken);
+
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+
+    return config;
+  },
+  function (error) {
+    return Promise.reject(error);
+  }
+);
 
 export const userRegistration = async (newUser: UserRegistration) => {
   try {
@@ -46,13 +63,9 @@ export const updateToken = async (refreshToken: string) => {
   }
 };
 
-export const getUserRequest = async (accessToken: string | null) => {
+export const getUserRequest = async () => {
   try {
-    const response = await authApi.get(`/user/profile`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    const response = await authApi.get(`/user/profile`);
     return response;
   } catch (error) {
     console.log(error);

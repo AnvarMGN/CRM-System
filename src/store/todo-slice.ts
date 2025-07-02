@@ -5,7 +5,7 @@ import type {
   initialTodoStateType,
   TodoInfo,
   TodoList,
-} from "../types/types";
+} from "../types/todos";
 
 const initialTodoState: initialTodoStateType = {
   todos: [],

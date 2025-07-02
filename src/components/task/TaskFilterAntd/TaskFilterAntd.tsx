@@ -1,6 +1,6 @@
 import { Tabs } from "antd";
 import styles from "./TaskFilterAntd.module.scss";
-import type { FilterStatus } from "../../../types/types";
+import type { FilterStatus } from "../../../types/todos";
 import { useAppDispatch, useAppSelector } from "../../../store/hook";
 import { todoActions } from "../../../store/todo-slice";
 

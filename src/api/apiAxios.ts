@@ -4,7 +4,7 @@ import type {
   TaskListResponse,
   TodoList,
   TodoPart,
-} from "../types/types";
+} from "../types/todos";
 
 const baseURL = "https://easydev.club/api/v1";
 // axios.defaults.baseURL = baseURL;

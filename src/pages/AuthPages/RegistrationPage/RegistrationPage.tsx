@@ -1,11 +1,14 @@
-import { Button, Form, Input } from "antd";
-import { type FormProps } from "antd";
-import { type UserRegistration } from "../../types/types";
-import { Link } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../store/hook";
-import { userRegistrationAction } from "../../store/auth-actions";
-import { useState } from "react";
 import styles from "./RegistrationPage.module.scss";
+import axios from "axios";
+import { openNotification } from "../../../notifications/notifications";
+import { type FormProps } from "antd";
+import { type UserRegistration } from "../../../types/auth";
+import { Button, Form, Input, Typography } from "antd";
+import type { AppDispatch } from "../../../store";
+import { useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../../store/hook";
+import { authActions } from "../../../store/auth-slice";
+import { userRegistrationAction } from "../../../store/auth-actions";
 
 interface FieldType {
   username?: string;
@@ -27,11 +30,23 @@ const maxPasswordlength = 60;
 
 const phoneRegex = "^\\+7[0-9]{10}$";
 
+const { Link, Title, Text } = Typography;
+
 export const RegistrationPage = () => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const { isRegistrated, isAuthorized } = useAppSelector((state) => state.auth);
   const [isLoading, setLoading] = useState(false);
+
+  const handleRegError = (
+    notificatonDescription: string,
+    error: Error,
+    dispatch: AppDispatch
+  ) => {
+    console.log(notificatonDescription, error.message);
+    openNotification("Ошибка", notificatonDescription);
+    dispatch(authActions.isRegistratedFalse());
+  };
 
   const onFinish: FormProps<UserRegistration>["onFinish"] = async (values) => {
     console.log("Success:", values);
@@ -47,9 +62,46 @@ export const RegistrationPage = () => {
 
       await dispatch(userRegistrationAction(newUser));
       form.resetFields();
+      if (isRegistrated) {
+        openNotification(
+          "Уведомление",
+          "Пользователь успешно зарегистрирован."
+        );
+      }
       console.log("RegistrationPage isAuthorized: ", isAuthorized);
     } catch (error) {
-      console.log("RegistrationPage", (error as Error).message);
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          switch (error.response.status) {
+            case 400:
+              handleRegError(
+                "Ошибка обработки данных, либо неправильный ввод данных пользователя.",
+                error,
+                dispatch
+              );
+              break;
+            case 409:
+              handleRegError(
+                "Пользователь уже зарегистрирован.",
+                error,
+                dispatch
+              );
+              break;
+            case 500:
+              handleRegError("`Ошибка на стороне сервера.", error, dispatch);
+              break;
+            default:
+              handleRegError("Неизвестная ошибка.", error, dispatch);
+              break;
+          }
+        } else if (error.request) {
+          handleRegError("Сервер не доступен.", error, dispatch);
+        } else {
+          handleRegError("Неизвестная ошибка.", error, dispatch);
+        }
+      } else {
+        handleRegError("Неизвестная ошибка.", error as Error, dispatch);
+      }
     } finally {
       setLoading(false);
     }
@@ -64,12 +116,7 @@ export const RegistrationPage = () => {
   return (
     <>
       <header className={styles.header}>
-        <img
-          className={styles.icon_login}
-          src="/login-page/img2-login.png"
-          alt="icon-login"
-        />
-        <h1 className={styles.title_header}>Create a new Account</h1>
+        <Title className={styles.title_header}> Create a new Account </Title>
       </header>
 
       <main>
@@ -80,7 +127,7 @@ export const RegistrationPage = () => {
           onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
-          <p className={styles.input_label}>Username</p>
+          <Text className={styles.input_label}>Username</Text>
           <Form.Item<FieldType>
             name="username"
             rules={[
@@ -98,9 +145,7 @@ export const RegistrationPage = () => {
             <Input className={styles.input_field} placeholder="John" />
           </Form.Item>
 
-
-
-          <p className={styles.input_label}>Login</p>
+          <Text className={styles.input_label}>Login</Text>
           <Form.Item<FieldType>
             name="login"
             rules={[
@@ -118,9 +163,7 @@ export const RegistrationPage = () => {
             <Input className={styles.input_field} placeholder="Johnson" />
           </Form.Item>
 
-
-
-          <p className={styles.input_label}>Password</p>
+          <Text className={styles.input_label}>Password</Text>
           <Form.Item<FieldType>
             name="password"
             rules={[
@@ -141,9 +184,7 @@ export const RegistrationPage = () => {
             />
           </Form.Item>
 
-
-
-          <p className={styles.input_label}>Confirm password</p>
+          <Text className={styles.input_label}>Password confirm</Text>
           <Form.Item<FieldType>
             name="password2"
             dependencies={["password2"]}
@@ -173,9 +214,7 @@ export const RegistrationPage = () => {
             />
           </Form.Item>
 
-
-
-          <p className={styles.input_label}>Email</p>
+          <Text className={styles.input_label}>Email</Text>
           <Form.Item<FieldType>
             name="email"
             rules={[
@@ -192,9 +231,7 @@ export const RegistrationPage = () => {
             />
           </Form.Item>
 
-
-
-          <p className={styles.input_label}>Telephone</p>
+          <Text className={styles.input_label}>Telephone</Text>
           <Form.Item<FieldType>
             name="phoneNumber"
             rules={[
@@ -208,8 +245,6 @@ export const RegistrationPage = () => {
           >
             <Input className={styles.input_field} placeholder="+79998887766" />
           </Form.Item>
-
-          
 
           <Form.Item>
             <Button
@@ -227,21 +262,21 @@ export const RegistrationPage = () => {
       <>
         <footer className={styles.footer}>
           {isRegistrated ? (
-            <p className={styles.footer_paragraph}>
+            <Text className={styles.footer_paragraph}>
               Пройдите по{" "}
-              <Link className={styles.footer_link} to="/auth/signin">
+              <Link className={styles.footer_link} href="/auth/signin">
                 ссылке
               </Link>{" "}
               для перехода на страницу авторизации.
-            </p>
+            </Text>
           ) : (
-            <p className={styles.footer_paragraph}>
+            <Text className={styles.footer_paragraph}>
               Go back to the{" "}
-              <Link className={styles.footer_link} to="/auth/signin">
+              <Link className={styles.footer_link} href="/auth/signin">
                 authorization page
               </Link>
               .
-            </p>
+            </Text>
           )}
         </footer>
       </>

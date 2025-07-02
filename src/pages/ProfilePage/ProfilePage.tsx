@@ -1,24 +1,19 @@
-import styles from "./TaskListPage.module.scss";
 import axios from "axios";
 import { tokens } from "../../util/auth";
 import { openNotification } from "../../notifications/notifications";
 import { useEffect, useState } from "react";
-import { TaskAddAntd } from "../../components/task/TaskAddAntd/TaskAddAntd";
-import { TaskFilterAntd } from "../../components/task/TaskFilterAntd/TaskFilterAntd";
-import { TaskItemAntd } from "../../components/task/TaskItemAntd/TaskItemAntd";
 import type { AppDispatch } from "../../store";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { authActions } from "../../store/auth-slice";
-import { getTaskListAction } from "../../store/todo-actions";
-import { updateTokenAction } from "../../store/auth-actions";
-import { useLocation } from "react-router-dom";
+import {
+  getUserRequestAction,
+  updateTokenAction,
+} from "../../store/auth-actions";
 
-export const TaskListPage = () => {
-  const [isLoading, setLoading] = useState(false);
+export const ProfilePage = () => {
   const dispatch = useAppDispatch();
-  const { status, todos } = useAppSelector((state) => state.todo);
-  const [isLocation, setLocation] = useState<boolean>(false);
-  const location = useLocation();
+  const { user } = useAppSelector((state) => state.auth);
+  const [isLoading, setLoading] = useState(false);
 
   const handleUpdateError = (
     notificatonDescription: string,
@@ -33,26 +28,11 @@ export const TaskListPage = () => {
   };
 
   useEffect(() => {
-    if (location.pathname === "/crm/todo") {
-      setLocation(true);
-    } else {
-      setLocation(false);
-    }
-
-    console.log("onPage: ", isLocation);
-  }, [isLocation, location.pathname]);
-
-  useEffect(() => {
-    if (!isLocation) {
-      console.log("Вкладка не активна");
-      return;
-    }
-
     const thunkFunction = async () => {
       try {
         setLoading(true);
         await dispatch(updateTokenAction());
-        await dispatch(getTaskListAction(status));
+        await dispatch(getUserRequestAction());
       } catch (error) {
         if (axios.isAxiosError(error)) {
           if (error.response) {
@@ -96,16 +76,7 @@ export const TaskListPage = () => {
     };
 
     thunkFunction();
-
-    const updateInterval = setInterval(() => {
-      dispatch(getTaskListAction(status));
-      console.log("Вкладка активна, список задач обновлён.");
-    }, 5000);
-
-    return () => {
-      clearInterval(updateInterval);
-    };
-  }, [dispatch, isLocation, status]);
+  }, [dispatch]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -113,17 +84,12 @@ export const TaskListPage = () => {
 
   return (
     <>
-      <header className={styles.header}>
-        <TaskAddAntd />
-      </header>
-      <nav>
-        <TaskFilterAntd />
-      </nav>
-      <main className={styles.list}>
-        {todos.map((task) => (
-          <TaskItemAntd task={task} key={task.id} />
-        ))}
-      </main>
+      <h1>Привет!</h1>
+      <ul>
+        <li>{user.username}</li>
+        <li>{user.email}</li>
+        <li>{user.phoneNumber}</li>
+      </ul>
     </>
   );
 };
