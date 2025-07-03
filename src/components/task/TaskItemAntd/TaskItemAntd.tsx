@@ -1,3 +1,4 @@
+import "@ant-design/v5-patch-for-react-19";
 import { Card, Button, Checkbox, Form, Input, Popconfirm } from "antd";
 import {
   EditOutlined,
@@ -6,76 +7,76 @@ import {
   CloseOutlined,
 } from "@ant-design/icons";
 import styles from "./TaskItemAntd.module.scss";
-import type { FilterStatus, TodoList } from "../../../types/types";
+import type { TodoList } from "../../../types/todos";
 import { useState } from "react";
 import { deleteTask, editTitleOrStatus } from "../../../api/apiAxios";
-// import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../../store/hook";
+import { getTaskListAction } from "../../../store/todo-actions";
+import { openNotification } from "../../../notifications/notifications";
 
 interface TaskItemAntdTypes {
-  currentStatus: FilterStatus;
-  updateTaskList: (status: FilterStatus) => void;
   task: TodoList;
 }
 
-export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({
-  currentStatus,
-  updateTaskList,
-  task,
-}) => {
-  const { id, title, isDone } = task;
-  const [isEditable, setEditable] = useState(false);
-  const [form] = Form.useForm();
-  const [isLoading, setIsLoading] = useState(false);
+export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({ task }) => {
   const minTextlength = 2;
   const maxTextlength = 64;
-
-  // useEffect(() => {
-  //   console.log("Компонент списка задач.");
-  // }, []);
+  const [form] = Form.useForm();
+  const [isEditable, setEditable] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+  const { id, title, isDone } = task;
+  const dispatch = useAppDispatch();
+  const { status } = useAppSelector((state) => state.todo);
 
   const handleEditTask = async (value: { title: string }) => {
-    // console.log("Редактирование");
     try {
-      setIsLoading(true);
+      setLoading(true);
       const editData = {
         isDone: isDone,
         title: value.title,
       };
       await editTitleOrStatus(id, editData);
-      await updateTaskList(currentStatus);
+      dispatch(getTaskListAction(status));
       setEditable(false);
     } catch (error) {
-      console.error("Ошибка при редактировании задачи: ", error);
+      console.error(
+        `Ошибка при редактировании задачи: ${(error as Error).message}`
+      );
+      openNotification("Ошибка!", "Ошибка при редактировании задачи.");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   const handleCheckBox = async () => {
     try {
-      setIsLoading(true);
+      setLoading(true);
       const editData = {
         isDone: !isDone,
         title: title,
       };
       await editTitleOrStatus(id, editData);
-      await updateTaskList(currentStatus);
+      dispatch(getTaskListAction(status));
     } catch (error) {
-      console.error("Ошибка при изменении статуса задачи: ", error);
+      console.error(
+        `Ошибка при изменении статуса задачи: ${(error as Error).message}`
+      );
+      openNotification("Ошибка!", "Ошибка при изменении статуса задачи.");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   const handleDeleteTask = async () => {
     try {
-      setIsLoading(true);
+      setLoading(true);
       await deleteTask(id);
-      await updateTaskList(currentStatus);
+      dispatch(getTaskListAction(status));
     } catch (error) {
-      console.error("Ошибка при удалении задачи: ", error);
+      console.error(`Ошибка при удалении задачи ${(error as Error).message}`);
+      openNotification("Ошибка", "Ошибка при удалении задачи.");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -98,9 +99,18 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({
               name="title"
               initialValue={title}
               rules={[
-                { required: true, message: "Введите более 2 символов." },
-                { min: minTextlength, message: "Введите более 2 символов." },
-                { max: maxTextlength, message: "Лимит ввода 64 символа." },
+                {
+                  required: true,
+                  message: `Введите более ${minTextlength} символов.`,
+                },
+                {
+                  min: minTextlength,
+                  message: `Введите более ${minTextlength} символов.`,
+                },
+                {
+                  max: maxTextlength,
+                  message: `Лимит ввода ${maxTextlength} символа.`,
+                },
               ]}
             >
               <Input autoFocus showCount={true} style={{ minWidth: 250 }} />

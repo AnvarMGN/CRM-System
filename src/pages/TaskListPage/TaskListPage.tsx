@@ -1,102 +1,136 @@
-import { useCallback, useEffect, useState } from "react";
 import styles from "./TaskListPage.module.scss";
-import type { FilterStatus, TodoInfo, TodoList } from "../../types/types";
+import axios from "axios";
+import { tokenManager } from "../../util/auth";
+import { openNotification } from "../../notifications/notifications";
+import { useEffect, useState } from "react";
 import { TaskAddAntd } from "../../components/task/TaskAddAntd/TaskAddAntd";
 import { TaskFilterAntd } from "../../components/task/TaskFilterAntd/TaskFilterAntd";
 import { TaskItemAntd } from "../../components/task/TaskItemAntd/TaskItemAntd";
-import { fetchTodoList } from "../../api/apiAxios";
-import { notification } from "antd";
+import type { AppDispatch } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store/hook";
+import { authActions } from "../../store/auth-slice";
+import { getTaskListAction } from "../../store/todo-actions";
+import { updateTokenAction } from "../../store/auth-actions";
+import { useLocation } from "react-router-dom";
 
 export const TaskListPage = () => {
-  const [todos, setTodos] = useState<TodoList[]>([]);
-  const [status, setStatus] = useState<FilterStatus>("all");
-  const [countTask, setCountTask] = useState<TodoInfo>({
-    all: 0,
-    completed: 0,
-    inWork: 0,
-  });
-  const [isHidden, setHidden] = useState<boolean>(document.hidden);
+  const [isLoading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
+  const { status, todos } = useAppSelector((state) => state.todo);
+  const [isLocation, setLocation] = useState<boolean>(false);
+  const location = useLocation();
 
-  const openNotification = (message: string) => {
-    notification.error({
-      message: "Ошибка",
-      description: `Ошибка при загрузке списка задач: ${message}`,
-      duration: 3,
-      placement: "bottomRight",
-      showProgress: true,
-    });
+  const handleUpdateError = (
+    notificatonDescription: string,
+    error: Error,
+    dispatch: AppDispatch
+  ) => {
+    console.log(notificatonDescription, error.message);
+    openNotification("Ошибка", notificatonDescription);
+    dispatch(authActions.isAuthorizedFalse());
+    tokenManager.removeAccessToken();
+    tokenManager.removeRefreshToken();
   };
 
-  const getTaskList = useCallback(
-    async (newStatus: FilterStatus): Promise<void> => {
-      try {
-        const data = await fetchTodoList(newStatus);
-        // console.log(data);
-        setTodos(data.data);
-        setCountTask(data.info);
-      } catch (error) {
-        console.log(
-          `Ошибка при загрузке списка задача: ${(error as Error).message}`
-        );
-        // alert(`Ошибка при загрузке списка задача: ${(error as Error).message}`);
-        openNotification((error as Error).message);
-      }
-    },
-    []
-  );
+  useEffect(() => {
+    if (location.pathname === "/crm/todo") {
+      setLocation(true);
+    } else {
+      setLocation(false);
+    }
+
+    console.log("onPage: ", isLocation);
+  }, [isLocation, location.pathname]);
 
   useEffect(() => {
-    const handleVisibility = () => {
-      setHidden(document.hidden);
-    };
-    document.addEventListener("visibilitychange", handleVisibility);
-    return () => {
-      document.addEventListener("visibilitychange", handleVisibility);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (isHidden) {
+    if (!isLocation) {
       console.log("Вкладка не активна");
       return;
     }
 
-    getTaskList(status);
+    const errorStatusLabels = {
+      400: "Произошла ошибка при обработке данных.",
+      401: "Проверьте введенные данные или войдите снова.",
+      500: "Внутренняя ошибка сервера.",
+    };
+
+    const thunkFunction = async () => {
+      try {
+        setLoading(true);
+        await dispatch(updateTokenAction());
+        await dispatch(getTaskListAction(status));
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (error.response) {
+            switch (error.response.status) {
+              case 400:
+                handleUpdateError(
+                  errorStatusLabels[error.response.status],
+                  error,
+                  dispatch
+                );
+                break;
+              case 401:
+                handleUpdateError(
+                  errorStatusLabels[error.response.status],
+                  error,
+                  dispatch
+                );
+                break;
+              case 500:
+                handleUpdateError(
+                  errorStatusLabels[error.response.status],
+                  error,
+                  dispatch
+                );
+                break;
+              default:
+                handleUpdateError("Неизвестная ошибка", error, dispatch);
+                break;
+            }
+          } else if (error.request) {
+            console.log("Сервер не доступен.", error.message);
+            openNotification("Ошибка", "Сервер не доступен.");
+          } else {
+            console.log("Неизвестная ошибка.", error.message);
+            openNotification("Ошибка", "Неизвестная ошибка.");
+          }
+        } else {
+          console.log("Неизвестная ошибка.", (error as Error).message);
+          openNotification("Ошибка", "Неизвестная ошибка.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    thunkFunction();
 
     const updateInterval = setInterval(() => {
-      getTaskList(status);
+      dispatch(getTaskListAction(status));
       console.log("Вкладка активна, список задач обновлён.");
     }, 5000);
 
     return () => {
       clearInterval(updateInterval);
     };
-  }, [getTaskList, isHidden, status]);
+  }, [dispatch, isLocation, status]);
 
-  const changeStatus = useCallback((newStatus: FilterStatus): void => {
-    setStatus(newStatus);
-  }, []);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
       <header className={styles.header}>
-        <TaskAddAntd currentStatus={status} updateTaskList={getTaskList} />
+        <TaskAddAntd />
       </header>
       <nav>
-        <TaskFilterAntd
-          currentStatus={status}
-          changeStatus={changeStatus}
-          countTask={countTask}
-        />
+        <TaskFilterAntd />
       </nav>
       <main className={styles.list}>
         {todos.map((task) => (
-          <TaskItemAntd
-            currentStatus={status}
-            updateTaskList={getTaskList}
-            task={task}
-            key={task.id}
-          />
+          <TaskItemAntd task={task} key={task.id} />
         ))}
       </main>
     </>

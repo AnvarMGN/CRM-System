@@ -1,0 +1,54 @@
+.header {
+  .title_header {
+    font-family: Nunito Sans;
+    color: rgb(82, 82, 82);
+    font-size: 36px;
+    font-weight: 700;
+  }
+}
+
+.input_label {
+  color: rgb(130, 130, 130);
+  font-family: Nunito Sans;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.input_field {
+  width: 420px;
+  height: 45px;
+
+  font-family: Nunito Sans;
+}
+
+.button_login {
+  margin-top: 56px;
+
+  width: 420px;
+  height: 50px;
+
+  color: rgb(255, 255, 255);
+  font-family: Nunito Sans;
+  font-size: 18px;
+  font-weight: 800;
+  background: rgb(127, 38, 91);
+}
+
+.footer {
+  margin-top: 100px;
+  margin-bottom: 75px;
+
+  text-align: center;
+
+  .footer_paragraph {
+    color: rgb(130, 130, 130);
+    font-size: 18px;
+    font-weight: 400;
+  }
+  .footer_link {
+    color: rgb(127, 38, 91);
+    font-size: 18px;
+    font-weight: 600;
+  }
+}

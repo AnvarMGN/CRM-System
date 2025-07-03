@@ -1,49 +1,32 @@
-import { Button, Form, Input, notification } from "antd";
+import { Button, Form, Input } from "antd";
 import styles from "./TaskAddAntd.module.scss";
 import { addTask } from "../../../api/apiAxios";
-import type { FilterStatus } from "../../../types/types";
+import type { FilterStatus } from "../../../types/todos";
 import { useState } from "react";
-// import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../../store/hook";
+import { getTaskListAction } from "../../../store/todo-actions";
+import { openNotification } from "../../../notifications/notifications";
 
-interface TaskAddAntdTypes {
-  currentStatus: FilterStatus;
-  updateTaskList: (status: FilterStatus) => void;
-}
-
-export const TaskAddAntd: React.FC<TaskAddAntdTypes> = ({
-  currentStatus,
-  updateTaskList,
-}) => {
-  const [form] = Form.useForm();
-  const [isLoading, setIsLoading] = useState(false);
+export const TaskAddAntd = () => {
   const minTextlength = 2;
   const maxTextlength = 64;
 
-  const openNotification = (message: string) => {
-    notification.error({
-      message: "Ошибка",
-      description: `Ошибка при добавлении задачи: ${message}`,
-      duration: 3,
-      placement: "bottomRight",
-      showProgress: true,
-    });
-  };
-
-  // useEffect(() => {
-  //   console.log("Компонент формы добавления.");
-  // }, []);
+  const [form] = Form.useForm();
+  const [isLoading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
+  const { status } = useAppSelector((state) => state.todo);
 
   const handleAddTask = async (value: { title: FilterStatus }) => {
     try {
-      setIsLoading(true);
+      setLoading(true);
       await addTask(value.title);
-      await updateTaskList(currentStatus);
+      dispatch(getTaskListAction(status));
       form.resetFields();
     } catch (error) {
-      console.error("Ошибка при добавлении задачи: ", error);
-      openNotification((error as Error).message);
+      console.error(`Ошибка при добавлении задачи: ${(error as Error).message}`);
+      openNotification('Ошибка!', 'Ошибка при добавлении задачи.');
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -53,9 +36,18 @@ export const TaskAddAntd: React.FC<TaskAddAntdTypes> = ({
         <Form.Item
           name="title"
           rules={[
-            { required: true, message: "Введите более 2 символов." },
-            { min: minTextlength, message: "Введите более 2 символов." },
-            { max: maxTextlength, message: "Лимит ввода 64 символа." },
+            {
+              required: true,
+              message: `Введите более ${minTextlength} символов.`,
+            },
+            {
+              min: minTextlength,
+              message: `Введите более ${minTextlength} символов.`,
+            },
+            {
+              max: maxTextlength,
+              message: `Лимит ввода ${maxTextlength} символа.`,
+            },
           ]}
         >
           <Input placeholder="Task To Be Done..." autoFocus showCount={true} />

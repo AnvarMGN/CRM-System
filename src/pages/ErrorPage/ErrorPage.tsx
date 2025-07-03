@@ -1,11 +1,12 @@
-import { MenuNavigation } from "../../components/MenuNavigation/MenuNavigation";
+import styles from "./ErrorPage.module.scss";
+import { Typography } from "antd";
+const { Title, Text } = Typography;
 
 export const ErrorPage = () => {
   return (
-    <>
-      <MenuNavigation />
-      <h1>An error occurred!</h1>
-      <p>Could not find this page!</p>
-    </>
+    <div className={styles.errorPage}>
+      <Title>An error occurred!</Title>
+      <Text>Could not find this page!</Text>
+    </div>
   );
 };
