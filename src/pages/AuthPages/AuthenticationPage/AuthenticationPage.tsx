@@ -81,11 +81,14 @@ export const AuthenticationPage = () => {
           }
         } else if (error.request) {
           console.log("Сервер не доступен.", error.message);
+          openNotification("Ошибка", "Сервер не доступен.");
         } else {
           console.log("Неизвестная ошибка.", error.message);
+          openNotification("Ошибка", "Неизвестная ошибка.");
         }
       } else {
         console.log("Неизвестная ошибка.", (error as Error).message);
+        openNotification("Ошибка", "Неизвестная ошибка.");
       }
       console.log("AuthenticationPage: ", (error as Error).message);
     } finally {

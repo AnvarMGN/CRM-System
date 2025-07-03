@@ -4,7 +4,7 @@ import { Button, Menu, type MenuProps } from "antd";
 import { UserOutlined, UnorderedListOutlined } from "@ant-design/icons";
 import { useAppDispatch } from "../../store/hook";
 import { authActions } from "../../store/auth-slice";
-import { tokens } from "../../util/auth";
+import { tokenManager } from "../../util/auth";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -26,8 +26,8 @@ export const MenuNavigation = () => {
 
   const handleLogOut = () => {
     dispatch(authActions.isAuthorizedFalse());
-    tokens.removeAccessToken();
-    tokens.removeRefreshToken();
+    tokenManager.removeAccessToken();
+    tokenManager.removeRefreshToken();
   };
 
   return (

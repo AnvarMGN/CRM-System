@@ -1,6 +1,6 @@
 import styles from "./TaskListPage.module.scss";
 import axios from "axios";
-import { tokens } from "../../util/auth";
+import { tokenManager } from "../../util/auth";
 import { openNotification } from "../../notifications/notifications";
 import { useEffect, useState } from "react";
 import { TaskAddAntd } from "../../components/task/TaskAddAntd/TaskAddAntd";
@@ -28,8 +28,8 @@ export const TaskListPage = () => {
     console.log(notificatonDescription, error.message);
     openNotification("Ошибка", notificatonDescription);
     dispatch(authActions.isAuthorizedFalse());
-    tokens.removeAccessToken();
-    tokens.removeRefreshToken();
+    tokenManager.removeAccessToken();
+    tokenManager.removeRefreshToken();
   };
 
   useEffect(() => {
@@ -48,6 +48,12 @@ export const TaskListPage = () => {
       return;
     }
 
+    const errorStatusLabels = {
+      400: "Произошла ошибка при обработке данных.",
+      401: "Проверьте введенные данные или войдите снова.",
+      500: "Внутренняя ошибка сервера.",
+    };
+
     const thunkFunction = async () => {
       try {
         setLoading(true);
@@ -59,21 +65,21 @@ export const TaskListPage = () => {
             switch (error.response.status) {
               case 400:
                 handleUpdateError(
-                  "Произошла ошибка при обработке данных.",
+                  errorStatusLabels[error.response.status],
                   error,
                   dispatch
                 );
                 break;
               case 401:
                 handleUpdateError(
-                  "Проверьте введенные данные или войдите снова.",
+                  errorStatusLabels[error.response.status],
                   error,
                   dispatch
                 );
                 break;
               case 500:
                 handleUpdateError(
-                  "Внутренняя ошибка сервера.",
+                  errorStatusLabels[error.response.status],
                   error,
                   dispatch
                 );
@@ -84,11 +90,14 @@ export const TaskListPage = () => {
             }
           } else if (error.request) {
             console.log("Сервер не доступен.", error.message);
+            openNotification("Ошибка", "Сервер не доступен.");
           } else {
             console.log("Неизвестная ошибка.", error.message);
+            openNotification("Ошибка", "Неизвестная ошибка.");
           }
         } else {
           console.log("Неизвестная ошибка.", (error as Error).message);
+          openNotification("Ошибка", "Неизвестная ошибка.");
         }
       } finally {
         setLoading(false);

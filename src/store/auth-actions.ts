@@ -1,5 +1,5 @@
 import axios from "axios";
-import { tokens } from "../util/auth";
+import { tokenManager } from "../util/auth";
 import type { AuthData, UserRegistration } from "../types/auth";
 import {
   getUserRequest,
@@ -32,8 +32,8 @@ export const userAuthenticationAction = (userAuthData: AuthData) => {
       const response = await userAuthentication(userAuthData);
 
       if (response.status === 200) {
-        tokens.setAccessToken(response.data.accessToken);
-        tokens.setRefreshToken(response.data.refreshToken);
+        tokenManager.setAccessToken(response.data.accessToken);
+        tokenManager.setRefreshToken(response.data.refreshToken);
         dispatch(authActions.isAuthorizedTrue());
         console.log("Пользователь успешно авторизовался.");
       }
@@ -46,7 +46,7 @@ export const userAuthenticationAction = (userAuthData: AuthData) => {
 
 export const updateTokenAction = () => {
   return async (dispatch: AppDispatch) => {
-    const refreshToken = tokens.getRefreshToken();
+    const refreshToken = tokenManager.getRefreshToken();
 
     if (!refreshToken) {
       dispatch(authActions.isAuthorizedFalse());
@@ -62,8 +62,8 @@ export const updateTokenAction = () => {
         response.data?.accessToken &&
         response.data?.refreshToken
       ) {
-        tokens.setAccessToken(response.data.accessToken);
-        tokens.setRefreshToken(response.data.refreshToken);
+        tokenManager.setAccessToken(response.data.accessToken);
+        tokenManager.setRefreshToken(response.data.refreshToken);
         dispatch(authActions.isAuthorizedTrue());
       }
     } catch (error) {

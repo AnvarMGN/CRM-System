@@ -4,7 +4,7 @@ import {
   type Token,
   type UserRegistration,
 } from "../types/auth";
-import { tokens } from "../util/auth";
+import { tokenManager } from "../util/auth";
 
 const baseURL = "https://easydev.club/api/v1";
 
@@ -14,7 +14,7 @@ const authApi = axios.create({
 
 authApi.interceptors.request.use(
   function (config) {
-    const accessToken = tokens.getAccessToken();
+    const accessToken = tokenManager.getAccessToken();
     // console.log("at", accessToken);
 
     if (accessToken) {

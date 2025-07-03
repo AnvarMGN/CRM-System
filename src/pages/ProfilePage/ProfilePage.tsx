@@ -1,5 +1,5 @@
 import axios from "axios";
-import { tokens } from "../../util/auth";
+import { tokenManager } from "../../util/auth";
 import { openNotification } from "../../notifications/notifications";
 import { useEffect, useState } from "react";
 import type { AppDispatch } from "../../store";
@@ -23,8 +23,8 @@ export const ProfilePage = () => {
     console.log(notificatonDescription, error.message);
     openNotification("Ошибка", notificatonDescription);
     dispatch(authActions.isAuthorizedFalse());
-    tokens.removeAccessToken();
-    tokens.removeRefreshToken();
+    tokenManager.removeAccessToken();
+    tokenManager.removeRefreshToken();
   };
 
   useEffect(() => {

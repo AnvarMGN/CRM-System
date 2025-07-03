@@ -1,4 +1,4 @@
-class Token {
+class TokenManager {
   private accessToken: string | null = null;
 
   // constructor(value?: string | null) {
@@ -34,4 +34,4 @@ class Token {
   };
 }
 
-export const tokens = new Token();
+export const tokenManager = new TokenManager();
