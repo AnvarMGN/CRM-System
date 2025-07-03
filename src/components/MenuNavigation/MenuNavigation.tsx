@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
 import styles from "./MenuNavigation.module.scss";
 import { Button, Menu, type MenuProps } from "antd";
-import { UserOutlined, UnorderedListOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  UnorderedListOutlined,
+  IdcardOutlined,
+} from "@ant-design/icons";
 import { useAppDispatch } from "../../store/hook";
 import { authActions } from "../../store/auth-slice";
 import { tokenManager } from "../../util/auth";
@@ -15,12 +19,17 @@ export const MenuNavigation = () => {
     {
       key: "1",
       icon: <UnorderedListOutlined />,
-      label: <Link to="todo">Список задач</Link>,
+      label: <Link to="/crm/todo">Список задач</Link>,
     },
     {
       key: "2",
       icon: <UserOutlined />,
-      label: <Link to="user">Личный кабинет</Link>,
+      label: <Link to="/crm/user">Личный кабинет</Link>,
+    },
+    {
+      key: "3",
+      icon: <IdcardOutlined />,
+      label: <Link to="/admin/users">Пользователи</Link>,
     },
   ];
 

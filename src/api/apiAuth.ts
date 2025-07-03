@@ -12,7 +12,7 @@ const authApi = axios.create({
   baseURL: baseURL,
 });
 
-authApi.interceptors.request.use(
+authApi.interceptors.request.use(// динамически подставляем accessToken с помощью interceptors перед request
   function (config) {
     const accessToken = tokenManager.getAccessToken();
     // console.log("at", accessToken);

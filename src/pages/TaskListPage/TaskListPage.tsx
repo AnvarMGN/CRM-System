@@ -1,14 +1,14 @@
 import styles from "./TaskListPage.module.scss";
 import axios from "axios";
-import { tokenManager } from "../../util/auth";
+
 import { openNotification } from "../../notifications/notifications";
 import { useEffect, useState } from "react";
 import { TaskAddAntd } from "../../components/task/TaskAddAntd/TaskAddAntd";
 import { TaskFilterAntd } from "../../components/task/TaskFilterAntd/TaskFilterAntd";
 import { TaskItemAntd } from "../../components/task/TaskItemAntd/TaskItemAntd";
-import type { AppDispatch } from "../../store";
+
 import { useAppDispatch, useAppSelector } from "../../store/hook";
-import { authActions } from "../../store/auth-slice";
+
 import { getTaskListAction } from "../../store/todo-actions";
 import { updateTokenAction } from "../../store/auth-actions";
 import { useLocation } from "react-router-dom";
@@ -20,16 +20,9 @@ export const TaskListPage = () => {
   const [isLocation, setLocation] = useState<boolean>(false);
   const location = useLocation();
 
-  const handleUpdateError = (
-    notificatonDescription: string,
-    error: Error,
-    dispatch: AppDispatch
-  ) => {
+  const handleUpdateError = (notificatonDescription: string, error: Error) => {
     console.log(notificatonDescription, error.message);
     openNotification("Ошибка", notificatonDescription);
-    dispatch(authActions.isAuthorizedFalse());
-    tokenManager.removeAccessToken();
-    tokenManager.removeRefreshToken();
   };
 
   useEffect(() => {
@@ -48,44 +41,41 @@ export const TaskListPage = () => {
       return;
     }
 
-    const errorStatusLabels = {
-      400: "Произошла ошибка при обработке данных.",
-      401: "Проверьте введенные данные или войдите снова.",
-      500: "Внутренняя ошибка сервера.",
-    };
-
     const thunkFunction = async () => {
       try {
         setLoading(true);
         await dispatch(updateTokenAction());
         await dispatch(getTaskListAction(status));
       } catch (error) {
+        const errorStatusLabels = {
+          400: "Произошла ошибка при обработке данных.",
+          401: "Проверьте введенные данные или войдите снова.",
+          500: "Внутренняя ошибка сервера.",
+        };
+
         if (axios.isAxiosError(error)) {
           if (error.response) {
             switch (error.response.status) {
               case 400:
                 handleUpdateError(
                   errorStatusLabels[error.response.status],
-                  error,
-                  dispatch
+                  error
                 );
                 break;
               case 401:
                 handleUpdateError(
                   errorStatusLabels[error.response.status],
-                  error,
-                  dispatch
+                  error
                 );
                 break;
               case 500:
                 handleUpdateError(
                   errorStatusLabels[error.response.status],
-                  error,
-                  dispatch
+                  error
                 );
                 break;
               default:
-                handleUpdateError("Неизвестная ошибка", error, dispatch);
+                handleUpdateError("Неизвестная ошибка", error);
                 break;
             }
           } else if (error.request) {

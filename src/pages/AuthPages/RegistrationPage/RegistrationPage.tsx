@@ -4,10 +4,8 @@ import { openNotification } from "../../../notifications/notifications";
 import { type FormProps } from "antd";
 import { type UserRegistration } from "../../../types/auth";
 import { Button, Form, Input, Typography } from "antd";
-import type { AppDispatch } from "../../../store";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store/hook";
-import { authActions } from "../../../store/auth-slice";
 import { userRegistrationAction } from "../../../store/auth-actions";
 
 interface FieldType {
@@ -38,14 +36,9 @@ export const RegistrationPage = () => {
   const { isRegistrated, isAuthorized } = useAppSelector((state) => state.auth);
   const [isLoading, setLoading] = useState(false);
 
-  const handleRegError = (
-    notificatonDescription: string,
-    error: Error,
-    dispatch: AppDispatch
-  ) => {
+  const handleRegError = (notificatonDescription: string, error: Error) => {
     console.log(notificatonDescription, error.message);
     openNotification("Ошибка", notificatonDescription);
-    dispatch(authActions.isRegistratedFalse());
   };
 
   const onFinish: FormProps<UserRegistration>["onFinish"] = async (values) => {
@@ -70,37 +63,37 @@ export const RegistrationPage = () => {
       }
       console.log("RegistrationPage isAuthorized: ", isAuthorized);
     } catch (error) {
+      const errorStatusLabels = {
+        400: "Ошибка обработки данных, либо неправильный ввод данных пользователя.",
+        409: "Пользователь уже зарегистрирован.",
+        500: "Внутренняя ошибка сервера.",
+      };
       if (axios.isAxiosError(error)) {
         if (error.response) {
           switch (error.response.status) {
             case 400:
               handleRegError(
-                "Ошибка обработки данных, либо неправильный ввод данных пользователя.",
-                error,
-                dispatch
+                errorStatusLabels[error.response.status],
+                error
               );
               break;
             case 409:
-              handleRegError(
-                "Пользователь уже зарегистрирован.",
-                error,
-                dispatch
-              );
+              handleRegError(errorStatusLabels[error.response.status], error);
               break;
             case 500:
-              handleRegError("`Ошибка на стороне сервера.", error, dispatch);
+              handleRegError(errorStatusLabels[error.response.status], error);
               break;
             default:
-              handleRegError("Неизвестная ошибка.", error, dispatch);
+              handleRegError("Неизвестная ошибка.", error);
               break;
           }
         } else if (error.request) {
-          handleRegError("Сервер не доступен.", error, dispatch);
+          handleRegError("Сервер не доступен.", error);
         } else {
-          handleRegError("Неизвестная ошибка.", error, dispatch);
+          handleRegError("Неизвестная ошибка.", error);
         }
       } else {
-        handleRegError("Неизвестная ошибка.", error as Error, dispatch);
+        handleRegError("Неизвестная ошибка.", error as Error);
       }
     } finally {
       setLoading(false);

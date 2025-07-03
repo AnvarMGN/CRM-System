@@ -1,10 +1,7 @@
 import axios from "axios";
-import { tokenManager } from "../../util/auth";
 import { openNotification } from "../../notifications/notifications";
 import { useEffect, useState } from "react";
-import type { AppDispatch } from "../../store";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
-import { authActions } from "../../store/auth-slice";
 import {
   getUserRequestAction,
   updateTokenAction,
@@ -15,16 +12,9 @@ export const ProfilePage = () => {
   const { user } = useAppSelector((state) => state.auth);
   const [isLoading, setLoading] = useState(false);
 
-  const handleUpdateError = (
-    notificatonDescription: string,
-    error: Error,
-    dispatch: AppDispatch
-  ) => {
+  const handleUpdateError = (notificatonDescription: string, error: Error) => {
     console.log(notificatonDescription, error.message);
     openNotification("Ошибка", notificatonDescription);
-    dispatch(authActions.isAuthorizedFalse());
-    tokenManager.removeAccessToken();
-    tokenManager.removeRefreshToken();
   };
 
   useEffect(() => {
@@ -35,40 +25,45 @@ export const ProfilePage = () => {
         await dispatch(getUserRequestAction());
       } catch (error) {
         if (axios.isAxiosError(error)) {
+          const errorStatusLabels = {
+            400: "Произошла ошибка при обработке данных.",
+            401: "Проверьте введенные данные или войдите снова.",
+            500: "Внутренняя ошибка сервера.",
+          };
           if (error.response) {
             switch (error.response.status) {
               case 400:
                 handleUpdateError(
-                  "Произошла ошибка при обработке данных.",
-                  error,
-                  dispatch
+                  errorStatusLabels[error.response.status],
+                  error
                 );
                 break;
               case 401:
                 handleUpdateError(
-                  "Проверьте введенные данные или войдите снова.",
-                  error,
-                  dispatch
+                  errorStatusLabels[error.response.status],
+                  error
                 );
                 break;
               case 500:
                 handleUpdateError(
-                  "Внутренняя ошибка сервера.",
-                  error,
-                  dispatch
+                  errorStatusLabels[error.response.status],
+                  error
                 );
                 break;
               default:
-                handleUpdateError("Неизвестная ошибка", error, dispatch);
+                handleUpdateError("Неизвестная ошибка", error);
                 break;
             }
           } else if (error.request) {
             console.log("Сервер не доступен.", error.message);
+            openNotification("Ошибка", "Сервер не доступен.");
           } else {
             console.log("Неизвестная ошибка.", error.message);
+            openNotification("Ошибка", "Неизвестная ошибка.");
           }
         } else {
           console.log("Неизвестная ошибка.", (error as Error).message);
+          openNotification("Ошибка", "Неизвестная ошибка.");
         }
       } finally {
         setLoading(false);
