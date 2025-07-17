@@ -45,7 +45,7 @@ export const RegistrationPage = () => {
     console.log("Success:", values);
     try {
       setLoading(true);
-      const newUser: UserRegistration = {
+      const newUser = {
         email: values.email,
         login: values.login,
         password: values.password,

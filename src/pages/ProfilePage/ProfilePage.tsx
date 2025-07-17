@@ -3,9 +3,12 @@ import { openNotification } from "../../notifications/notifications";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
 import {
-  getUserRequestAction,
+  getUserProfileAction,
   updateTokenAction,
 } from "../../store/auth-actions";
+import { Card, Space, Typography } from "antd";
+
+const { Text } = Typography;
 
 export const ProfilePage = () => {
   const dispatch = useAppDispatch();
@@ -22,7 +25,7 @@ export const ProfilePage = () => {
       try {
         setLoading(true);
         await dispatch(updateTokenAction());
-        await dispatch(getUserRequestAction());
+        await dispatch(getUserProfileAction());
       } catch (error) {
         if (axios.isAxiosError(error)) {
           const errorStatusLabels = {
@@ -79,12 +82,14 @@ export const ProfilePage = () => {
 
   return (
     <>
-      <h1>Привет!</h1>
-      <ul>
-        <li>{user.username}</li>
-        <li>{user.email}</li>
-        <li>{user.phoneNumber}</li>
-      </ul>
+      <Card>
+        <Space direction="vertical">
+          <Text>Привет!</Text>
+          <Text>{user.username}</Text>
+          <Text>{user.email}</Text>
+          <Text>{user.phoneNumber}</Text>
+        </Space>
+      </Card>
     </>
   );
 };

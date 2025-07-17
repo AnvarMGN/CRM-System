@@ -2,7 +2,7 @@ import axios from "axios";
 import { tokenManager } from "../util/auth";
 import type { AuthData, UserRegistration } from "../types/auth";
 import {
-  getUserRequest,
+  getUserProfile,
   updateToken,
   userAuthentication,
   userRegistration,
@@ -225,16 +225,19 @@ export const updateTokenAction = () => {
   };
 };
 
-export const getUserRequestAction = () => {
+export const getUserProfileAction = () => {
   return async (dispatch: AppDispatch) => {
     try {
-      const response = await getUserRequest();
+      const response = await getUserProfile();
       if (response.status === 200) {
-        console.log(response);
-        dispatch(
+           dispatch(
           authActions.getUser({
+            id: response.data.id,
             username: response.data.username,
             email: response.data.email,
+            date: response.data.date,
+            isBlocked: response.data.isBlocked,
+            roles: response.data.roles,
             phoneNumber: response.data.phoneNumber,
           })
         );

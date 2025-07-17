@@ -20,8 +20,20 @@ export interface Token {
   refreshToken: string;
 }
 
-export interface ProfileRequest {
+export interface Profile {
+  id: number;
   username: string;
   email: string;
+  date: string;
+  isBlocked: boolean;
+  roles: Role[];
   phoneNumber: string;
 }
+
+type Role = "ADMIN" | "USER" | "MODERATOR";
+
+// export interface ProfileRequest {
+//   username: string;
+//   email: string;
+//   phoneNumber: string;
+// }

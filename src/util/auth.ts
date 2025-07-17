@@ -1,7 +1,7 @@
 class TokenManager {
   private accessToken: string | null = null;
 
-  // constructor(value?: string | null) {
+  // constructor(private value?: string | null) {
   //   if (value) {
   //     this.accessToken = value;
   //   } else {

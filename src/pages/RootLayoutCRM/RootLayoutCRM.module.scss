@@ -1,7 +1,7 @@
-.root_container {
-  display: flex;
+.crm_container {
+  // display: flex;
+  // gap: 20%;
   height: 100vh;
-  gap: 20%;
 }
 
 .sider {
@@ -14,18 +14,17 @@
   // top: 0;
   // left: 0;
 
-  height: 100%;
   // padding: 0px 0px 0px 0px;
 
-  border-radius: 8px;
+  // border-radius: 8px;
   background-color: #ffffff;
 }
 
 .content {
-  min-width: 480px;
-  max-width: 600px;
+  // min-width: 480px;
+  // max-width: 600px;
   padding: 24px;
-  border-radius: 8px;
-  background-color: #f5f5f5;
+  // border-radius: 8px;
+  // background-color: #f5f5f5;
   overflow-y: auto;
 }
