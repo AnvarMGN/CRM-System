@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import styles from "./MenuNavigation.module.scss";
-import { Button, Menu, type MenuProps } from "antd";
+import { Button, Divider, Menu, type MenuProps } from "antd";
 import {
   UserOutlined,
   UnorderedListOutlined,
@@ -10,6 +10,8 @@ import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { authActions } from "../../store/auth-slice";
 import { tokenManager } from "../../util/auth";
 import { useEffect, useState } from "react";
+
+// const { Title } = Typography;
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -21,7 +23,7 @@ const userItems: MenuItem[] = [
   },
   {
     key: "2",
-    icon: <UserOutlined />,
+    icon: <IdcardOutlined />,
     label: <Link to="/crm/user">Личный кабинет</Link>,
   },
 ];
@@ -30,7 +32,7 @@ const adminAndModeratorItems: MenuItem[] = [
   ...userItems,
   {
     key: "3",
-    icon: <IdcardOutlined />,
+    icon: <UserOutlined />,
     label: <Link to="/admin/users">Пользователи</Link>,
   },
 ];
@@ -38,11 +40,12 @@ const adminAndModeratorItems: MenuItem[] = [
 export const MenuNavigation = () => {
   const dispatch = useAppDispatch();
   const { roles } = useAppSelector((state) => state.auth.user);
-  const isAdminOrModerator = roles.includes("ADMIN") || roles.includes('MODERATOR');
+  const isAdminOrModerator =
+    roles.includes("ADMIN") || roles.includes("MODERATOR");
   const [items, setItems] = useState<MenuItem[]>(userItems);
 
   useEffect(() => {
-    setItems(isAdminOrModerator ? adminAndModeratorItems : userItems)
+    setItems(isAdminOrModerator ? adminAndModeratorItems : userItems);
   }, [isAdminOrModerator]);
 
   const handleLogOut = () => {
@@ -53,9 +56,17 @@ export const MenuNavigation = () => {
 
   return (
     <div className={styles.side_menu}>
-      <h1>CRM-SYSTEM</h1>
-      <Menu mode="inline" theme="light" items={items} />
-      <Button onClick={handleLogOut}>Logout</Button>
+      <Menu
+        style={{ backgroundColor: "rgb(249, 249, 249)" }}
+        mode="vertical"
+        theme="light"
+        items={items}
+      />
+      <Divider />
+      <div className={styles.logout_button}>
+        <Button onClick={handleLogOut}>Logout</Button>
+      </div>
+      <Divider />
     </div>
   );
 };

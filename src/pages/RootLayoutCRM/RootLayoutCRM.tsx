@@ -1,14 +1,15 @@
 import styles from "./RootLayoutCRM.module.scss";
-import { Layout } from "antd";
+import { Splitter, Typography } from "antd";
 import { Outlet } from "react-router-dom";
 import { MenuNavigation } from "../../components/MenuNavigation/MenuNavigation";
 import { useEffect } from "react";
 import { useAppDispatch } from "../../store/hook";
-import { getUserProfileAction, 
-  // updateTokenAction 
+import {
+  getUserProfileAction,
+  // updateTokenAction
 } from "../../store/auth-actions";
 
-const { Sider, Content } = Layout;
+const { Text } = Typography;
 
 export const RootLayoutCRM = () => {
   const dispatch = useAppDispatch();
@@ -28,18 +29,53 @@ export const RootLayoutCRM = () => {
 
   return (
     <>
-      <Layout className={styles.crm_container}>
-        {/*Боковое меню */}
-        <Sider className={styles.sider}>
+      <Splitter
+        className={styles.crm_container}
+        style={{
+          boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+          height: "79px",
+          borderBottom: "1px solid rgb(228, 228, 228)",
+        }}
+      >
+        <Splitter.Panel
+          style={{ backgroundColor: "rgb(249, 249, 249)" }}
+          defaultSize="15%"
+          min="15%"
+          collapsible
+        >
+          <div className={styles.icon_block}>
+            <img
+              className={styles.title_icon}
+              src="/crm-page/icon-crm.png"
+              alt="icon-crm"
+            />
+            <Text className={styles.title_menu}>Venture</Text>
+          </div>
+        </Splitter.Panel>
+
+        <Splitter.Panel collapsible>
+          <div className={styles.block_title_crm}>
+            <Text className={styles.title_crm}>Пользователи</Text>
+          </div>
+        </Splitter.Panel>
+      </Splitter>
+
+      <Splitter
+        style={{ boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)", height: "100vh" }}
+      >
+        <Splitter.Panel
+          style={{ backgroundColor: "rgb(249, 249, 249)" }}
+          defaultSize="15%"
+          min="15%"
+          collapsible
+        >
           <MenuNavigation />
-        </Sider>
-        <Layout>
-          <Content className={styles.content}>
-            {/* <Outlet /> определяет место, где будут отображаться дочерние маршруты. */}
-            <Outlet />
-          </Content>
-        </Layout>
-      </Layout>
+        </Splitter.Panel>
+
+        <Splitter.Panel style={{ overflowY: "auto" }} collapsible>
+          <Outlet />
+        </Splitter.Panel>
+      </Splitter>
     </>
   );
 };

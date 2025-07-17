@@ -77,7 +77,7 @@ export const deleteUser = async (userId: number) => {
 
 export const blockUser = async (userId: number) => {
   try {
-    const response = await usersApi.post(`/admin/users/${userId}/block`);
+    const response = await usersApi.post<User>(`/admin/users/${userId}/block`);
     return response.data;
   } catch (error) {
     console.log(error);
@@ -87,7 +87,7 @@ export const blockUser = async (userId: number) => {
 
 export const unblockUser = async (userId: number) => {
   try {
-    const response = await usersApi.post(`/admin/users/${userId}/unblock`);
+    const response = await usersApi.post<User>(`/admin/users/${userId}/unblock`);
     return response.data;
   } catch (error) {
     console.log(error);

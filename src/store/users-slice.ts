@@ -1,23 +1,17 @@
-import {
-  createAsyncThunk,
-  createSlice,
-  type PayloadAction,
-} from "@reduxjs/toolkit";
+import axios from "axios";
+import { editUser, fetchUser, fetchUsers } from "../api/apiUsers";
 import type {
   CombineData,
-  // CombineDataRights,
   MetaResponse,
   User,
   UserFilters,
   UserRequest,
 } from "../types/users";
 import {
-  // editRightsUser,
-  editUser,
-  fetchUser,
-  fetchUsers,
-} from "../api/apiUsers";
-import axios from "axios";
+  createAsyncThunk,
+  createSlice,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
 
 type initialUsersStateType = {
   data: { users: User[] };

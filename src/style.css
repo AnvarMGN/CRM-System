@@ -24,3 +24,16 @@ body {
   margin: 0px;
   padding: 0px;
 } */
+
+.ant-table-thead > tr > th {
+  color: rgb(113, 113, 113) !important;
+  font-family: Inter;
+  font-size: 14px;
+  font-weight: 400;
+}
+.ant-table-tbody > tr > td {
+  color: rgb(113, 113, 113);
+  font-family: Inter;
+  font-size: 14px;
+  font-weight: 400;
+}

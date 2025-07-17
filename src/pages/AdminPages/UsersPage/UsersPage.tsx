@@ -1,3 +1,4 @@
+import styles from "./UsersPage.module.scss";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { openNotification } from "../../../notifications/notifications";
@@ -13,12 +14,15 @@ import { useAppDispatch, useAppSelector } from "../../../store/hook";
 import { updateTokenAction } from "../../../store/auth-actions";
 import { getUsersAction, usersActions } from "../../../store/users-slice";
 import {
-  CheckOutlined,
-  CloseOutlined,
+  MinusOutlined,
+  PlusOutlined,
   FilterOutlined,
+  MailOutlined,
+  PhoneOutlined,
 } from "@ant-design/icons";
 import {
   Button,
+  Card,
   Checkbox,
   Input,
   Modal,
@@ -85,10 +89,10 @@ const editRightsUserErrorStatus = (status: number) => {
 export const UsersPage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { roles } = useAppSelector((state) => state.auth.user);
   const { data, meta, filters, loading, error } = useAppSelector(
     (state) => state.users
   );
-  const { roles } = useAppSelector((state) => state.auth.user);
   const [isModalOpenDelete, setIsModalDelete] = useState(false);
   const [isModalOpenRole, setIsModalRole] = useState(false);
   const [id, setId] = useState<number | null>(null);
@@ -347,6 +351,7 @@ export const UsersPage = () => {
 
   const handleChangeBlockingFilter = (value: boolean | undefined) => {
     setValue(value);
+    dispatch(usersActions.changeOffsetValue(0));
     dispatch(usersActions.filterByBlockStatus(value));
   };
 
@@ -364,32 +369,19 @@ export const UsersPage = () => {
       key: "email",
       sorter: true,
       showSorterTooltip: false,
-    },
-    {
-      title: "Дата регистрации",
-      dataIndex: "date",
-      key: "date",
-      render: (date) => <Text>{new Date(date).toLocaleString()}</Text>,
-    },
-    {
-      title: "Статус блокировки",
-      dataIndex: "isBlocked",
-      key: "isBlocked",
-      render: (_, { isBlocked }) => (
+      render: (_, { email }) => (
         <>
-          {isBlocked ? (
-            <>
-              <Text>
-                <CloseOutlined /> Заблокирован
-              </Text>
-            </>
-          ) : (
-            <>
-              <Text>
-                <CheckOutlined /> Активен
-              </Text>
-            </>
-          )}
+          <MailOutlined /> <Text>{email}</Text>
+        </>
+      ),
+    },
+    {
+      title: "Телефон",
+      dataIndex: "phoneNumber",
+      key: "phoneNumber",
+      render: (_, { phoneNumber }) => (
+        <>
+          <PhoneOutlined /> <Text>{phoneNumber}</Text>
         </>
       ),
     },
@@ -418,10 +410,20 @@ export const UsersPage = () => {
       ),
     },
     {
-      title: "Номер телефона",
-      dataIndex: "phoneNumber",
-      key: "phoneNumber",
+      title: "Блокировка",
+      dataIndex: "isBlocked",
+      key: "isBlocked",
+      render: (_, { isBlocked }) => (
+        <>{isBlocked ? <PlusOutlined /> : <MinusOutlined />}</>
+      ),
     },
+    {
+      title: "Дата регистрации",
+      dataIndex: "date",
+      key: "date",
+      render: (date) => <Text>{new Date(date).toLocaleString()}</Text>,
+    },
+
     {
       title: "Действия",
       key: "operation",
@@ -430,7 +432,6 @@ export const UsersPage = () => {
           <Button
             onClick={() => handleGoToProfile(dataSource.id)}
             color="primary"
-            variant="link"
           >
             Профиль
           </Button>
@@ -441,10 +442,10 @@ export const UsersPage = () => {
                 <Button
                   onClick={() => showModalDelete(dataSource.id)}
                   color="primary"
-                  variant="link"
                 >
                   Удалить
                 </Button>
+
                 <Modal
                   title="Удаление пользователя"
                   mask={false}
@@ -465,11 +466,11 @@ export const UsersPage = () => {
               <>
                 <Button
                   color="primary"
-                  variant="link"
                   onClick={() => showModalRole(dataSource)}
                 >
                   Изменить роли
                 </Button>
+
                 <Modal
                   title="Управление ролями"
                   mask={false}
@@ -477,7 +478,7 @@ export const UsersPage = () => {
                   onOk={handleChangeRoleOk}
                   onCancel={handleCancelRole}
                 >
-                  <p> Добавьте или удалите роль.</p>
+                  <p> Добавьте или удалите роль</p>
                   <Checkbox.Group
                     options={plainOptions}
                     value={checkedList}
@@ -502,8 +503,8 @@ export const UsersPage = () => {
             okText="Да"
             cancelText="Нет"
           >
-            <Button variant="link" color="primary">
-              {dataSource.isBlocked ? "Разблокировать" : "Заблокировать"}
+            <Button color="primary">
+              {dataSource.isBlocked ? "Разблокировать" : "Блокировать"}
             </Button>
           </Popconfirm>
         </Space>
@@ -584,70 +585,76 @@ export const UsersPage = () => {
   }
 
   return (
-    <Space direction="vertical">
-      <Space>
-        <Text>Пользователи</Text>
-        <Search
-          autoFocus
-          allowClear
-          placeholder="Поиск по имени или email"
-          onSearch={onSearch}
-          // style={{ width: 900 }}
-        />
-        {roles.includes("ADMIN") && (
-          <Select
-            style={{ width: 200 }}
-            suffixIcon={null}
-            placeholder={
-              <>
-                <FilterOutlined />
-                <Text>Filter</Text>
-              </>
-            }
-            onChange={handleChangeBlockingFilter}
-            value={selectValue}
-            options={[
-              {
-                value: "",
-                label: "Все пользователи",
-              },
-              {
-                value: false,
-                label: "Только активные",
-              },
-              {
-                value: true,
-                label: "Только заблокированные",
-              },
-            ]}
+    <>
+      <Card className={styles.table_block}>
+        <Space direction="vertical">
+          <div className={styles.serch_block}>
+            <Text className={styles.table_title}>Пользователи</Text>
+            <div>
+              <Search
+                autoFocus
+                allowClear
+                placeholder="Поиск по имени или email"
+                onSearch={onSearch}
+                style={{ width: 360 }}
+                suffix={null}
+              />
+              {roles.includes("ADMIN") && (
+                <Select
+                  style={{ width: 200, marginLeft: 16 }}
+                  suffixIcon={null}
+                  placeholder={
+                    <>
+                      <FilterOutlined />{" "}
+                      <Text className={styles.select_text}>Filter</Text>
+                    </>
+                  }
+                  onChange={handleChangeBlockingFilter}
+                  value={selectValue}
+                  options={[
+                    {
+                      value: "",
+                      label: "Все пользователи",
+                    },
+                    {
+                      value: false,
+                      label: "Только активные",
+                    },
+                    {
+                      value: true,
+                      label: "Только заблокированные",
+                    },
+                  ]}
+                />
+              )}
+            </div>
+          </div>
+
+          <Table<User>
+            size="large"
+            pagination={false}
+            columns={columns}
+            dataSource={dataSource}
+            // onChange={handleTableSort}
           />
-        )}
-      </Space>
 
-      {data.users ? (
-        <Table<User>
-          size="small"
-          pagination={false}
-          columns={columns}
-          dataSource={dataSource}
-          // sticky={true}
-          // onChange={handleTableSort}
-        />
-      ) : (
-        <Text>Не найдено...</Text>
-      )}
+          {!data.users && (
+            <Text className={styles.search_null}>Не найдено...</Text>
+          )}
 
-      {meta.totalAmount > 20 && (
-        <Pagination
-          onChange={handleChangePagination}
-          align="end"
-          total={meta.totalAmount}
-          defaultPageSize={filters.limit}
-          current={filters.offset! + 1}
-          showSizeChanger
-          showQuickJumper
-        />
-      )}
-    </Space>
+          {meta.totalAmount > 20 && (
+            <Pagination
+              onChange={handleChangePagination}
+              align="end"
+              total={meta.totalAmount}
+              defaultPageSize={filters.limit}
+              current={filters.offset! + 1}
+              showSizeChanger
+              showQuickJumper
+            />
+          )}
+        </Space>
+      </Card>
+    </>
   );
 };

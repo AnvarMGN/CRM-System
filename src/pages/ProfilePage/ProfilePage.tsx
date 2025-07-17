@@ -7,6 +7,7 @@ import {
   updateTokenAction,
 } from "../../store/auth-actions";
 import { Card, Space, Typography } from "antd";
+import Meta from "antd/es/card/Meta";
 
 const { Text } = Typography;
 
@@ -82,13 +83,31 @@ export const ProfilePage = () => {
 
   return (
     <>
-      <Card>
-        <Space direction="vertical">
-          <Text>Привет!</Text>
-          <Text>{user.username}</Text>
-          <Text>{user.email}</Text>
-          <Text>{user.phoneNumber}</Text>
-        </Space>
+      <Card
+        hoverable
+        title="Карточка пользователя"
+        variant="borderless"
+        style={{ width: 300, margin: 32 }}
+      >
+        <Meta
+          title="Привет!"
+          description={
+            <Space direction="vertical">
+              <Space>
+                <Text strong> Имя: </Text>
+                <Text>{user.username}</Text>
+              </Space>
+              <Space>
+                <Text strong> Email: </Text>
+                <Text>{user.email}</Text>
+              </Space>
+              <Space>
+                <Text strong> Телефон: </Text>
+                <Text>{user.phoneNumber}</Text>
+              </Space>
+            </Space>
+          }
+        />
       </Card>
     </>
   );

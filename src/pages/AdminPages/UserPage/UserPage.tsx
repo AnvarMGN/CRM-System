@@ -1,3 +1,6 @@
+import axios from "axios";
+import { openNotification } from "../../../notifications/notifications";
+import type { CombineData, UserRequest } from "../../../types/users";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store/hook";
@@ -7,11 +10,18 @@ import {
   usersActions,
 } from "../../../store/users-slice";
 import { updateTokenAction } from "../../../store/auth-actions";
-import { Button, Card, Form, Input, Spin, Typography } from "antd";
 import { type FormProps } from "antd";
-import type { CombineData, UserRequest } from "../../../types/users";
-import { openNotification } from "../../../notifications/notifications";
-import axios from "axios";
+import {
+  Button,
+  Card,
+  Divider,
+  Form,
+  Input,
+  Space,
+  Spin,
+  Typography,
+} from "antd";
+import Meta from "antd/es/card/Meta";
 
 interface FieldType {
   username?: string;
@@ -197,86 +207,127 @@ export const UserPage = () => {
     <>
       {isEditable ? (
         <>
-          <Card>
-            <Text>UserPage</Text>
-            <Form
-              form={form}
-              onFinish={handelEditUser}
-              onFinishFailed={onFinishFailed}
-              autoComplete="off"
-            >
-              <Form.Item<FieldType>
-                name="username"
-                initialValue={user.username}
-                rules={[
-                  {
-                    required: true,
-                    message: "Отредактируйте или введите новое имя.",
-                  },
-                  {
-                    min: minUserNamelength,
-                    message: `Введите более ${minUserNamelength} символов.`,
-                  },
-                  {
-                    max: maxUserNamelength,
-                    message: `Лимит ввода ${maxUserNamelength} символов.`,
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
+          <Card
+            hoverable
+            title="Карточка пользователя"
+            variant="borderless"
+            style={{ width: 300, margin: 32 }}
+          >
+            <Meta
+              title="Привет!"
+              description={
+                <Space direction="vertical">
+                  <Form
+                    size="middle"
+                    form={form}
+                    onFinish={handelEditUser}
+                    onFinishFailed={onFinishFailed}
+                    autoComplete="off"
+                  >
+                    <Form.Item<FieldType>
+                      name="username"
+                      initialValue={user.username}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Отредактируйте или введите новое имя.",
+                        },
+                        {
+                          min: minUserNamelength,
+                          message: `Введите более ${minUserNamelength} символов.`,
+                        },
+                        {
+                          max: maxUserNamelength,
+                          message: `Лимит ввода ${maxUserNamelength} символов.`,
+                        },
+                      ]}
+                    >
+                      <Input />
+                    </Form.Item>
 
-              <Form.Item<FieldType>
-                name="email"
-                initialValue={user.email}
-                rules={[
-                  { type: "email" },
-                  {
-                    required: true,
-                    message: "Отредактируйте или введите новый email.",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
+                    <Form.Item<FieldType>
+                      name="email"
+                      initialValue={user.email}
+                      rules={[
+                        { type: "email" },
+                        {
+                          required: true,
+                          message: "Отредактируйте или введите новый email.",
+                        },
+                      ]}
+                    >
+                      <Input />
+                    </Form.Item>
 
-              <Form.Item<FieldType>
-                name="phoneNumber"
-                initialValue={user.phoneNumber}
-                rules={[
-                  { required: false },
-                  {
-                    pattern: new RegExp(phoneRegex),
-                    message:
-                      "Отредактируйте или введите новый телефон: +79998887766",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
+                    <Form.Item<FieldType>
+                      name="phoneNumber"
+                      initialValue={user.phoneNumber}
+                      rules={[
+                        { required: false },
+                        {
+                          pattern: new RegExp(phoneRegex),
+                          message:
+                            "Отредактируйте или введите новый телефон: +79998887766",
+                        },
+                      ]}
+                    >
+                      <Input />
+                    </Form.Item>
 
-              <Form.Item>
-                <Button type="primary" htmlType="submit">
-                  Сохранить
-                </Button>
-              </Form.Item>
-              <Form.Item>
-                <Button onClick={handleCancel}>Отмена</Button>
-              </Form.Item>
-            </Form>
+                    <Divider />
+
+                    <Form.Item>
+                      <Space>
+                        <Button type="primary" htmlType="submit">
+                          Сохранить
+                        </Button>
+                        <Button onClick={handleCancel}>Отмена</Button>
+                      </Space>
+                    </Form.Item>
+                  </Form>
+                </Space>
+              }
+            />
           </Card>
         </>
       ) : (
-        <Card>
-          <Text>UserPage</Text>
-          <p>{user.username}</p>
-          <p>{user.email}</p>
-          <p>{user.phoneNumber}</p>
-          <Button onClick={() => setEditable(true)}>Редактировать</Button>
-          <Button onClick={() => navigate("/admin/users", { replace: true })}>
-            Вернуться
-          </Button>
-        </Card>
+        <>
+          <Card
+            hoverable
+            title="Карточка пользователя"
+            variant="borderless"
+            style={{ width: 300, margin: 32 }}
+          >
+            <Meta
+              title="Привет!"
+              description={
+                <Space direction="vertical">
+                  <Space>
+                    <Text strong> Имя: </Text>
+                    <Text>{user.username}</Text>
+                  </Space>
+                  <Space>
+                    <Text strong> Email: </Text>
+                    <Text>{user.email}</Text>
+                  </Space>
+                  <Space>
+                    <Text strong> Телефон: </Text>
+                    <Text>{user.phoneNumber}</Text>
+                  </Space>
+                </Space>
+              }
+            />
+            <Divider />
+            <Space>
+              <Button onClick={() => setEditable(true)}>Редактировать</Button>
+              <Button
+                onClick={() => navigate("/admin/users", { replace: true })}
+              >
+                Вернуться
+              </Button>
+            </Space>
+          </Card>
+        </>
       )}
     </>
   );

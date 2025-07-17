@@ -1,6 +1,12 @@
 .header {
-    display: grid;
+  display: grid;
   grid-template-columns: 720px;
+  justify-content: center;
+}
+
+.nav{
+  display: grid;
+  grid-template-columns: 620px;
   justify-content: center;
 }
 

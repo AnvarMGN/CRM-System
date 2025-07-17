@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { getTaskListAction } from "../../store/todo-actions";
 import { updateTokenAction } from "../../store/auth-actions";
 import { useLocation } from "react-router-dom";
+import { Card } from 'antd';
 
 export const TaskListPage = () => {
   const [isLoading, setLoading] = useState(false);
@@ -112,10 +113,11 @@ export const TaskListPage = () => {
 
   return (
     <>
-      <header className={styles.header}>
+      <Card>
+        <header className={styles.header}>
         <TaskAddAntd />
       </header>
-      <nav>
+      <nav className={styles.nav}>
         <TaskFilterAntd />
       </nav>
       <main className={styles.list}>
@@ -123,6 +125,7 @@ export const TaskListPage = () => {
           <TaskItemAntd task={task} key={task.id} />
         ))}
       </main>
+      </Card>
     </>
   );
 };
