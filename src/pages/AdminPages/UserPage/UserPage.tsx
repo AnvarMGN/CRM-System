@@ -63,11 +63,27 @@ export const UserPage = () => {
       const combinedData: CombineData = {
         id: Number(userId),
         userData: {
-          username: values.username,
-          email: values.email,
-          phoneNumber: values.phoneNumber,
+          username: undefined,
+          email: undefined,
+          phoneNumber: undefined,
         },
       };
+
+      for (const key in values) {
+        if (key === "username" && values[key] !== user.username) {
+          combinedData.userData.username = values[key];
+        } else if (key === "email" && values[key] !== user.email) {
+          combinedData.userData.email = values[key];
+        } else if (
+          key === "phoneNumber" &&
+          values[key] &&
+          values[key] !== user.phoneNumber
+        ) {
+          combinedData.userData.phoneNumber = values[key];
+        }
+      }
+
+      console.log(combinedData);
       await dispatch(updateTokenAction());
       await dispatch(editUserAction(combinedData));
       await dispatch(getUserAction(Number(userId)));

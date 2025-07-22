@@ -19,6 +19,9 @@ import {
   FilterOutlined,
   MailOutlined,
   PhoneOutlined,
+  SortAscendingOutlined,
+  SortDescendingOutlined,
+  UnorderedListOutlined,
 } from "@ant-design/icons";
 import {
   Button,
@@ -96,7 +99,10 @@ export const UsersPage = () => {
   const [isModalOpenDelete, setIsModalDelete] = useState(false);
   const [isModalOpenRole, setIsModalRole] = useState(false);
   const [id, setId] = useState<number | null>(null);
-  const [orderStatus, setOrderStatus] = useState(false);
+  const [orderStatusName, setOrderStatusName] = useState<boolean | null>(null);
+  const [orderStatusEmail, setOrderStatusEmail] = useState<boolean | null>(
+    null
+  );
   const [checkedList, setCheckedList] = useState<Roles[]>([]);
   const [selectValue, setValue] = useState<boolean | undefined>(undefined);
 
@@ -193,15 +199,15 @@ export const UsersPage = () => {
   };
 
   const handleUserNameSort = () => {
-    setOrderStatus(!orderStatus);
+    setOrderStatusName(!orderStatusName);
     dispatch(usersActions.sortByColumnValue("username"));
-    dispatch(usersActions.sortByOrderValue(orderStatus ? "desc" : "asc"));
+    dispatch(usersActions.sortByOrderValue(orderStatusName ? "desc" : "asc"));
   };
 
   const handleEmailSort = () => {
-    setOrderStatus(!orderStatus);
+    setOrderStatusEmail(!orderStatusEmail);
     dispatch(usersActions.sortByColumnValue("email"));
-    dispatch(usersActions.sortByOrderValue(orderStatus ? "desc" : "asc"));
+    dispatch(usersActions.sortByOrderValue(orderStatusEmail ? "desc" : "asc"));
   };
 
   const onSearch: SearchProps["onSearch"] = (value, _e, info) => {
@@ -357,18 +363,44 @@ export const UsersPage = () => {
 
   const columns: TableColumnsType<User> = [
     {
-      title: () => <div onClick={handleUserNameSort}>Имя</div>,
+      title: () => (
+        <div style={{ cursor: "pointer" }} onClick={handleUserNameSort}>
+          Имя{" "}
+          {orderStatusName === null ? (
+            <UnorderedListOutlined />
+          ) : orderStatusName ? (
+            <SortAscendingOutlined />
+          ) : (
+            <SortDescendingOutlined />
+          )}
+        </div>
+      ),
       dataIndex: "username",
       key: "username",
-      sorter: true,
-      showSorterTooltip: false,
+      // sorter: false,
+      // showSorterTooltip: false,
     },
     {
-      title: () => <div onClick={handleEmailSort}>Email</div>,
+      title: () => (
+        <div style={{ cursor: "pointer" }} onClick={handleEmailSort}>
+          Email{" "}
+          {orderStatusEmail === null ? (
+            <UnorderedListOutlined />
+          ) : orderStatusEmail ? (
+            <>
+              <SortAscendingOutlined />
+            </>
+          ) : (
+            <>
+              <SortDescendingOutlined />
+            </>
+          )}
+        </div>
+      ),
       dataIndex: "email",
       key: "email",
-      sorter: true,
-      showSorterTooltip: false,
+      // sorter: false,
+      // showSorterTooltip: false,
       render: (_, { email }) => (
         <>
           <MailOutlined /> <Text>{email}</Text>
