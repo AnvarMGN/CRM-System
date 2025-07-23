@@ -74,11 +74,7 @@ export const UserPage = () => {
           combinedData.userData.username = values[key];
         } else if (key === "email" && values[key] !== user.email) {
           combinedData.userData.email = values[key];
-        } else if (
-          key === "phoneNumber" &&
-          values[key] &&
-          values[key] !== user.phoneNumber
-        ) {
+        } else if (key === "phoneNumber" && values[key] !== user.phoneNumber) {
           combinedData.userData.phoneNumber = values[key];
         }
       }

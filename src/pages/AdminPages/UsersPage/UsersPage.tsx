@@ -93,16 +93,22 @@ export const UsersPage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { roles } = useAppSelector((state) => state.auth.user);
-  const { data, meta, filters, loading, error } = useAppSelector(
-    (state) => state.users
-  );
+  const {
+    data,
+    meta,
+    filters,
+    loading,
+    error,
+    orderStatusName,
+    orderStatusEmail,
+  } = useAppSelector((state) => state.users);
   const [isModalOpenDelete, setIsModalDelete] = useState(false);
   const [isModalOpenRole, setIsModalRole] = useState(false);
   const [id, setId] = useState<number | null>(null);
-  const [orderStatusName, setOrderStatusName] = useState<boolean | null>(null);
-  const [orderStatusEmail, setOrderStatusEmail] = useState<boolean | null>(
-    null
-  );
+  // const [orderStatusName, setOrderStatusName] = useState<boolean | null>(null);
+  // const [orderStatusEmail, setOrderStatusEmail] = useState<boolean | null>(
+  //   null
+  // );
   const [checkedList, setCheckedList] = useState<Roles[]>([]);
   const [selectValue, setValue] = useState<boolean | undefined>(undefined);
 
@@ -199,13 +205,15 @@ export const UsersPage = () => {
   };
 
   const handleUserNameSort = () => {
-    setOrderStatusName(!orderStatusName);
+    // setOrderStatusName(!orderStatusName);
+    dispatch(usersActions.toggleOrderName());
     dispatch(usersActions.sortByColumnValue("username"));
     dispatch(usersActions.sortByOrderValue(orderStatusName ? "desc" : "asc"));
   };
 
   const handleEmailSort = () => {
-    setOrderStatusEmail(!orderStatusEmail);
+    // setOrderStatusEmail(!orderStatusEmail);
+    dispatch(usersActions.toggleOrderEmail());
     dispatch(usersActions.sortByColumnValue("email"));
     dispatch(usersActions.sortByOrderValue(orderStatusEmail ? "desc" : "asc"));
   };

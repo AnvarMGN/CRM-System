@@ -41,8 +41,8 @@ export interface UserFilters {
   sortBy?: string;
   sortOrder?: "asc" | "desc";
   isBlocked?: boolean;
-  limit?: number; // сколько на странице
-  offset?: number; // страницу
+  limit?: number; 
+  offset?: number;
 }
 
 export interface CombineDataRights {

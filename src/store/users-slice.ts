@@ -21,6 +21,8 @@ type initialUsersStateType = {
   error: string | null;
   isEditedUser: boolean;
   filters: UserFilters;
+  orderStatusName: boolean | null;
+  orderStatusEmail: boolean | null;
 };
 
 const initialUsersState: initialUsersStateType = {
@@ -40,12 +42,14 @@ const initialUsersState: initialUsersStateType = {
   isEditedUser: false,
   filters: {
     search: undefined,
-    sortBy: "id",
-    sortOrder: "asc",
+    sortBy: undefined,
+    sortOrder: undefined,
     isBlocked: undefined,
-    limit: 20,
-    offset: 0,
+    limit: undefined,
+    offset: undefined,
   },
+  orderStatusName: null,
+  orderStatusEmail: null,
 };
 
 const handleGetUserErrorStatus = (status: number) => {
@@ -68,7 +72,7 @@ const handleGetUserErrorStatus = (status: number) => {
 const handleEditUserErrorStatus = (status: number) => {
   switch (status) {
     case 400:
-      return "Логин или email не изменились.";
+      return "Пользователь с таким именем или email уже существуют в системе.";
     case 401:
       return "Проверьту введённые данные или авторизируйтесь снова.";
     case 403:
@@ -142,6 +146,12 @@ const usersSlice = createSlice({
   name: "users",
   initialState: initialUsersState,
   reducers: {
+    toggleOrderName(state) {
+      state.orderStatusName = !state.orderStatusName;
+    },
+    toggleOrderEmail(state) {
+      state.orderStatusEmail = !state.orderStatusEmail;
+    },
     sortByColumnValue(state, action) {
       state.filters.sortBy = action.payload;
     },
