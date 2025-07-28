@@ -11,7 +11,7 @@ const initialAuthState: initialAuthStateType = {
   isRegistrated: false,
   isAuthorized: false,
   user: {
-    id: NaN,
+    id: 0,
     username: "",
     email: "",
     date: "",

@@ -28,7 +28,7 @@ export const AuthenticationPage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { isAuthorized } = useAppSelector((state) => state.auth);
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState<boolean>(false);
 
   const handleAuthError = (notificatonDescription: string, error: Error) => {
     console.log(notificatonDescription, error.message);

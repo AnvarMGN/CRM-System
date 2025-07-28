@@ -5,7 +5,8 @@
     flex-direction: row;
     justify-content: space-between;
     .table_title {
-      color: rgb(0, 0, 0);
+      // color: rgb(0, 0, 0);
+      color: #000000;
       font-family: Inter;
       font-size: 20px;
       font-weight: 500;
@@ -13,7 +14,8 @@
       margin-right: 50px;
     }
     .select_text {
-      color: rgb(0, 0, 0);
+      // color: rgb(0, 0, 0);
+      color: #000000;
       font-family: Inter;
       font-size: 14px;
       font-weight: 500;
@@ -22,7 +24,8 @@
 }
 
 .search_null {
-  color: rgb(0, 0, 0);
+  // color: rgb(0, 0, 0);
+  color: #000000;
   font-family: Inter;
   font-size: 16px;
   font-weight: 600;

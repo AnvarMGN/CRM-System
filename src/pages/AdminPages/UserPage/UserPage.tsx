@@ -48,9 +48,8 @@ export const UserPage = () => {
   const navigate = useNavigate();
   const [isEditable, setEditable] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-  const { user, isEditedUser, loading, error } = useAppSelector(
-    (state) => state.users
-  );
+  const { user, isEditedUser, loading, error } =
+    useAppSelector((state) => state.users) || {};
 
   const handleUpdateError = (notificatonDescription: string, error: Error) => {
     console.log(notificatonDescription, error.message);

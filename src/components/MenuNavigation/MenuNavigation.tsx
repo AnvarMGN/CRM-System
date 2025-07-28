@@ -10,8 +10,11 @@ import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { authActions } from "../../store/auth-slice";
 import { tokenManager } from "../../util/auth";
 import { useEffect, useState } from "react";
+import type { Roles } from '../../types/users';
 
 // const { Title } = Typography;
+
+const ROLES: Roles[] = ['ADMIN', 'MODERATOR']
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -40,8 +43,9 @@ const adminAndModeratorItems: MenuItem[] = [
 export const MenuNavigation = () => {
   const dispatch = useAppDispatch();
   const { roles } = useAppSelector((state) => state.auth.user);
-  const isAdminOrModerator =
-    roles.includes("ADMIN") || roles.includes("MODERATOR");
+  // const isAdminOrModerator =
+  //   roles.includes("ADMIN") || roles.includes("MODERATOR");
+  const isAdminOrModerator = ROLES.some((role) => roles.includes(role))
   const [items, setItems] = useState<MenuItem[]>(userItems);
 
   useEffect(() => {

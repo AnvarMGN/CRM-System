@@ -15,11 +15,11 @@ import { useLocation } from "react-router-dom";
 import { Card } from 'antd';
 
 export const TaskListPage = () => {
-  const [isLoading, setLoading] = useState(false);
+  const location = useLocation();
   const dispatch = useAppDispatch();
   const { status, todos } = useAppSelector((state) => state.todo);
   const [isLocation, setLocation] = useState<boolean>(false);
-  const location = useLocation();
+  const [isLoading, setLoading] = useState<boolean>(false);
 
   const handleUpdateError = (notificatonDescription: string, error: Error) => {
     console.log(notificatonDescription, error.message);
