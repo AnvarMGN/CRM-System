@@ -10,6 +10,8 @@ import { RegistrationPage } from "./pages/AuthPages/RegistrationPage/Registratio
 import { AuthenticationPage } from "./pages/AuthPages/AuthenticationPage/AuthenticationPage";
 import { ProfilePage } from "./pages/ProfilePage/ProfilePage";
 import { ProtectedRoute } from "./pages/ProtectedRoute/ProtectedRoute";
+import { UsersPage } from "./pages/AdminPages/UsersPage/UsersPage";
+import { UserPage } from "./pages/AdminPages/UserPage/UserPage";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="auth/signin" replace /> },
@@ -35,6 +37,16 @@ const router = createBrowserRouter([
     children: [
       { path: "todo", element: <TaskListPage /> },
       { path: "user", element: <ProfilePage /> },
+      { path: "*", element: <ErrorPage /> },
+    ],
+  },
+  {
+    path: "/admin",
+    element: <ProtectedRoute />,
+    errorElement: <ErrorPage />,
+    children: [
+      { path: "users", element: <UsersPage /> },
+      { path: "user/:userId", element: <UserPage /> },
       { path: "*", element: <ErrorPage /> },
     ],
   },

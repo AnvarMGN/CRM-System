@@ -4,7 +4,7 @@ export const openNotification = (notificatonName: string, notificatonDescription
   notification.open({
     message: notificatonName,
     description: notificatonDescription,
-    duration: 5,
+    duration: 4,
     placement: "bottomRight",
     showProgress: true,
   });

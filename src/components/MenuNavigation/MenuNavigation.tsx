@@ -1,28 +1,51 @@
 import { Link } from "react-router-dom";
 import styles from "./MenuNavigation.module.scss";
-import { Button, Menu, type MenuProps } from "antd";
-import { UserOutlined, UnorderedListOutlined } from "@ant-design/icons";
-import { useAppDispatch } from "../../store/hook";
+import { Button, Divider, Menu, type MenuProps } from "antd";
+import {
+  UserOutlined,
+  UnorderedListOutlined,
+  IdcardOutlined,
+} from "@ant-design/icons";
+import { useAppDispatch, useAppSelector } from "../../store/hook";
 import { authActions } from "../../store/auth-slice";
 import { tokenManager } from "../../util/auth";
+import { useEffect, useState } from "react";
+import { selectIsAdminOrModerator } from '../../store/selectors';
+
+// const { Title } = Typography;
 
 type MenuItem = Required<MenuProps>["items"][number];
 
+const userItems: MenuItem[] = [
+  {
+    key: "1",
+    icon: <UnorderedListOutlined />,
+    label: <Link to="/crm/todo">Список задач</Link>,
+  },
+  {
+    key: "2",
+    icon: <IdcardOutlined />,
+    label: <Link to="/crm/user">Личный кабинет</Link>,
+  },
+];
+
+const adminAndModeratorItems: MenuItem[] = [
+  ...userItems,
+  {
+    key: "3",
+    icon: <UserOutlined />,
+    label: <Link to="/admin/users">Пользователи</Link>,
+  },
+];
+
 export const MenuNavigation = () => {
   const dispatch = useAppDispatch();
+  const isAdminOrModerator = useAppSelector(selectIsAdminOrModerator);
+  const [items, setItems] = useState<MenuItem[]>(userItems);
 
-  const items: MenuItem[] = [
-    {
-      key: "1",
-      icon: <UnorderedListOutlined />,
-      label: <Link to="todo">Список задач</Link>,
-    },
-    {
-      key: "2",
-      icon: <UserOutlined />,
-      label: <Link to="user">Личный кабинет</Link>,
-    },
-  ];
+  useEffect(() => {
+    setItems(isAdminOrModerator ? adminAndModeratorItems : userItems);
+  }, [isAdminOrModerator]);
 
   const handleLogOut = () => {
     dispatch(authActions.isAuthorizedFalse());
@@ -32,9 +55,17 @@ export const MenuNavigation = () => {
 
   return (
     <div className={styles.side_menu}>
-      <h1>CRM-SYSTEM</h1>
-      <Menu mode="inline" theme="light" items={items} />
-      <Button onClick={handleLogOut}>Logout</Button>
+      <Menu
+        style={{ backgroundColor: "rgb(249, 249, 249)" }}
+        mode="vertical"
+        theme="light"
+        items={items}
+      />
+      <Divider />
+      <div className={styles.logout_button}>
+        <Button onClick={handleLogOut}>Logout</Button>
+      </div>
+      <Divider />
     </div>
   );
 };

@@ -88,7 +88,7 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({ task }) => {
   return (
     <>
       {isEditable ? (
-        <Card size="small">
+        <Card hoverable>
           <Form
             form={form}
             onFinish={handleEditTask}
@@ -133,7 +133,7 @@ export const TaskItemAntd: React.FC<TaskItemAntdTypes> = ({ task }) => {
           </Form>
         </Card>
       ) : (
-        <Card size="small">
+        <Card hoverable>
           <div className={styles.card}>
             <Checkbox
               checked={isDone}

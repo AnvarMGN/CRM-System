@@ -6,9 +6,7 @@ import { Button, Form, Input, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import type { AuthData } from "../../../types/auth";
-import type { AppDispatch } from "../../../store";
 import { useAppDispatch, useAppSelector } from "../../../store/hook";
-import { authActions } from "../../../store/auth-slice";
 import { userAuthenticationAction } from "../../../store/auth-actions";
 
 const minLoginlength = 2;
@@ -30,16 +28,11 @@ export const AuthenticationPage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { isAuthorized } = useAppSelector((state) => state.auth);
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState<boolean>(false);
 
-  const handleAuthError = (
-    notificatonDescription: string,
-    error: Error,
-    dispatch: AppDispatch
-  ) => {
+  const handleAuthError = (notificatonDescription: string, error: Error) => {
     console.log(notificatonDescription, error.message);
     openNotification("Ошибка", notificatonDescription);
-    dispatch(authActions.isAuthorizedFalse());
   };
 
   useEffect(() => {
@@ -60,23 +53,24 @@ export const AuthenticationPage = () => {
       form.resetFields();
     } catch (error) {
       if (axios.isAxiosError(error)) {
+        const errorStatusLabels = {
+          400: "Ошибка обработки данных, либо неправильный ввод данных пользователя.",
+          401: "Не верные учётные данные.",
+          500: "Внутренняя ошибка сервера.",
+        };
         if (error.response) {
           switch (error.response.status) {
             case 400:
-              handleAuthError(
-                "Ошибка обработки данных, либо неправильный ввод данных пользователя.",
-                error,
-                dispatch
-              );
+              handleAuthError(errorStatusLabels[error.response.status], error);
               break;
             case 401:
-              handleAuthError("Не верные учётные данные.", error, dispatch);
+              handleAuthError(errorStatusLabels[error.response.status], error);
               break;
             case 500:
-              handleAuthError("`Ошибка на стороне сервера.", error, dispatch);
+              handleAuthError(errorStatusLabels[error.response.status], error);
               break;
             default:
-              handleAuthError("Неизвестная ошибка.", error, dispatch);
+              handleAuthError("Неизвестная ошибка.", error);
               break;
           }
         } else if (error.request) {

@@ -1,18 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { ProfileRequest } from "../types/auth";
+import type { Profile } from "../types/auth";
 
 type initialAuthStateType = {
   isRegistrated: boolean;
   isAuthorized: boolean;
-  user: ProfileRequest;
+  user: Profile;
 };
 
 const initialAuthState: initialAuthStateType = {
   isRegistrated: false,
   isAuthorized: false,
   user: {
+    id: 0,
     username: "",
     email: "",
+    date: "",
+    isBlocked: false,
+    roles: [],
     phoneNumber: "",
   },
 };

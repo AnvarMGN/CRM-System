@@ -4,24 +4,55 @@ import "./style.css";
 import { Provider } from "react-redux";
 import { store } from "./store/index.ts";
 import { updateTokenAction } from "./store/auth-actions.ts";
-import { useEffect, useState } from "react";
+import axios from "axios";
 
-export const Root = () => {
-  const [isLoading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const initialApp = async () => {
-      await store.dispatch(updateTokenAction());
-      setLoading(false);
+const initialApp = async () => {
+  try {
+    await store.dispatch(updateTokenAction());
+  } catch (error) {
+    const errorStatusLabels = {
+      400: "Произошла ошибка при обработке данных.",
+      401: "Проверьте введенные данные или войдите снова.",
+      500: "Внутренняя ошибка сервера.",
     };
 
-    initialApp();
-  }, []);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        switch (error.response.status) {
+          case 400:
+            console.log(
+              errorStatusLabels[error.response.status],
+              error.message
+            );
+            break;
+          case 401:
+            console.log(
+              errorStatusLabels[error.response.status],
+              error.message
+            );
+            break;
+          case 500:
+            console.log(
+              errorStatusLabels[error.response.status],
+              error.message
+            );
+            break;
+          default:
+            console.log("Неизвестная ошибка", error.message);
+            break;
+        }
+      } else if (error.request) {
+        console.log("Сервер не доступен.", error.message);
+      } else {
+        console.log("Неизвестная ошибка.", error.message);
+      }
+    } else {
+      console.log("Неизвестная ошибка.", (error as Error).message);
+    }
   }
+};
 
+export const Root = () => {
   return (
     <Provider store={store}>
       <App />
@@ -29,4 +60,6 @@ export const Root = () => {
   );
 };
 
-createRoot(document.getElementById("root")!).render(<Root />);
+initialApp().then(() => {
+  createRoot(document.getElementById("root")!).render(<Root />);
+});

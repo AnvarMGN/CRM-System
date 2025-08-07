@@ -1,30 +1,24 @@
 import axios from "axios";
-import { tokenManager } from "../../util/auth";
 import { openNotification } from "../../notifications/notifications";
 import { useEffect, useState } from "react";
-import type { AppDispatch } from "../../store";
 import { useAppDispatch, useAppSelector } from "../../store/hook";
-import { authActions } from "../../store/auth-slice";
 import {
-  getUserRequestAction,
+  getUserProfileAction,
   updateTokenAction,
 } from "../../store/auth-actions";
+import { Card, Space, Typography } from "antd";
+import Meta from "antd/es/card/Meta";
+
+const { Text } = Typography;
 
 export const ProfilePage = () => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState<boolean>(false);
 
-  const handleUpdateError = (
-    notificatonDescription: string,
-    error: Error,
-    dispatch: AppDispatch
-  ) => {
+  const handleUpdateError = (notificatonDescription: string, error: Error) => {
     console.log(notificatonDescription, error.message);
     openNotification("Ошибка", notificatonDescription);
-    dispatch(authActions.isAuthorizedFalse());
-    tokenManager.removeAccessToken();
-    tokenManager.removeRefreshToken();
   };
 
   useEffect(() => {
@@ -32,43 +26,48 @@ export const ProfilePage = () => {
       try {
         setLoading(true);
         await dispatch(updateTokenAction());
-        await dispatch(getUserRequestAction());
+        await dispatch(getUserProfileAction());
       } catch (error) {
         if (axios.isAxiosError(error)) {
+          const errorStatusLabels = {
+            400: "Произошла ошибка при обработке данных.",
+            401: "Проверьте введенные данные или войдите снова.",
+            500: "Внутренняя ошибка сервера.",
+          };
           if (error.response) {
             switch (error.response.status) {
               case 400:
                 handleUpdateError(
-                  "Произошла ошибка при обработке данных.",
-                  error,
-                  dispatch
+                  errorStatusLabels[error.response.status],
+                  error
                 );
                 break;
               case 401:
                 handleUpdateError(
-                  "Проверьте введенные данные или войдите снова.",
-                  error,
-                  dispatch
+                  errorStatusLabels[error.response.status],
+                  error
                 );
                 break;
               case 500:
                 handleUpdateError(
-                  "Внутренняя ошибка сервера.",
-                  error,
-                  dispatch
+                  errorStatusLabels[error.response.status],
+                  error
                 );
                 break;
               default:
-                handleUpdateError("Неизвестная ошибка", error, dispatch);
+                handleUpdateError("Неизвестная ошибка", error);
                 break;
             }
           } else if (error.request) {
             console.log("Сервер не доступен.", error.message);
+            openNotification("Ошибка", "Сервер не доступен.");
           } else {
             console.log("Неизвестная ошибка.", error.message);
+            openNotification("Ошибка", "Неизвестная ошибка.");
           }
         } else {
           console.log("Неизвестная ошибка.", (error as Error).message);
+          openNotification("Ошибка", "Неизвестная ошибка.");
         }
       } finally {
         setLoading(false);
@@ -84,12 +83,32 @@ export const ProfilePage = () => {
 
   return (
     <>
-      <h1>Привет!</h1>
-      <ul>
-        <li>{user.username}</li>
-        <li>{user.email}</li>
-        <li>{user.phoneNumber}</li>
-      </ul>
+      <Card
+        hoverable
+        title="Карточка пользователя"
+        variant="borderless"
+        style={{ width: 300, margin: 32 }}
+      >
+        <Meta
+          title="Привет!"
+          description={
+            <Space direction="vertical">
+              <Space>
+                <Text strong> Имя: </Text>
+                <Text>{user.username}</Text>
+              </Space>
+              <Space>
+                <Text strong> Email: </Text>
+                <Text>{user.email}</Text>
+              </Space>
+              <Space>
+                <Text strong> Телефон: </Text>
+                <Text>{user.phoneNumber}</Text>
+              </Space>
+            </Space>
+          }
+        />
+      </Card>
     </>
   );
 };

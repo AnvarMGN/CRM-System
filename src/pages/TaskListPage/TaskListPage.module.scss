@@ -1,10 +1,18 @@
 .header {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 720px;
+  justify-content: center;
+}
+
+.nav{
+  display: grid;
+  grid-template-columns: 620px;
+  justify-content: center;
 }
 
 .list {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 630px;
+  justify-content: center;
   gap: 16px;
 }

@@ -1,6 +1,7 @@
 import axios from "axios";
 import {
   type AuthData,
+  type Profile,
   type Token,
   type UserRegistration,
 } from "../types/auth";
@@ -12,7 +13,7 @@ const authApi = axios.create({
   baseURL: baseURL,
 });
 
-authApi.interceptors.request.use(
+authApi.interceptors.request.use(// динамически подставляем accessToken с помощью interceptors перед request
   function (config) {
     const accessToken = tokenManager.getAccessToken();
     // console.log("at", accessToken);
@@ -63,9 +64,9 @@ export const updateToken = async (refreshToken: string) => {
   }
 };
 
-export const getUserRequest = async () => {
+export const getUserProfile = async () => {
   try {
-    const response = await authApi.get(`/user/profile`);
+    const response = await authApi.get<Profile>(`/user/profile`);
     return response;
   } catch (error) {
     console.log(error);

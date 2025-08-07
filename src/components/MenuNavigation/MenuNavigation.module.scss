@@ -1,7 +1,21 @@
 .side_menu {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  // color: rgb(140, 140, 140);
+  color: #8c8c8c;
+  font-family: Inter;
+  font-size: 14px;
+  font-weight: 500;
+
+  margin-left: 16px;
+  margin-top: 20px;
+
+  .logout_button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+  // display: flex;
+  // flex-direction: column;
+  // align-items: center;
 
   // position: fixed;
   // z-index: 1;
