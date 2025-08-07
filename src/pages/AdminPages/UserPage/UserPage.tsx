@@ -58,25 +58,29 @@ export const UserPage = () => {
 
   const handelEditUser: FormProps<UserRequest>["onFinish"] = async (values) => {
     console.log("Success:", values);
+
     try {
+      function objCompare<T extends Record<string, any>>(
+        obj1: T,
+        obj2: T
+      ): Partial<T> {
+        const changeFields: Partial<T> = {};
+
+        for (const key in obj1) {
+          if (obj1[key] !== obj2[key]) {
+            changeFields[key] = obj1[key];
+          }
+        }
+
+        return changeFields;
+      }
+
       const combinedData: CombineData = {
         id: Number(userId),
-        userData: {
-          username: undefined,
-          email: undefined,
-          phoneNumber: undefined,
-        },
+        userData: {},
       };
 
-      for (const key in values) {
-        if (key === "username" && values[key] !== user.username) {
-          combinedData.userData.username = values[key];
-        } else if (key === "email" && values[key] !== user.email) {
-          combinedData.userData.email = values[key];
-        } else if (key === "phoneNumber" && values[key] !== user.phoneNumber) {
-          combinedData.userData.phoneNumber = values[key];
-        }
-      }
+      combinedData.userData = objCompare(values, user);
 
       console.log(combinedData);
       await dispatch(updateTokenAction());
