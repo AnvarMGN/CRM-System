@@ -41,9 +41,7 @@ import {
   type GetProps,
   type PaginationProps,
   type TableColumnsType,
-  // type TableProps,
 } from "antd";
-// import type { SorterResult } from "antd/es/table/interface";
 
 const { Text } = Typography;
 
@@ -105,10 +103,6 @@ export const UsersPage = () => {
   const [isModalOpenDelete, setIsModalDelete] = useState(false);
   const [isModalOpenRole, setIsModalRole] = useState(false);
   const [id, setId] = useState<number | null>(null);
-  // const [orderStatusName, setOrderStatusName] = useState<boolean | null>(null);
-  // const [orderStatusEmail, setOrderStatusEmail] = useState<boolean | null>(
-  //   null
-  // );
   const [checkedList, setCheckedList] = useState<Roles[]>([]);
   const [selectValue, setValue] = useState<boolean | undefined>(undefined);
 
@@ -212,7 +206,6 @@ export const UsersPage = () => {
   };
 
   const handleEmailSort = () => {
-    // setOrderStatusEmail(!orderStatusEmail);
     dispatch(usersActions.toggleOrderEmail());
     dispatch(usersActions.sortByColumnValue("email"));
     dispatch(usersActions.sortByOrderValue(orderStatusEmail ? "desc" : "asc"));
@@ -675,7 +668,6 @@ export const UsersPage = () => {
             pagination={false}
             columns={columns}
             dataSource={dataSource}
-            // onChange={handleTableSort}
           />
 
           {!data.users && (

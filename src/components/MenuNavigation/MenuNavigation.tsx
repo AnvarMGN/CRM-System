@@ -12,8 +12,6 @@ import { tokenManager } from "../../util/auth";
 import { useEffect, useState } from "react";
 import { selectIsAdminOrModerator } from '../../store/selectors';
 
-// const { Title } = Typography;
-
 type MenuItem = Required<MenuProps>["items"][number];
 
 const userItems: MenuItem[] = [
